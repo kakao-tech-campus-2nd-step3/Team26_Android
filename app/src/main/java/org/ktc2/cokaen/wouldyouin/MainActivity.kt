@@ -1,4 +1,4 @@
-package com.example.wouldyouin
+package org.ktc2.cokaen.wouldyouin
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.wouldyouin.ui.theme.WouldYouInTheme
+import org.ktc2.cokaen.wouldyouin.ui.theme.WouldYouInTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

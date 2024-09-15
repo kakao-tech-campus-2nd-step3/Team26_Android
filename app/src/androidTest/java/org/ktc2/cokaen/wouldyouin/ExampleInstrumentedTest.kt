@@ -1,4 +1,4 @@
-package com.example.wouldyouin
+package org.ktc2.cokaen.wouldyouin
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

@@ -1,4 +1,4 @@
-package com.example.wouldyouin.ui.theme
+package org.ktc2.cokaen.wouldyouin.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

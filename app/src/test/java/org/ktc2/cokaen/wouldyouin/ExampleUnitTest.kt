@@ -1,4 +1,4 @@
-package com.example.wouldyouin
+package org.ktc2.cokaen.wouldyouin
 
 import org.junit.Test
 

@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.wouldyouin"
+    namespace = "org.ktc2.cokaen.wouldyouin"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.wouldyouin"
+        applicationId = "org.ktc2.cokaen.wouldyouin"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
