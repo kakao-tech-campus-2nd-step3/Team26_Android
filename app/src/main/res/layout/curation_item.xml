@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+
+        <!-- 추후 수정 -->
+        <variable
+            name="sampleText"
+            type="String" />
+
+        <variable
+            name="imageUrl"
+            type="String" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="52dp"
+        tools:context=".HomeCurationActivity">
+
+        <FrameLayout
+            android:id="@+id/curationCard"
+            android:layout_width="350dp"
+            android:layout_height="491dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardCornerRadius="16dp"
+                >
+
+                <!-- ImageView -->
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@{imageUrl}" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#33000000" /> <!-- 추후 색상 변경 -->
+            </androidx.cardview.widget.CardView>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/location"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingHorizontal="26dp"
+            android:paddingVertical="6dp"
+            app:layout_constraintStart_toStartOf="@id/curationCard"
+            app:layout_constraintBottom_toTopOf="@id/title"
+            android:text="@{sampleText}"
+            tools:text="location"
+            android:background="@drawable/location_background"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            />
+
+        <TextView
+            android:id="@+id/hashtag"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintStart_toStartOf="@id/curationCard"
+            app:layout_constraintBottom_toBottomOf="@id/curationCard"
+            android:text="@{sampleText}"
+            tools:text="#hashtag"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@{sampleText}"
+            app:layout_constraintStart_toStartOf="@id/curationCard"
+            app:layout_constraintTop_toTopOf="@id/location"
+            tools:text="title here"
+            android:textColor="@android:color/white"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
