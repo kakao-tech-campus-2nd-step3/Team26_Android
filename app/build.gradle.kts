@@ -53,6 +53,10 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
     val lifecycle_version = "2.8.5"
 
     // ViewModel
@@ -87,4 +91,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //추가
+    implementation("androidx.appcompat:appcompat:1.7.0")
 }
