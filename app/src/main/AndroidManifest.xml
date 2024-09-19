@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WouldYouIn"
         tools:targetApi="31">
+
         <activity
             android:name="org.ktc2.cokaen.wouldyouin.MainActivity"
             android:exported="true"
