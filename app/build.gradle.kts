@@ -91,4 +91,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //추가
+    implementation("androidx.appcompat:appcompat:1.7.0")
 }
