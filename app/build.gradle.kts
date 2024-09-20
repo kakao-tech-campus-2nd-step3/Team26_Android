@@ -53,6 +53,10 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
     val lifecycle_version = "2.8.5"
 
     // ViewModel
