@@ -15,6 +15,33 @@
         android:theme="@style/Theme.WouldYouIn"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HomeCurationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationsActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".LikedOrganizersActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".ProfileActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".HomeCurationActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".EventDetailActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
         <activity
             android:name=".BookingDetailsActivity"
             android:exported="false" />
