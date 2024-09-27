@@ -95,4 +95,5 @@ dependencies {
     //추가
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.tbuonomo:dotsindicator:5.0")
+
 }
