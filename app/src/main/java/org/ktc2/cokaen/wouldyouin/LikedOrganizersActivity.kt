@@ -1,18 +1,20 @@
 package org.ktc2.cokaen.wouldyouin
 
 import android.os.Bundle
+import android.view.Menu
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.DataBindingUtil
-import org.ktc2.cokaen.wouldyouin.databinding.ActivityHomeCurationBinding
+import org.ktc2.cokaen.wouldyouin.databinding.ActivityLikedOrganizersBinding
 
-class HomeCurationActivity : AppCompatActivity() {
+class LikedOrganizersActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityHomeCurationBinding
+    private lateinit var binding: ActivityLikedOrganizersBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_home_curation)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_liked_organizers)
+
     }
 }
