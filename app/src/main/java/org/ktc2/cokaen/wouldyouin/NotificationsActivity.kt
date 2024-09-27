@@ -6,13 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.DataBindingUtil
-import org.ktc2.cokaen.wouldyouin.databinding.ActivityHomeCurationBinding
+import org.ktc2.cokaen.wouldyouin.databinding.ActivityLikedOrganizersBinding
+import org.ktc2.cokaen.wouldyouin.databinding.ActivityNotificationsBinding
 
-class HomeCurationActivity : AppCompatActivity() {
+class NotificationsActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityHomeCurationBinding
+    private lateinit var binding: ActivityNotificationsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_home_curation)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_notifications)
     }
 }
