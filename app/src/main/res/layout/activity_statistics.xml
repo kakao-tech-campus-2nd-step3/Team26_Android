@@ -1,101 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".StatisticsActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-  <TextView
-      android:id="@+id/title"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      app:layout_constraintTop_toTopOf="parent"
-      android:layout_marginTop="12dp"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      android:textSize="16sp"
-      android:text="매출 통계"/>
+  <data>
 
-  <LinearLayout
-      android:id="@+id/event_sales_box"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      android:layout_marginTop="67dp"
-      app:layout_constraintTop_toBottomOf="@id/title"
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/main"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:padding="14dp"
-      android:background="@drawable/stroke_background"
-      android:layout_marginHorizontal="26dp"
-      >
+      android:layout_height="match_parent"
+      tools:context=".StatisticsActivity">
 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:background="@drawable/profile_image_background"
-        android:layout_gravity="center_vertical"/>
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginStart="20dp">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="16sp"
+        android:text="매출 통계"/>
 
-      <TextView
-          android:id="@+id/event_sales_title"
+    <LinearLayout
+        android:id="@+id/event_sales_box"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="67dp"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="14dp"
+        android:background="@drawable/stroke_background"
+        android:layout_marginHorizontal="26dp">
+
+      <ImageView
+          android:id="@+id/image"
+          android:layout_width="56dp"
+          android:layout_height="56dp"
+          android:background="@drawable/profile_image_background"
+          android:layout_gravity="center_vertical"/>
+
+      <LinearLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textSize="16sp"
-          android:textStyle="bold"
-          tools:text="행사 매출"/>
+          android:orientation="vertical"
+          android:layout_marginStart="20dp">
 
-      <TextView
-          android:id="@+id/event_sales"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textSize="15sp"
-          tools:text="123,400"/>
+        <TextView
+            android:id="@+id/event_sales_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="행사 매출"/>
+
+        <TextView
+            android:id="@+id/event_sales"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            tools:text="123,400"/>
+      </LinearLayout>
     </LinearLayout>
-  </LinearLayout>
 
-  <com.github.mikephil.charting.charts.LineChart
-      android:id="@+id/booking_status"
-      android:layout_width="match_parent"
-      android:layout_marginHorizontal="36dp"
-      app:layout_constraintTop_toBottomOf="@id/event_sales_box"
-      android:layout_marginTop="20dp"
-      android:layout_height="192dp" />
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/booking_status"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="36dp"
+        app:layout_constraintTop_toBottomOf="@id/event_sales_box"
+        android:layout_marginTop="20dp"
+        android:layout_height="192dp" />
 
-  <TextView
-      android:id="@+id/review_title"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      app:layout_constraintTop_toBottomOf="@id/booking_status"
-      app:layout_constraintStart_toStartOf="parent"
-      android:layout_marginTop="30dp"
-      android:layout_marginStart="20dp"
-      android:textStyle="bold"
-      android:textSize="16dp"
-      tools:text="관객 리뷰"/>
+    <TextView
+        android:id="@+id/review_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/booking_status"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:textStyle="bold"
+        android:textSize="16dp"
+        tools:text="관객 리뷰"/>
 
-  <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/review"
-      app:layout_constraintTop_toBottomOf="@id/review_title"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      android:layout_marginStart="20dp"
-      android:layout_marginTop="10dp"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      app:layoutManager="GridLayoutManager"
-      app:spanCount="2"
-      tools:listitem="@layout/review_item"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/review"
+        app:layout_constraintTop_toBottomOf="@id/review_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layoutManager="GridLayoutManager"
+        app:spanCount="2"
+        tools:listitem="@layout/review_item"/>
 
+  </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
