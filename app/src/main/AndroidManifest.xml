@@ -14,60 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WouldYouIn"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
-
+        tools:targetApi="31" >
         <activity
-            android:name=".ProfileActivity"
+            android:name=".EventCreateActivity"
             android:exported="false" />
-        <activity
-            android:name=".HomeCurationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".NotificationsActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
-        <activity
-            android:name=".LikedOrganizersActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
-        <activity
-            android:name=".ProfileActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
-        <activity
-            android:name=".HomeCurationActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
-        <activity
-            android:name=".EventDetailActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
-        <activity
-            android:name=".BookingDetailsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".UpcomingShowBookingsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".NotificationsActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".LikedOrganizersActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ProfileActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".HomeCurationActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".EventDetailActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -76,10 +26,38 @@
             android:theme="@style/Theme.WouldYouIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HomeCurationActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".NotificationsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LikedOrganizersActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".EventDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".BookingDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UpcomingShowBookingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".StatisticsActivity"
+            android:exported="false" />
+    </application>
 </manifest>
