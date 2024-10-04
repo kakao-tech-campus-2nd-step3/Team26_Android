@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/material_dynamic_neutral80"/>
+            <corners android:radius="20dp"/>
+        </shape>
+    </item>
+
+    <item android:gravity="center">
+        <bitmap
+            android:src="@drawable/photo"
+            android:tint="@color/black"
+            android:gravity="center"/>
+    </item>
+
+</layer-list>

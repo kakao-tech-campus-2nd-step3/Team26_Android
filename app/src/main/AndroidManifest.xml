@@ -1,4 +1,5 @@
-<<<<<<< Original<?xml version="1.0" encoding="utf-8"?><manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:tools="http://schemas.android.com/tools">
 
 <uses-permission android:name="android.permission.INTERNET" />
@@ -30,14 +31,6 @@ xmlns:tools="http://schemas.android.com/tools">
         android:screenOrientation="portrait"
         android:exported="false" />
     <activity
-        android:name=".ProfileActivity"
-        android:screenOrientation="portrait"
-        android:exported="false" />
-    <activity
-        android:name=".HomeCurationActivity"
-        android:screenOrientation="portrait"
-        android:exported="false" />
-    <activity
         android:name=".EventDetailActivity"
         android:screenOrientation="portrait"
         android:exported="false" />
@@ -47,26 +40,6 @@ xmlns:tools="http://schemas.android.com/tools">
     <activity
         android:name=".UpcomingShowBookingsActivity"
         android:exported="false" />
-    <activity
-        android:name=".NotificationsActivity"
-        android:exported="false"
-        android:screenOrientation="portrait" />
-    <activity
-        android:name=".LikedOrganizersActivity"
-        android:exported="false"
-        android:screenOrientation="portrait" />
-    <activity
-        android:name=".ProfileActivity"
-        android:exported="false"
-        android:screenOrientation="portrait" />
-    <activity
-        android:name=".HomeCurationActivity"
-        android:exported="false"
-        android:screenOrientation="portrait" />
-    <activity
-        android:name=".EventDetailActivity"
-        android:exported="false"
-        android:screenOrientation="portrait" />
     <activity
         android:name=".MainActivity"
         android:exported="true"
@@ -81,14 +54,4 @@ xmlns:tools="http://schemas.android.com/tools">
     </activity>
 </application>
 
-</manifest>=======
-
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-<application>
-    <activity
-        android:name="org.ktc2.cokaen.wouldyouin.StatisticsActivity"
-        android:exported="false"
-
-        />
-</application>
-</manifest>>>>>>>> Added
+</manifest>
