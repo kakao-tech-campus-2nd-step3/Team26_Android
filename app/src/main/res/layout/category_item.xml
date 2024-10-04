@@ -1,0 +1,64 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:background="@drawable/rounded_background"
+    android:layout_marginBottom="16dp">
+
+    <ImageView
+        android:id="@+id/eventImage"
+        android:layout_width="80dp"
+        android:layout_height="120dp"
+        android:src="@drawable/poster"
+        android:contentDescription="Poster"
+        android:layout_marginEnd="8dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/eventTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="INTERFERENCE WAVE"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/eventDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2024.02.15, PM 7:00"
+            android:textSize="14sp"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/eventLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="광주 문화전당로 보헤미안 소극장"
+            android:textSize="14sp"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/eventFee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="입장료 2,000₩"
+            android:textSize="14sp"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/eventDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="새벽올림 겨울 공연에 초대합니다."
+            android:textSize="12sp"
+            android:textColor="#999999" />
+    </LinearLayout>
+</LinearLayout>
