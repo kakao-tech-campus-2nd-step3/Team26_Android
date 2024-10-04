@@ -94,4 +94,10 @@ dependencies {
 
     //추가
     implementation("androidx.appcompat:appcompat:1.7.0")
+<<<<<<< HEAD
+=======
+    implementation("com.tbuonomo:dotsindicator:5.0")
+
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+>>>>>>> d803c05 ([Weekly/5/Feature/EventUI] 이벤트 등록 화면 UI 구현 (#22))
 }
