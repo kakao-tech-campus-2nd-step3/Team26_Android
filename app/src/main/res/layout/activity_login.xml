@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+
+        <variable
+            name="login"
+            type="org.ktc2.cokaen.wouldyouin.LoginActivity" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="16dp"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="50dp"
+            android:src="@drawable/login_profile"
+            android:scaleType="centerInside" />
+
+        <Button
+            android:id="@+id/kakao_login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#FEE500"
+            android:text="카카오 로그인"
+            android:textColor="#3C1E1E"
+            android:padding="16dp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+        <Button
+            android:id="@+id/naver_login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#03C75A"
+            android:text="네이버 로그인"
+            android:textColor="@android:color/white"
+            android:padding="16dp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/local_login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#F0F0F0"
+            android:text="로컬 로그인"
+            android:textColor="@android:color/black"
+            android:padding="16dp"
+            android:layout_marginTop="8dp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+    </LinearLayout>
+</layout>

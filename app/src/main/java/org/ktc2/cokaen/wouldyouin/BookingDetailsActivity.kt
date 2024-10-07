@@ -6,13 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.DataBindingUtil
-import org.ktc2.cokaen.wouldyouin.databinding.ActivityHomeCurationBinding
+import org.ktc2.cokaen.wouldyouin.databinding.ActivityBookingDetailsBinding
 
-class HomeCurationActivity : AppCompatActivity() {
+class BookingDetailsActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityHomeCurationBinding
+    private lateinit var binding: ActivityBookingDetailsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_home_curation)
+        enableEdgeToEdge()
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_booking_details)
     }
 }
