@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/navigation_home">
+
+    <include app:graph="@navigation/likes_nav_graph" />
+    <include app:graph="@navigation/curation_nav_graph" />
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="org.ktc2.cokaen.wouldyouin.feat_curation.view.HomeCurationFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home_curation" />
+
+    <fragment
+        android:id="@+id/navigation_likes"
+        android:name="com.example.feat_likes.view.LikesFragment"
+        android:label="LikesFragment"
+        tools:layout="@layout/fragment_likes" />
+
+</navigation>
