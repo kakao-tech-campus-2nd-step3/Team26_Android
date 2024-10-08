@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -23,3 +24,12 @@ dependencyResolutionManagement {
 
 rootProject.name = "WouldYouIn"
 include(":app")
+include(":core")
+include(":data")
+include(":network")
+include(":feat-curation")
+include(":feat-event")
+include(":feat-likes")
+include(":feat-booking")
+include(":feat-profile")
+include(":core-navigation")
