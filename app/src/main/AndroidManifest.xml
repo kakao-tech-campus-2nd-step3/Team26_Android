@@ -12,15 +12,12 @@ xmlns:tools="http://schemas.android.com/tools">
     android:label="@string/app_name"
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
-    android:theme="@style/Theme.WouldYouIn"
+    android:theme="@style/Theme.AppCompat.Light.NoActionBar"
     android:usesCleartextTraffic="true"
     tools:targetApi="31">
 
     <activity
         android:name=".ProfileActivity"
-        android:exported="false" />
-    <activity
-        android:name=".HomeCurationActivity"
         android:exported="false" />
     <activity
         android:name=".NotificationsActivity"
@@ -41,11 +38,11 @@ xmlns:tools="http://schemas.android.com/tools">
         android:name=".UpcomingShowBookingsActivity"
         android:exported="false" />
     <activity
-        android:name=".MainActivity"
+        android:name=".HomeCurationActivity"
         android:exported="true"
         android:label="@string/app_name"
         android:screenOrientation="portrait"
-        android:theme="@style/Theme.WouldYouIn">
+        >
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
 

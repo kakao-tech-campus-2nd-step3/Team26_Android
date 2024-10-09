@@ -41,13 +41,8 @@ android {
     }
 
     buildFeatures {
-        compose = true
         dataBinding = true
         buildConfig = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
     }
 
     packaging {
@@ -71,7 +66,6 @@ dependencies {
 
     // Other libraries
     implementation(libs.androidx.core.ktx)
-
     implementation(libs.squareup.retrofit)
     implementation(libs.bumptech.glide)
     implementation(libs.com.tbuonomo.dotsindicator)
