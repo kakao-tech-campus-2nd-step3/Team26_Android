@@ -23,3 +23,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "WouldYouIn"
 include(":app")
+include(":build-logic")
