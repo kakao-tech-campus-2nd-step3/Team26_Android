@@ -25,3 +25,5 @@ dependencyResolutionManagement {
 rootProject.name = "WouldYouIn"
 include(":app")
 include(":core")
+include(":data")
+include(":network")
