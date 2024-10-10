@@ -1,16 +1,13 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("wouldyouin.android.library")
+    id("wouldyouin.android.dependency")
+    id("kotlin-kapt")
 }
 
 android {
     namespace = "org.ktc2.cokaen.wouldyouin.network"
-    compileSdk = 34
 
     defaultConfig {
-        minSdk = 26
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -23,20 +20,21 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
 
 dependencies {
+    // Retrofit for network calls
+    implementation(libs.squareup.retrofit)
+    implementation(libs.squareup.retrofit.converter.gson)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Hilt for dependency injection
+    implementation(libs.google.dagger.hilt.android)
+    kapt(libs.google.dagger.hilt.compiler)
+
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

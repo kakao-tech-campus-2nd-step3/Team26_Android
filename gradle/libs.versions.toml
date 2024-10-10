@@ -37,6 +37,7 @@ androidx-activity-compose = { group = "androidx.activity", name = "activity-comp
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-viewmodel-savedstate = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "lifecycleRuntimeKtx" }
+squareup-retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 squareup-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 bumptech-glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 com-tbuonomo-dotsindicator = { group = "com.tbuonomo", name = "dotsindicator", version.ref = "dotsindicator" }
