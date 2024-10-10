@@ -1,8 +1,10 @@
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+rootProject.name = "build-logic"
+
 dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        gradlePluginPortal()
     }
     versionCatalogs {
         create("libs") {
@@ -10,5 +12,3 @@ dependencyResolutionManagement {
         }
     }
 }
-include(":app")
-includeBuild("build-logic")

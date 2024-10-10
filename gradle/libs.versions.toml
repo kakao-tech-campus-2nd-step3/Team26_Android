@@ -2,6 +2,8 @@
 agp = "8.3.2"
 androidGradlePlugin = "8.3.2"
 kotlin = "1.9.0"
+coroutines = "1.7.3"
+hilt = "2.48.1"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -20,7 +22,6 @@ dotsindicator = "5.0"
 mpAndroidChart = "v3.1.0"
 jetbrainsKotlinJvm = "1.9.0"
 gradle = "8.0.2"
-hilt = "2.46.1"
 
 
 [libraries]
@@ -41,6 +42,9 @@ bumptech-glide = { group = "com.github.bumptech.glide", name = "glide", version.
 com-tbuonomo-dotsindicator = { group = "com.tbuonomo", name = "dotsindicator", version.ref = "dotsindicator" }
 philjay-mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpAndroidChart" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+google-dagger-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+google-dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "composeBom" }
@@ -57,7 +61,7 @@ androidApplication = { id = "com.android.application", version.ref = "androidGra
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

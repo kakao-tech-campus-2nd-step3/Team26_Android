@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -23,4 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "WouldYouIn"
 include(":app")
-include(":build-logic")
+include(":core")

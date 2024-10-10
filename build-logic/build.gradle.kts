@@ -8,10 +8,22 @@ dependencies {
 }
 
 gradlePlugin {
-    plugins {
-        register("androidApplication") {
-            id = "wouldyouin.android.application"
-            implementationClass = "AndroidApplicationConventionPlugin"
+    gradlePlugin {
+        plugins {
+            register("androidApplication") {
+                id = "wouldyouin.android.application"
+                implementationClass = "AndroidApplicationConventionPlugin"
+            }
+
+            register("androidBase") {
+                id = "wouldyouin.android.library"
+                implementationClass = "AndroidBaseConventionPlugin"
+            }
+
+            register("dependencyManagement") {
+                id = "wouldyouin.android.dependency"
+                implementationClass = "DependencyManagementPlugin"
+            }
         }
     }
 }
