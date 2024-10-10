@@ -7,7 +7,7 @@
 
         <variable
             name="account"
-            type="org.ktc2.cokaen.wouldyouin.AccountActivity" />
+            type="org.ktc2.cokaen.wouldyouin.AccountFragment" />
     </data>
 
     <LinearLayout
