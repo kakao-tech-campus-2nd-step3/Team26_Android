@@ -104,6 +104,7 @@ dependencies {
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.kakao.sdk:v2-all:2.20.3")
 }
 
 fun getApiKey(key: String): String = gradleLocalProperties(rootDir, providers).getProperty(key)
