@@ -105,6 +105,7 @@ dependencies {
 
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.kakao.sdk:v2-all:2.20.3")
+    implementation("com.kakao.maps.open:android:2.9.5")
 }
 
 fun getApiKey(key: String): String = gradleLocalProperties(rootDir, providers).getProperty(key)
