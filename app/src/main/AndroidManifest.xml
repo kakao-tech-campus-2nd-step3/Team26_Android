@@ -21,9 +21,6 @@ xmlns:tools="http://schemas.android.com/tools">
         android:name=".ProfileActivity"
         android:exported="false" />
     <activity
-        android:name=".HomeCurationActivity"
-        android:exported="false" />
-    <activity
         android:name=".NotificationsActivity"
         android:screenOrientation="portrait"
         android:exported="false" />
@@ -42,7 +39,7 @@ xmlns:tools="http://schemas.android.com/tools">
         android:name=".UpcomingShowBookingsActivity"
         android:exported="false" />
     <activity
-        android:name=".SearchActivity"
+        android:name=".HomeCurationActivity"
         android:exported="true"
         android:label="@string/app_name"
         android:screenOrientation="portrait">
