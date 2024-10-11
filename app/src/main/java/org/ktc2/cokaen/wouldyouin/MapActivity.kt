@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.ktc2.cokaen.wouldyouin.databinding.ActivityMapBinding
-import org.ktc2.cokaen.wouldyouin.databinding.ActivitySearchBinding
 
 class MapActivity : AppCompatActivity() {
 
