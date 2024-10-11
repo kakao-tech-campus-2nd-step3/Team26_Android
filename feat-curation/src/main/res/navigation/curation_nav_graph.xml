@@ -5,13 +5,13 @@
     android:id="@+id/curation_nav_graph">
 
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.jgeun.feature.home.HomeFragment"
+        android:id="@+id/homeCurationFragment"
+        android:name="org.ktc2.cokaen.wouldyouin.feat_curation.view.HomeCurationFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home_curation" >
 
         <deepLink
-            app:uri="@string/home_deeplink_url" />
+            app:uri="@string/home_curation_deeplink_url" />
     </fragment>
 
 </navigation>
