@@ -4,20 +4,20 @@
         android:id="@+id/home"
 
         android:title="Home" />
-    <item
-        android:id="@+id/curation"
+<!--    <item-->
+<!--        android:id="@+id/search"-->
 
-        android:title="Curation" />
+<!--        android:title="Search" />-->
     <item
         android:id="@+id/likes"
 
         android:title="Likes" />
-    <item
-        android:id="@+id/profile"
+<!--    <item-->
+<!--        android:id="@+id/profile"-->
 
-        android:title="Profile" />
-    <item
-        android:id="@+id/booking"
+<!--        android:title="Profile" />-->
+<!--    <item-->
+<!--        android:id="@+id/booking"-->
 
-        android:title="Booking" />
+<!--        android:title="Booking" />-->
 </menu>

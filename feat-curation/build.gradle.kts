@@ -26,12 +26,12 @@ android {
         viewBinding = true
         dataBinding = true
     }
+
 }
 
 dependencies {
     implementation(project(":core"))
     implementation(project(":data"))
-    implementation(project(":app"))
     implementation(project(":network"))
     implementation(project(":core-navigation"))
 

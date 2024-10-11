@@ -1,34 +1,43 @@
 package org.ktc2.cokaen.wouldyouin
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationHandler
-import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
+import androidx.navigation.ui.setupWithNavController
 import org.ktc2.cokaen.wouldyouin.databinding.ActivityMain2Binding
 
-class MainActivity2 : AppCompatActivity(), NavigationUtil {
+class MainActivity2 : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMain2Binding
-    private lateinit var navigationHandler: NavigationHandler
+    private lateinit var navController: NavController
+    private lateinit var binding: ActivityMain2Binding  // 데이터 바인딩 객체
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMain2Binding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
+        // 데이터 바인딩 객체 초기화
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main2)
 
-        navigationHandler = NavigationHandler(navController)
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
 
-        // 바텀 내비게이션 설정
+        binding.bottomNav.setupWithNavController(navController)
+
+        // 바텀 내비게이션 아이템 선택 시 액션 정의
+        binding.bottomNav.setOnNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.navigation_home -> {
+                    navController.navigate(R.id.navigation_home)
+                    true
+                }
+                R.id.navigation_likes -> {
+                    navController.navigate(R.id.navigation_likes)
+                    true
+                }
+                else -> false
+            }
+        }
     }
-
-    override fun navigateToSearchNavigation() = navigationHandler.navigateToSearchNavigation()
-    override fun navigateToHomeNavigation() = navigationHandler.navigateToHomeNavigation()
-    override fun navigateToProfileNavigation() = navigationHandler.navigateToProfileNavigation()
-    override fun navigateToLikesNavigation() = navigationHandler.navigateToLikesNavigation()
-    override fun navigateToBookingNavigation() = navigationHandler.navigateToBookingNavigation()
 }

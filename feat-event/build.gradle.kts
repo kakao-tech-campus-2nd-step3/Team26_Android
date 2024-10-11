@@ -2,6 +2,7 @@ plugins {
     id("wouldyouin.android.library")
     id("wouldyouin.android.dependency")
     id("kotlin-kapt")
+    alias(libs.plugins.jetbrainsKotlinAndroid)
 }
 
 android {
@@ -19,6 +20,7 @@ android {
                 "proguard-rules.pro"
             )
         }
+
     }
 
     buildFeatures {
@@ -43,6 +45,8 @@ dependencies {
 
     // Hilt
     implementation(libs.google.dagger.hilt.android)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.fragment.ktx)
     kapt(libs.google.dagger.hilt.compiler)
 
     // Coroutines

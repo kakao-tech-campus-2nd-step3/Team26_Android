@@ -32,12 +32,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     buildFeatures {
@@ -72,7 +72,6 @@ dependencies {
     implementation(libs.philjay.mpandroidchart)
     implementation(libs.androidx.navigation.fragment.ktx.v282)
     implementation(libs.androidx.navigation.ui.ktx.v282)
-    implementation(project(":core-navigation"))
 
     // Testing dependencies
     testImplementation(libs.junit)
@@ -80,4 +79,10 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(project(":core"))
+    implementation(project(":core-navigation"))
+    implementation(project(":feat-curation"))
+    implementation(project(":feat-likes"))
+    implementation(project(":feat-profile"))
+    implementation(project(":feat-event"))
+    implementation(project(":feat-booking"))
 }
