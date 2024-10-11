@@ -70,6 +70,9 @@ dependencies {
     implementation(libs.bumptech.glide)
     implementation(libs.com.tbuonomo.dotsindicator)
     implementation(libs.philjay.mpandroidchart)
+    implementation(libs.androidx.navigation.fragment.ktx.v282)
+    implementation(libs.androidx.navigation.ui.ktx.v282)
+    implementation(project(":core-navigation"))
 
     // Testing dependencies
     testImplementation(libs.junit)
