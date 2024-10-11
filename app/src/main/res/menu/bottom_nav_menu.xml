@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/home"
+        android:id="@+id/navigation_home"
+    android:title="Home" />
 
-        android:title="Home" />
+    <item
+        android:id="@+id/navigation_likes"
+    android:title="Likes" />
+</menu>
+
 <!--    <item-->
 <!--        android:id="@+id/search"-->
 
 <!--        android:title="Search" />-->
-    <item
-        android:id="@+id/likes"
 
-        android:title="Likes" />
 <!--    <item-->
 <!--        android:id="@+id/profile"-->
 
@@ -20,4 +22,3 @@
 <!--        android:id="@+id/booking"-->
 
 <!--        android:title="Booking" />-->
-</menu>
