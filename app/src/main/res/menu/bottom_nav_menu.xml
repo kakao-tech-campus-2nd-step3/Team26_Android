@@ -2,23 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_home"
-    android:title="Home" />
-
+        android:title="Home" />
+<!--    <item-->
+<!--        android:id="@+id/nav_search"-->
+<!--        android:icon="@drawable/nav_search"-->
+<!--        android:title="검색"/>-->
+<!--    <item-->
+<!--        android:id="@+id/nav_book"-->
+<!--        android:icon="@drawable/nav_book"-->
+<!--        android:title="예매목록"/>-->
     <item
         android:id="@+id/navigation_likes"
-    android:title="Likes" />
+        android:title="Likes" />
+<!--    <item-->
+<!--        android:id="@+id/nav_home"-->
+<!--        android:icon="@drawable/nav_home"-->
+<!--        android:title="홈"/>-->
+<!--    <item-->
+<!--        android:id="@+id/nav_like"-->
+<!--        android:icon="@drawable/nav_like"-->
+<!--        android:title="좋아요"/>-->
+<!--    <item-->
+<!--        android:id="@+id/nav_profile"-->
+<!--        android:icon="@drawable/nav_profile"-->
+<!--        android:title="프로필"/>-->
 </menu>
-
-<!--    <item-->
-<!--        android:id="@+id/search"-->
-
-<!--        android:title="Search" />-->
-
-<!--    <item-->
-<!--        android:id="@+id/profile"-->
-
-<!--        android:title="Profile" />-->
-<!--    <item-->
-<!--        android:id="@+id/booking"-->
-
-<!--        android:title="Booking" />-->
