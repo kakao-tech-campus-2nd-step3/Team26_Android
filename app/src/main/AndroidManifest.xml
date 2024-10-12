@@ -43,6 +43,11 @@
             android:name=".MainActivity2"
             android:exported="true"
             android:label="@string/app_name"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SearchActivity"
+            android:exported="true"
+            android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
