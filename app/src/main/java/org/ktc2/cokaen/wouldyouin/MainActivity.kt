@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.hide()
 
         lateinit var navigationHandler: NavigationHandler
 
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_like -> {
-                    navigateToFragment(org.ktc2.cokaen.wouldyouin.core.navigation.R.string.booking_deeplink_url, navigationHandler)
+                    navigateToFragment(org.ktc2.cokaen.wouldyouin.core.navigation.R.string.likes_deeplink_url, navigationHandler)
                     true
                 }
                 R.id.nav_profile -> {

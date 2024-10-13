@@ -1,6 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/likes_nav_graph">
 
+    <fragment
+        android:id="@+id/likesFragment"
+        android:name="com.example.feat_likes.view.LikesFragment"
+        android:label="fragment_likes"
+        tools:layout="@layout/fragment_likes" >
+
+        <deepLink
+            app:uri="@string/likes_deeplink_url" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/organizerLikesFragment"
+        android:name="com.example.feat_likes.view.OrganizerLikesFragment"
+        android:label="fragment_organizer_likes"
+        tools:layout="@layout/fragment_organizer_likes" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/curatorLikesFragment"
+        android:name="com.example.feat_likes.view.OrganizerLikesFragment"
+        android:label="fragment_organizer_likes"
+        tools:layout="@layout/fragment_curator_likes" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.example.feat_likes.view.NotificationFragment"
+        android:label="NotificationsFragment" />
 </navigation>

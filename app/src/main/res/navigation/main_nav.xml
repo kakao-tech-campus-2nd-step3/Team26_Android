@@ -27,7 +27,7 @@
         android:id="@+id/nav_search"
         android:name="org.ktc2.cokaen.wouldyouin.feat_event.view.SearchFragment"
         android:label="SearchFragment"
-        tools:layout="@layout/fragment_event_search" />
+        tools:layout="@layout/fragment_search" />
 
     <fragment
         android:id="@+id/nav_book"
@@ -39,6 +39,6 @@
         android:id="@+id/nav_profile"
         android:name="org.ktc2.cokaen.wouldyouin.feat_profile.view.AccountFragment"
         android:label="AccountFragment"
-        tools:layout="@layout/fragment_profile_account" />
+        tools:layout="@layout/fragment_account" />
 
 </navigation>
