@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/booking_nav_graph">
+
+    <fragment
+        android:id="@+id/homeCurationFragment"
+        android:name="org.ktc2.cokaen.wouldyouin.feat_booking.view.BookingFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_booking" >
+
+        <deepLink
+            app:uri="@string/booking_deeplink_url" />
+    </fragment>
+</navigation>
