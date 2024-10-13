@@ -5,7 +5,7 @@
     android:id="@+id/booking_nav_graph">
 
     <fragment
-        android:id="@+id/homeCurationFragment"
+        android:id="@+id/bookingFragment"
         android:name="org.ktc2.cokaen.wouldyouin.feat_booking.view.BookingFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_booking" >

@@ -5,7 +5,11 @@
     app:startDestination="@id/nav_home">
 
     <include app:graph="@navigation/likes_nav_graph" />
-    <include app:graph="@navigation/curation_nav_graph" />
+    <include app:graph="@navigation/curation_nav_graph"/>
+    <include app:graph="@navigation/booking_nav_graph"/>
+    <include app:graph="@navigation/search_nav_graph"/>
+    <include app:graph="@navigation/profile_nav_graph"/>
+
 
     <fragment
         android:id="@+id/nav_home"
@@ -21,9 +25,9 @@
 
     <fragment
         android:id="@+id/nav_search"
-        android:name="org.ktc2.cokaen.wouldyouin.SearchFragment"
+        android:name="org.ktc2.cokaen.wouldyouin.feat_event.view.SearchFragment"
         android:label="SearchFragment"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_event_search" />
 
     <fragment
         android:id="@+id/nav_book"
@@ -33,8 +37,8 @@
 
     <fragment
         android:id="@+id/nav_profile"
-        android:name="org.ktc2.cokaen.wouldyouin.AccountFragment"
+        android:name="org.ktc2.cokaen.wouldyouin.feat_profile.view.AccountFragment"
         android:label="AccountFragment"
-        tools:layout="@layout/fragment_account" />
+        tools:layout="@layout/fragment_profile_account" />
 
 </navigation>

@@ -2,11 +2,11 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/profile_navigation_graph">
+    android:id="@+id/profile_nav_graph">
 
     <fragment
         android:id="@+id/accountFragment"
-        android:name="org.ktc2.cokaen.wouldyouin.AccountFragment"
+        android:name="org.ktc2.cokaen.wouldyouin.feat_profile.view.AccountFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_account" >
 

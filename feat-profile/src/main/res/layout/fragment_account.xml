@@ -1,14 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.AccountFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+        <import type="android.view.View" />
+
+<!--        <variable-->
+<!--            name="account"-->
+<!--            type="org.ktc2.cokaen.wouldyouin.feat_profile.view.AccountFragment" />-->
+    </data>
+
+    <LinearLayout
+        tools:context=".view.AccountFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical"
+        android:paddingBottom="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="60dp"
+        android:background="@android:color/white">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/rounded_background"
+            android:padding="16dp"
+            android:elevation="1dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/profile_icon"
+                android:layout_marginEnd="8dp"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="사용자1"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="로그아웃"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/darker_gray" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/setting"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/setting" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="40dp"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/myReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="내 리뷰"
+                android:backgroundTint="@android:color/darker_gray"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/rounded_background_button" />
+
+            <Button
+                android:id="@+id/payHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="결제 내역"
+                android:backgroundTint="@android:color/darker_gray"
+                android:textColor="@android:color/black"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/rounded_background_button" />
+
+            <Button
+                android:id="@+id/ask"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="문의 하기"
+                android:backgroundTint="@android:color/darker_gray"
+                android:textColor="@android:color/black"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/rounded_background_button" />
+
+            <Button
+                android:id="@+id/apply"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="큐레이터/주최자 지원"
+                android:backgroundTint="@android:color/darker_gray"
+                android:textColor="@android:color/black"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/rounded_background_button" />
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

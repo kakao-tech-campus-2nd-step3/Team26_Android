@@ -56,12 +56,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun openFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
+//    private fun openFragment(fragment: Fragment) {
+//        supportFragmentManager.beginTransaction()
+//            .replace(R.id.fragment_container, fragment)
+//            .addToBackStack(null)
+//            .commit()
+//    }
 
     private fun navigateToFragment(deepLinkResId: Int, navigationHandler: NavigationHandler) {
         val command = NavigationCommandBuilder()
