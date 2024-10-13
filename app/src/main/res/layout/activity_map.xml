@@ -9,17 +9,14 @@
             type="org.ktc2.cokaen.wouldyouin.MapActivity" /> <!-- Place는 ViewModel이나 데이터 클래스입니다. -->
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!--
         <com.kakao.vectormap.MapView
             android:id="@+id/map_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-        -->
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardView"

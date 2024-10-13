@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- HomeCuration  -->
+    <string name="home_curation_deeplink_url">lab://home/curation</string>
+
+    <!-- Search -->
+    <string name="search_deeplink_url">lab://search/event</string>
+
+    <!-- Likes   -->
+    <string name="likes_deeplink_url">lab://likes</string>
+
+    <!-- Booking  -->
+    <string name="booking_deeplink_url">lab://booking</string>
+
+    <!--  Profile  -->
+    <string name="profile_deeplink_url">lab://profile</string>
+</resources>
