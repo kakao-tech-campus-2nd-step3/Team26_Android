@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- HomeCuration  -->
-    <string name="home_curation_deeplink_url">lab://home/curation</string>
+    <string name="home_curation_deeplink_url">wouldyouin://home</string>
 
     <!-- Search -->
-    <string name="search_deeplink_url">lab://search/event</string>
+    <string name="search_deeplink_url">wouldyouin://search</string>
 
     <!-- Likes   -->
-    <string name="likes_deeplink_url">lab://likes</string>
+    <string name="likes_deeplink_url">wouldyouin://likes</string>
 
     <!-- Booking  -->
-    <string name="booking_deeplink_url">lab://booking</string>
+    <string name="booking_deeplink_url">wouldyouin://booking</string>
 
     <!--  Profile  -->
-    <string name="profile_deeplink_url">lab://profile</string>
+    <string name="profile_deeplink_url">wouldyouin://profile</string>
 </resources>

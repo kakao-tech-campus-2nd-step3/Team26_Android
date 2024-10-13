@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+
+<!--        <variable-->
+<!--            name="search"-->
+<!--            type="org.ktc2.cokaen.wouldyouin.feat_event.view.SearchFragment" />-->
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        tools:context=".view.SearchFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="top" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/inputSearchMap"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="검색어를 입력하세요."
+                    android:background="#f1f1f1"
+                    android:drawableRight="@drawable/drawable_resize"
+                    android:gravity="center_vertical"
+                    android:padding="15dp"
+                    android:layout_margin="16dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp">
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp">
+
+                        <ImageButton
+                            android:id="@+id/imageView_band"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/category_band"
+                            android:scaleType="centerCrop"
+                            android:background="@android:color/transparent"/>
+
+                        <TextView
+                            android:id="@+id/textView_band"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="밴드"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_gravity="center"/>
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp">
+
+                        <ImageButton
+                            android:id="@+id/imageView_play_musical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/category_play_musical"
+                            android:scaleType="centerCrop"
+                            android:background="@android:color/transparent"/>
+
+                        <TextView
+                            android:id="@+id/textView_play_musical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="연극ㆍ뮤지컬"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_gravity="center"/>
+                    </FrameLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp">
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp">
+
+                        <ImageButton
+                            android:id="@+id/imageView_onedayclass"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/category_onedayclass"
+                            android:scaleType="centerCrop"
+                            android:background="@android:color/transparent"/>
+
+                        <TextView
+                            android:id="@+id/textView_onedayclass"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="원데이 클래스"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_gravity="center"/>
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp">
+
+                        <ImageButton
+                            android:id="@+id/imageView_exhibition"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/category_exhibition"
+                            android:scaleType="centerCrop"
+                            android:background="@android:color/transparent"/>
+
+                        <TextView
+                            android:id="@+id/textView_exhibition"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="전시회"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_gravity="center"/>
+                    </FrameLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView_now"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="지금 뜨고 있어요"
+                    android:textSize="23sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="25dp"/>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="50dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/imageView_poster"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/poster"
+                            android:scaleType="centerCrop"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="15dp"
+                            android:background="@android:color/transparent"/>
+
+                        <ImageButton
+                            android:id="@+id/imageView_poster2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/poster"
+                            android:scaleType="centerCrop"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="15dp"
+                            android:background="@android:color/transparent"/>
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+            </LinearLayout>
+        </ScrollView>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

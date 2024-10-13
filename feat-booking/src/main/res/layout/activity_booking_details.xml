@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+    </data>
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="20dp"
+        tools:context=".BookingDetailsActivity">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:titleTextColor="@android:color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                tools:text="Booking Details"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                />
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <ImageView
+            android:id="@+id/post_image"
+            android:layout_width="90dp"
+            android:layout_height="120dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            android:scaleType="fitXY"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+        <TextView
+            android:id="@+id/event_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            app:layout_constraintTop_toTopOf="@id/post_image"
+            app:layout_constraintStart_toEndOf="@id/post_image"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            tools:text="event name" />
+
+        <TextView
+            android:id="@+id/event_organizer_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/event_name"
+            app:layout_constraintStart_toStartOf="@id/event_name"
+            tools:text="organizer name" />
+
+        <TextView
+            android:id="@+id/event_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/event_organizer_name"
+            app:layout_constraintStart_toStartOf="@id/event_name"
+            android:layout_marginTop="5dp"
+            tools:text="event location" />
+
+        <TextView
+            android:id="@+id/event_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/event_location"
+            app:layout_constraintStart_toStartOf="@id/event_name"
+            android:layout_marginTop="5dp"
+            tools:text="event date" />
+
+        <!-- 결제 정보 -->
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:id="@+id/payment_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/post_image"
+            android:orientation="vertical">
+
+            <!-- 결제 일시 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/payment_date_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="결제 일시"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/payment_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_marginStart="16dp"
+                    tools:text="2024.02.13" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/darker_gray" />
+
+            <!-- 결제 금액 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/payment_amount_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="결제 금액"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/payment_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_marginStart="16dp"
+                    tools:text="4,000" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/darker_gray" />
+
+            <!-- 예매 번호 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/reservation_number_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="예매 번호"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/reservation_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_marginStart="16dp"
+                    tools:text="123123" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/darker_gray" />
+
+            <!-- 예매자 명 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/booker_name_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="예매자 명"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/booker_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_marginStart="16dp"
+                    tools:text="예매자" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/darker_gray" />
+
+            <!-- 매수 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ticket_quantity_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="매수         "
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/ticket_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_marginStart="16dp"
+                    tools:text="2" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/darker_gray" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cancel_deadline"
+            app:layout_constraintStart_toStartOf="@id/post_image"
+            app:layout_constraintTop_toBottomOf="@id/payment_info"
+            android:layout_marginTop="70dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/deadline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="취소기한"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/deadline_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                tools:text="공연 시작 3시간 전까지" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider"
+            app:layout_constraintTop_toBottomOf="@id/cancel_deadline"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/cancel_button"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="7dp"
+            android:textSize="14sp"
+            android:background="@drawable/hashtag_background"
+            tools:text="취소하기" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
