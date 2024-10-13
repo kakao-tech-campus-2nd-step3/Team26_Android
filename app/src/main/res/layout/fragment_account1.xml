@@ -5,9 +5,9 @@
     <data>
         <import type="android.view.View" />
 
-        <variable
-            name="account"
-            type="org.ktc2.cokaen.wouldyouin.AccountFragment" />
+<!--        <variable-->
+<!--            name="account"-->
+<!--            type="org.ktc2.cokaen.wouldyouin.AccountFragment" />-->
     </data>
 
     <LinearLayout

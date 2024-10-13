@@ -25,4 +25,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.navigation.fragment.ktx.v282)
     implementation(libs.androidx.navigation.ui.ktx.v282)
+    implementation(libs.androidx.junit.ktx)
+    implementation(libs.androidx.monitor)
+    androidTestImplementation(libs.junit.v412)
 }
