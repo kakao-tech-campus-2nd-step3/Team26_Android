@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("wouldyouin.android.library")
     id("wouldyouin.android.dependency")
@@ -7,10 +9,19 @@ plugins {
 android {
     namespace = "org.ktc2.cokaen.wouldyouin.network"
 
-    defaultConfig {
-        consumerProguardFiles("consumer-rules.pro")
+
+    buildFeatures {
+        buildConfig = true
     }
 
+    defaultConfig {
+        consumerProguardFiles("consumer-rules.pro")
+
+        resValue("string", "kakao_api_key", getApiKey("KAKAO_API_KEY"))
+        buildConfigField("String", "KAKAO_REST_API_KEY", getApiKey("KAKAO_REST_API_KEY"))
+    }
+
+    
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -20,7 +31,6 @@ android {
             )
         }
     }
-
 }
 
 dependencies {
@@ -39,4 +49,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation("com.kakao.sdk:v2-all:2.20.3")
+    implementation("com.kakao.maps.open:android:2.9.5")
 }
+
+fun getApiKey(key: String): String = gradleLocalProperties(rootDir, providers).getProperty(key)
