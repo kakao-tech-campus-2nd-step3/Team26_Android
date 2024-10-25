@@ -7,7 +7,7 @@
 
         <variable
             name="category"
-            type="org.ktc2.cokaen.wouldyouin.CategoryActivity" />
+            type="org.ktc2.cokaen.wouldyouin.feat_event.view.CategoryActivity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

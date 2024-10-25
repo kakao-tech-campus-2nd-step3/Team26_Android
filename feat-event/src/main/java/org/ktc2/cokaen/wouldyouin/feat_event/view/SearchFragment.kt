@@ -1,5 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.feat_event.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,8 +20,38 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false)
-//        binding.search = this
+        binding.search = this
         Log.d("test", "search")
+
+        binding.imageViewBand.setOnClickListener {
+            val intent = Intent(requireContext(), CategoryActivity::class.java).apply {
+                putExtra("CATEGORY_TYPE", "Band")
+            }
+            startActivity(intent)
+        }
+
+        binding.imageViewPlayMusical.setOnClickListener {
+            val intent = Intent(requireContext(), CategoryActivity::class.java).apply {
+                putExtra("CATEGORY_TYPE", "PlayMusical")
+            }
+            startActivity(intent)
+        }
+
+        binding.imageViewOnedayclass.setOnClickListener {
+            val intent = Intent(requireContext(), CategoryActivity::class.java).apply {
+                putExtra("CATEGORY_TYPE", "OnedayClass")
+            }
+            startActivity(intent)
+        }
+
+        binding.imageViewExhibition.setOnClickListener {
+            val intent = Intent(requireContext(), CategoryActivity::class.java).apply {
+                putExtra("CATEGORY_TYPE", "Exhibition")
+            }
+            startActivity(intent)
+        }
+
+
         return binding.root
     }
 }
