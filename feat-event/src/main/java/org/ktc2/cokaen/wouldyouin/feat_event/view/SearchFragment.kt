@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.findNavController
 import org.ktc2.cokaen.wouldyouin.feat_event.R
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.FragmentSearchBinding
 
@@ -24,33 +25,20 @@ class SearchFragment : Fragment() {
         Log.d("test", "search")
 
         binding.imageViewBand.setOnClickListener {
-            val intent = Intent(requireContext(), CategoryActivity::class.java).apply {
-                putExtra("CATEGORY_TYPE", "Band")
-            }
-            startActivity(intent)
+            findNavController().navigate(R.id.action_searchFragment_to_categoryFragment)
         }
 
         binding.imageViewPlayMusical.setOnClickListener {
-            val intent = Intent(requireContext(), CategoryActivity::class.java).apply {
-                putExtra("CATEGORY_TYPE", "PlayMusical")
-            }
-            startActivity(intent)
+            findNavController().navigate(R.id.action_searchFragment_to_categoryFragment)
         }
 
         binding.imageViewOnedayclass.setOnClickListener {
-            val intent = Intent(requireContext(), CategoryActivity::class.java).apply {
-                putExtra("CATEGORY_TYPE", "OnedayClass")
-            }
-            startActivity(intent)
+            findNavController().navigate(R.id.action_searchFragment_to_categoryFragment)
         }
 
         binding.imageViewExhibition.setOnClickListener {
-            val intent = Intent(requireContext(), CategoryActivity::class.java).apply {
-                putExtra("CATEGORY_TYPE", "Exhibition")
-            }
-            startActivity(intent)
+            findNavController().navigate(R.id.action_searchFragment_to_categoryFragment)
         }
-
 
         return binding.root
     }

@@ -7,12 +7,19 @@
 
         <variable
             name="category"
-            type="org.ktc2.cokaen.wouldyouin.feat_event.view.CategoryActivity" />
+            type="org.ktc2.cokaen.wouldyouin.feat_event.view.CategoryFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/bottomGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="700dp" />
 
         <Button
             android:id="@+id/array"
@@ -48,7 +55,7 @@
             android:padding="12dp"
             android:background="@color/teal_200"
             android:drawablePadding="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottomGuideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="16dp" />
