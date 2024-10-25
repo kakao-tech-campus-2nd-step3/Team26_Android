@@ -5,13 +5,34 @@
     android:id="@+id/search_nav_graph">
 
     <fragment
-        android:id="@+id/accountFragment"
+        android:id="@+id/searchFragment"
         android:name="org.ktc2.cokaen.wouldyouin.feat_event.view.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" >
 
+        <action
+            android:id="@+id/action_searchFragment_to_categoryFragment"
+            app:destination="@id/categoryFragment" />
+
         <deepLink
             app:uri="@string/search_deeplink_url" />
     </fragment>
+
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="org.ktc2.cokaen.wouldyouin.feat_event.view.CategoryFragment"
+        android:label="CategoryFragment"
+        tools:layout="@layout/fragment_category">
+
+        <action
+            android:id="@+id/action_categoryFragment_to_mapFragment"
+            app:destination="@id/mapFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="org.ktc2.cokaen.wouldyouin.feat_event.view.MapFragment"
+        android:label="MapFragment"
+        tools:layout="@layout/fragment_map"/>
 
 </navigation>

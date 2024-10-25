@@ -6,9 +6,9 @@
     <data>
         <import type="android.view.View"/>
 
-<!--        <variable-->
-<!--            name="search"-->
-<!--            type="org.ktc2.cokaen.wouldyouin.feat_event.view.SearchFragment" />-->
+        <variable
+            name="search"
+            type="org.ktc2.cokaen.wouldyouin.feat_event.view.SearchFragment" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
