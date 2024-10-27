@@ -2,6 +2,7 @@ plugins {
     id("wouldyouin.android.library")
     id("wouldyouin.android.dependency")
     id("kotlin-kapt")
+    alias(libs.plugins.jetbrainsKotlinAndroid)
 }
 
 android {
@@ -32,6 +33,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":data"))
     implementation(project(":network"))
+    implementation(project(":core-navigation"))
 
     // Architecture Components
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

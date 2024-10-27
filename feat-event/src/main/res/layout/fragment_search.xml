@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <import type="android.view.View"/>
 
         <variable
             name="search"
-            type="org.ktc2.cokaen.wouldyouin.SearchFragment" />
+            type="org.ktc2.cokaen.wouldyouin.feat_event.view.SearchFragment" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        tools:context=".view.SearchFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

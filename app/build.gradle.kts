@@ -85,9 +85,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation(libs.philjay.mpandroidchart)
 
-    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation(libs.squareup.retrofit.converter.gson)
     implementation(project(":core"))
     implementation(project(":core-navigation"))
     implementation(project(":feat-curation"))
