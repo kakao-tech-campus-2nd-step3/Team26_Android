@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import org.ktc2.cokaen.wouldyouin.feat_curation.R
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.FragmentHomeCurationBinding
 
@@ -28,7 +29,9 @@ class HomeCurationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val regionArray = resources.getStringArray(R.array.region)
+        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, regionArray)
+        binding.autoCompleteTextView.setAdapter(arrayAdapter)
     }
 
     override fun onDestroyView() {
