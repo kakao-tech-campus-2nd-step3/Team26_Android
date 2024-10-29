@@ -29,6 +29,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:id="@+id/region_dropdown_button"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
@@ -49,6 +50,18 @@
                 android:text="전체" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:layout_marginEnd="20dp"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:elevation="8dp"
+            android:translationZ="8dp"
+            android:src="@drawable/square_and_pencil"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/region_dropdown_button"
+            app:layout_constraintBottom_toBottomOf="@id/region_dropdown_button"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

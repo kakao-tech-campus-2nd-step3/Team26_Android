@@ -4,5 +4,6 @@ data class Curation(
     val area: String,
     val title: String,
     val content: String,
-    val hashtag: String
+    val hashtag: String,
+    val imageUrl: String
 ) {}

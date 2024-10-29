@@ -1,4 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.feat_curation.viewModel
 
-class HomeCurationViewModel {
+import androidx.lifecycle.ViewModel
+
+class HomeCurationViewModel: ViewModel() {
 }
