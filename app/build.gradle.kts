@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -97,6 +98,9 @@ dependencies {
     implementation(project(":feat-booking"))
     implementation("com.kakao.sdk:v2-all:2.20.3")
     implementation("com.kakao.maps.open:android:2.9.5")
+
+    kapt(libs.google.dagger.hilt.compiler)
+    implementation(libs.google.dagger.hilt.android)
 }
 
 fun getApiKey(key: String): String = gradleLocalProperties(rootDir, providers).getProperty(key)

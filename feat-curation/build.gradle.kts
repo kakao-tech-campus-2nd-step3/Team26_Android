@@ -46,6 +46,9 @@ dependencies {
 
     // Hilt
     implementation(libs.google.dagger.hilt.android)
+    implementation(libs.androidx.appcompat.v161)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
     kapt(libs.google.dagger.hilt.compiler)
 
     // Coroutines

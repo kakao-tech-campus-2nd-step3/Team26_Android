@@ -6,14 +6,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import dagger.hilt.android.AndroidEntryPoint
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommandBuilder
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
+import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
 import org.ktc2.cokaen.wouldyouin.databinding.ActivityMainBinding
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
+    @Inject
+    lateinit var navigationUtil: NavigationUtil
     private lateinit var binding: ActivityMainBinding
-    private lateinit var navigationHandler: NavigationHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-        navigationHandler = NavigationHandler(this, navController)
+        (navigationUtil as NavigationHandler).setNavController(navController)
 
         binding.bottomNavigationView.setupWithNavController(navController)
 
@@ -47,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         val command = NavigationCommandBuilder()
             .to(NavigationDestination.Fragment(deepLinkResId))
             .build()
-        navigationHandler.navigate(command)
+        navigationUtil.navigate(command)
         return true
     }
 }
