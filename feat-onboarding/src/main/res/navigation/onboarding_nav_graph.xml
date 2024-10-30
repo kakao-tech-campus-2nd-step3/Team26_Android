@@ -9,10 +9,13 @@
         android:name="com.example.feat_onboarding.view.LocationPermissionFragment"
         android:label="fragment_location_permission"
         tools:layout="@layout/fragment_location_permission" >
+        <action
+            android:id="@+id/action_locationPermission_to_selectArea"
+            app:destination="@id/selectAreaFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/SelectAreaFragment"
+        android:id="@+id/selectAreaFragment"
         android:name="com.example.feat_onboarding.view.SelectAreaFragment"
         android:label="fragment_select_area"
         tools:layout="@layout/fragment_select_area" >
