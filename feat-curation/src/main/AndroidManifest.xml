@@ -3,6 +3,9 @@
 
     <application>
         <activity
+            android:name=".view.CurationDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.CreateCurationActivity"
             android:exported="true" />
     </application>

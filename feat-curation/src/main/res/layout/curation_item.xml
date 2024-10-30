@@ -19,7 +19,7 @@
             type="Integer" />
         <variable
             name="clickListener"
-            type="org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CurationAdapter.OnItemClickListener" />
+            type="org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CurationCardAdapter.OnItemClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
