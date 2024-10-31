@@ -18,6 +18,7 @@ class BookingActivity : AppCompatActivity() {
 
         binding.numberPicker.minValue = 1
         binding.numberPicker.maxValue = 10
+        binding.numberPicker.wrapSelectorWheel = false
 
         val pricePerTicket = 5000  //데이터 받아오는 코드로 추후 수정 필요
         updateTotalPrice(1, pricePerTicket)
