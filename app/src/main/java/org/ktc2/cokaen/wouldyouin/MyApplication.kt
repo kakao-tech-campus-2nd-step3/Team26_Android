@@ -1,6 +1,5 @@
 package org.ktc2.cokaen.wouldyouin
 
-import org.ktc2.cokaen.wouldyouin.network.R
 import android.app.Application
 import android.content.Context
 import com.kakao.vectormap.KakaoMapSdk
