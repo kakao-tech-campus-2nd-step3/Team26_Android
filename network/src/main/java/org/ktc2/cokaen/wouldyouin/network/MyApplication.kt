@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.kakao.vectormap.KakaoMapSdk
 import dagger.hilt.android.HiltAndroidApp
+import org.ktc2.cokaen.wouldyouin.network.R
 
 @HiltAndroidApp
 class MyApplication : Application() {
