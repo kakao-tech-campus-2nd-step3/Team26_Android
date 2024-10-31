@@ -8,7 +8,6 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-import org.ktc2.cokaen.wouldyouin.network.BuildConfig
 
 @Module
 @InstallIn(SingletonComponent::class)
