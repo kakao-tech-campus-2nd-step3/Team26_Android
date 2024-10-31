@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         if (checkNeedOnboarding()) {
             startActivity(Intent(this, OnboardingActivity::class.java))
             finish()
@@ -69,10 +68,3 @@ class MainActivity : AppCompatActivity() {
         return prefs.getBoolean("need_onboarding", true)
     }
 }
-
-//    private fun openFragment(fragment: Fragment) {
-//        supportFragmentManager.beginTransaction()
-//            .replace(R.id.fragment_container, fragment)
-//            .addToBackStack(null)
-//            .commit()
-//    }

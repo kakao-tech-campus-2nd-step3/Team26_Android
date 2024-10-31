@@ -52,7 +52,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    imageUrl="@{curation.imageUrl}" />
+                    imageUrl="@{curation.blocks[0].images[0]}" />
 
                 <View
                     android:layout_width="match_parent"

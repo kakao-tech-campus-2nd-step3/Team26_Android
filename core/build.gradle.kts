@@ -30,4 +30,7 @@ dependencies {
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
+
+    // Gson
+    implementation(libs.gson)
 }

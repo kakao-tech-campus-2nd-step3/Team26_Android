@@ -90,6 +90,7 @@ dependencies {
 
     implementation(libs.squareup.retrofit.converter.gson)
     implementation(project(":core"))
+    implementation(project(":network"))
     implementation(project(":core-navigation"))
     implementation(project(":feat-curation"))
     implementation(project(":feat-likes"))
