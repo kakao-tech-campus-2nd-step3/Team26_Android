@@ -30,7 +30,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".EventDetailActivity"
+            android:name=".feat_event.view.EventDetailActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
