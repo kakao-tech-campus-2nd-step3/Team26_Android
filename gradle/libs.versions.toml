@@ -6,6 +6,7 @@ agp = "8.3.2"
 androidGradlePlugin = "8.3.2"
 appcompatVersion = "1.6.1"
 coreKtxVersion = "1.10.1"
+fragmentKtxVersion = "1.6.2"
 junitJunit = "4.12"
 kotlin = "1.9.0"
 coroutines = "1.7.3"
@@ -23,7 +24,9 @@ material3 = "1.3.0"
 activity = "1.9.2"
 constraintlayout = "2.1.4"
 navigationFragmentKtx = "2.8.2"
+navigationFragmentKtxVersion = "2.7.5"
 navigationUiKtx = "2.8.2"
+navigationUiKtxVersion = "2.7.5"
 retrofit = "2.11.0"
 glide = "4.16.0"
 dotsindicator = "5.0"
@@ -41,7 +44,10 @@ monitor = "1.7.2"
 [libraries]
 androidx-appcompat-v161 = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
 androidx-core-ktx-v1101 = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
+androidx-fragment-ktx-v162 = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtxVersion" }
+androidx-navigation-fragment-ktx-v275 = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationFragmentKtxVersion" }
 androidx-navigation-fragment-ktx-v282 = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
+androidx-navigation-ui-ktx-v275 = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationUiKtxVersion" }
 androidx-navigation-ui-ktx-v282 = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationUiKtx" }
 junit-v412 = { module = "junit:junit", version.ref = "junitJunit" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }

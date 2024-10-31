@@ -32,11 +32,20 @@ class LocationPermissionFragment : Fragment() {
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        val granted = permissions.getOrDefault(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            false
-        )
-        viewModel.onPermissionResult(granted)
+        when {
+            permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                // 정확한 위치 권한 승인
+                viewModel.onPermissionGranted()
+            }
+            permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                // 대략적인 위치 권한 승인
+                viewModel.onPermissionGranted()
+            }
+            else -> {
+                // 권한 거부
+                showPermissionDeniedDialog()
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,10 +57,6 @@ class LocationPermissionFragment : Fragment() {
     private fun setupBindings() {
         binding.permissionButton.setOnClickListener {
             viewModel.checkPermissionStatus(requireActivity())
-        }
-
-        binding.nextButton.setOnClickListener {
-            viewModel.onNextButtonClicked()
         }
     }
 
@@ -80,7 +85,7 @@ class LocationPermissionFragment : Fragment() {
             PermissionState.ShowSettings -> {
                 showPermissionDeniedDialog()
             }
-            else -> {} // Initial state, no action needed
+            else -> {}
         }
     }
 
@@ -115,12 +120,12 @@ class LocationPermissionFragment : Fragment() {
     private fun showPermissionDeniedDialog() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("권한 거부됨")
-            .setMessage("위치 권한이 거부되어 있어 주변 행사 확인이 제한됩니다.")
+            .setMessage("위치 권한이 거부되어 있어 주변 행사 추천 기능이 제한됩니다.\n설정에서 권한을 허용하시겠습니까?")
             .setPositiveButton("설정으로 이동") { _, _ ->
                 openAppSettings()
             }
-            .setNegativeButton("취소") { _, _ ->
-                viewModel.onNextButtonClicked()
+            .setNegativeButton("권한 없이 계속하기") { _, _ ->
+                viewModel.onPermissionDenied()
             }
             .show()
     }

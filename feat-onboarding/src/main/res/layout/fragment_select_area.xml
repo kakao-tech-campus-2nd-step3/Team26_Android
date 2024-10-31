@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="150dp"
             android:gravity="center"
-            android:text="성별을 선택해 주세요"
+            android:text="성별과 지역을 선택해 주세요"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:text="맞춤형 행사 추천을 위해\n성별 정보가 필요합니다"
+            android:text="지역별 큐레이션 추천을 위해\n정보가 필요합니다"
             android:textColor="#666666"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -102,24 +102,12 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="16dp"
             android:paddingVertical="12dp"
-            android:text="다음"
+            android:text="시작하기"
+            android:enabled="false"
             android:textSize="16sp"
             app:cornerRadius="24dp"
-            app:layout_constraintBottom_toTopOf="@id/skipButton"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/skipButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:padding="8dp"
-            android:text="건너뛰기"
-            android:textColor="#666666"
-            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

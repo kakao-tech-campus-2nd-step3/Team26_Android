@@ -11,16 +11,29 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class LocationPerMissionFragmentViewModel (
+class LocationPerMissionFragmentViewModel @Inject constructor(
     private val repository: LocationPermissionRepository
-) : ViewModel() {
+): ViewModel() {
     private val _permissionState = MutableStateFlow<PermissionState>(PermissionState.Initial)
     val permissionState: StateFlow<PermissionState> = _permissionState.asStateFlow()
 
     private val _navigationEvent = MutableSharedFlow<NavigationEvent>()
     val navigationEvent: SharedFlow<NavigationEvent> = _navigationEvent.asSharedFlow()
+
+    fun onPermissionGranted() {
+        viewModelScope.launch {
+            _navigationEvent.emit(NavigationEvent.NavigateToNext)
+        }
+    }
+
+    fun onPermissionDenied() {
+        viewModelScope.launch {
+            _navigationEvent.emit(NavigationEvent.NavigateToNext)
+        }
+    }
 
     fun checkPermissionStatus(activity: Activity) {
         when {
@@ -35,22 +48,6 @@ class LocationPerMissionFragmentViewModel (
             else -> {
                 _permissionState.value = PermissionState.RequestPermission
             }
-        }
-    }
-
-    fun onPermissionResult(granted: Boolean) {
-        viewModelScope.launch {
-            if (granted) {
-                _navigationEvent.emit(NavigationEvent.NavigateToNext)
-            } else {
-                _permissionState.value = PermissionState.ShowSettings
-            }
-        }
-    }
-
-    fun onNextButtonClicked() {
-        viewModelScope.launch {
-            _navigationEvent.emit(NavigationEvent.NavigateToNext)
         }
     }
 }

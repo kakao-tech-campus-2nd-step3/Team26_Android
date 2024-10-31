@@ -96,6 +96,7 @@ dependencies {
     implementation(project(":feat-profile"))
     implementation(project(":feat-event"))
     implementation(project(":feat-booking"))
+    implementation(project(":feat-onboarding"))
     implementation("com.kakao.sdk:v2-all:2.20.3")
     implementation("com.kakao.maps.open:android:2.9.5")
 
