@@ -2,6 +2,7 @@ plugins {
     id("wouldyouin.android.library")
     id("wouldyouin.android.dependency")
     id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
     alias(libs.plugins.jetbrainsKotlinAndroid)
 }
 
