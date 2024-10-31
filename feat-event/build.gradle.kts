@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("wouldyouin.android.library")
     id("wouldyouin.android.dependency")
@@ -10,6 +12,9 @@ android {
 
     defaultConfig {
         consumerProguardFiles("consumer-rules.pro")
+
+        resValue("string", "kakao_api_key", getApiKey("KAKAO_API_KEY"))
+        buildConfigField("String", "KAKAO_REST_API_KEY", getApiKey("KAKAO_REST_API_KEY"))
     }
 
     buildTypes {
@@ -65,4 +70,7 @@ dependencies {
 
     // 추가
     implementation(libs.material)
+    implementation("com.kakao.sdk:v2-all:2.20.3")
+    implementation("com.kakao.maps.open:android:2.9.5")
 }
+fun getApiKey(key: String): String = gradleLocalProperties(rootDir, providers).getProperty(key)
