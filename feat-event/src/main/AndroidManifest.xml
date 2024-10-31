@@ -4,5 +4,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <application>
+        <activity
+            android:name=".view.EventDetailActivity" />
+
+    </application>
 
 </manifest>
