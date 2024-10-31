@@ -3,6 +3,7 @@ plugins {
     id("wouldyouin.android.dependency")
     id("kotlin-kapt")
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -46,6 +47,9 @@ dependencies {
 
     // Hilt
     implementation(libs.google.dagger.hilt.android)
+    implementation(libs.androidx.appcompat.v161)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
     kapt(libs.google.dagger.hilt.compiler)
 
     // Coroutines
