@@ -1,9 +1,12 @@
-package org.ktc2.cokaen.wouldyouin
+package org.ktc2.cokaen.wouldyouin.feat_event.view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.ktc2.cokaen.wouldyouin.databinding.ActivityEventDetailBinding
+import org.ktc2.cokaen.wouldyouin.feat_booking.view.BookingActivity
+import org.ktc2.cokaen.wouldyouin.feat_event.R
+import org.ktc2.cokaen.wouldyouin.feat_event.databinding.ActivityEventDetailBinding
 
 class EventDetailActivity : AppCompatActivity() {
 
@@ -14,5 +17,10 @@ class EventDetailActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_event_detail)
         binding.eventdetail = this
+
+        binding.bookButton.setOnClickListener {
+            val intent = Intent(this, BookingActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
