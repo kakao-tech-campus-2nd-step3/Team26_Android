@@ -4,14 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
+        <variable
+            name="eventdetail"
+            type="org.ktc2.cokaen.wouldyouin.feat_booking.view.BookingActivity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="20dp"
-        tools:context=".BookingDetailsActivity">
+        android:layout_marginHorizontal="20dp" >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
