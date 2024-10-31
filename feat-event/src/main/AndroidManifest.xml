@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <application>
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name="org.ktc2.cokaen.wouldyouin.MyApplication">
 
     </application>
 
