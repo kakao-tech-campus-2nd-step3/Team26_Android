@@ -165,6 +165,7 @@
                 android:textColor="@android:color/black"
                 android:layout_marginBottom="8dp"/>
 
+            <!--
             <ImageView
                 android:id="@+id/mapImage"
                 android:layout_width="match_parent"
@@ -172,6 +173,13 @@
                 android:src="@drawable/sample_map"
                 android:scaleType="centerCrop"
                 android:layout_marginBottom="16dp"/>
+                -->
+            
+            <com.kakao.vectormap.MapView
+                android:id="@+id/map_view"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginBottom="16dp" />
 
             <TextView
                 android:id="@+id/organizerTitle"

@@ -4,8 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <application
-        android:name="org.ktc2.cokaen.wouldyouin.MyApplication">
+    <application>
+        <activity
+            android:name=".view.EventDetailActivity" />
 
     </application>
 
