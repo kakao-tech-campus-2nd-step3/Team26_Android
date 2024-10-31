@@ -1,17 +1,16 @@
 package org.ktc2.cokaen.wouldyouin
 
+import org.ktc2.cokaen.wouldyouin.network.R
 import android.app.Application
 import android.content.Context
 import com.kakao.vectormap.KakaoMapSdk
 import dagger.hilt.android.HiltAndroidApp
-import org.ktc2.cokaen.wouldyouin.network.R
+import javax.inject.Inject
 
 @HiltAndroidApp
 class MyApplication : Application() {
 
-    companion object {
-        lateinit var appContext: Context
-    }
+    lateinit var appContext: Context
 
     override fun onCreate() {
         super.onCreate()
