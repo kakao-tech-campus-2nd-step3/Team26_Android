@@ -26,4 +26,5 @@ android {
 
 dependencies {
     implementation(project(":core"))
+    implementation(libs.gson)
 }

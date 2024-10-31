@@ -4,6 +4,7 @@ plugins {
     id("wouldyouin.android.library")
     id("wouldyouin.android.dependency")
     id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -52,6 +53,11 @@ dependencies {
 
     implementation("com.kakao.sdk:v2-all:2.20.3")
     implementation("com.kakao.maps.open:android:2.9.5")
+
+    implementation(project(":core"))
+    implementation(project(":data"))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.gson)
 }
 
 fun getApiKey(key: String): String = gradleLocalProperties(rootDir, providers).getProperty(key)

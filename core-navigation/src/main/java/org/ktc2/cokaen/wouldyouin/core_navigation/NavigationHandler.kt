@@ -8,12 +8,16 @@ import org.ktc2.cokaen.wouldyouin.core_navigation.ActivityNavigationOptions
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
+import javax.inject.Inject
 
-class NavigationHandler(
-    private val context: Context,
-    private val navController: NavController
+class NavigationHandler @Inject constructor(
+    private val context: Context
 ) : NavigationUtil {
+    private var navController: NavController? = null
 
+    fun setNavController(controller: NavController) {
+        navController = controller
+    }
     override fun navigate(command: NavigationCommand) {
         when (command.destination) {
             is NavigationDestination.Fragment -> navigateToFragment(command)
@@ -49,7 +53,7 @@ class NavigationHandler(
     private fun navigateToFragment(command: NavigationCommand) {
         val deepLinkRequest = buildDeepLinkRequest(command)
         try {
-            navController.navigate(deepLinkRequest)
+            navController?.navigate(deepLinkRequest)
         } catch (e: IllegalArgumentException) {
             Log.e("NavigationHandler", "Navigation failed: ${e.message}")
         }

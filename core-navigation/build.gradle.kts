@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    kotlin("kapt")
 }
 
 android {
@@ -27,5 +28,9 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx.v282)
     implementation(libs.androidx.junit.ktx)
     implementation(libs.androidx.monitor)
+    implementation(libs.material)
+    implementation(project(":core"))
     androidTestImplementation(libs.junit.v412)
+    kapt(libs.google.dagger.hilt.compiler)
+    implementation(libs.google.dagger.hilt.android)
 }
