@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="block"
+            type="org.ktc2.cokaen.wouldyouin.data.model.Block" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_block_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{block.title}"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:text="Block Title" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_block_images"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_block_image" />
+
+        <TextView
+            android:id="@+id/tv_block_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{block.body}"
+            android:textSize="16sp"
+            tools:text="Block Content" />
+
+    </LinearLayout>
+
+</layout>

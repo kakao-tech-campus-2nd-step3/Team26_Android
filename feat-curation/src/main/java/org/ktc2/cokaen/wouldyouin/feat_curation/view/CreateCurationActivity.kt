@@ -18,18 +18,17 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import dagger.hilt.android.AndroidEntryPoint
 import org.ktc2.cokaen.wouldyouin.feat_curation.R
-import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CurationBlockAdapter
+import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CreateCurationBlockAdapter
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.ActivityCreateCurationBinding
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.NavigationEvent
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class CreateCurationActivity : AppCompatActivity(), CurationBlockAdapter.DeleteClickListener, CurationBlockAdapter.TextChangeListener {
+class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.DeleteClickListener, CreateCurationBlockAdapter.TextChangeListener {
     val viewModel: CreateCurationViewModel by viewModels()
     private lateinit var binding: ActivityCreateCurationBinding
     private var currentPosition: Int = -1
-    private lateinit var adapter: CurationBlockAdapter
+    private lateinit var adapter: CreateCurationBlockAdapter
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -60,7 +59,7 @@ class CreateCurationActivity : AppCompatActivity(), CurationBlockAdapter.DeleteC
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        adapter = CurationBlockAdapter(viewModel, this, this).apply {
+        adapter = CreateCurationBlockAdapter(viewModel, this, this).apply {
             viewModel.blocksChangedEvent.observe(this@CreateCurationActivity, Observer { position ->
                 if (position == -1) {
                     setItems(viewModel.blocks)
@@ -101,7 +100,7 @@ class CreateCurationActivity : AppCompatActivity(), CurationBlockAdapter.DeleteC
     }
 
     private fun setupRecyclerView() {
-        val adapter = CurationBlockAdapter(viewModel, this, this)
+        val adapter = CreateCurationBlockAdapter(viewModel, this, this)
         binding.rvCurationBlocks.adapter = adapter
 
         viewModel.curationBlocks.observe(this) { blocks ->

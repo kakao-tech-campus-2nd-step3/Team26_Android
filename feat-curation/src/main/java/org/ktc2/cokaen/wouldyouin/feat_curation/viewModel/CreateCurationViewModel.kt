@@ -3,6 +3,7 @@ package org.ktc2.cokaen.wouldyouin.feat_curation.viewModel
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.model.Block
-import org.ktc2.cokaen.wouldyouin.data.model.Curation
+import org.ktc2.cokaen.wouldyouin.data.model.CurationRequest
 import javax.inject.Inject
 
 @HiltViewModel
@@ -155,6 +156,7 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
 
     // 블록 삭제
     fun removeBlock(position: Int) {
+        Log.d("CurationBlockAdapter", "viewModel called")
         val currentCurationBlocks = _curationBlocks.value.orEmpty().toMutableList()
         val currentBlocks = _blocks.toMutableList()
 
@@ -179,8 +181,9 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
 //    }
 
     // 큐레이션 생성
-    fun createCuration(): Curation {
-        return Curation(
+    fun createCuration(): CurationRequest {
+        // 수정
+        return CurationRequest(
             title = _title.value ?: "",
             content = _content.value ?: "",
             area = _area.value ?: "",

@@ -7,18 +7,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.ktc2.cokaen.wouldyouin.data.model.Block
-import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.CurationItemBinding
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.ItemCurationBlockBinding
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel
 
-class CurationBlockAdapter(
+class CreateCurationBlockAdapter(
     private val viewModel: CreateCurationViewModel,
     private val deleteClickListener: DeleteClickListener,
     private val textChangeListener: TextChangeListener
-) : RecyclerView.Adapter<CurationBlockAdapter.CurationBlockViewHolder>() {
+) : RecyclerView.Adapter<CreateCurationBlockAdapter.CurationBlockViewHolder>() {
 
     private var blocks: MutableList<Block> = mutableListOf()
 
@@ -43,9 +40,11 @@ class CurationBlockAdapter(
     }
 
     fun removeItem(position: Int) {
+        Log.d("CurationBlockAdapter", "removeItem called")
         if (position in 0 until blocks.size) {
             blocks.removeAt(position)
             notifyItemRemoved(position)
+            Log.d("CurationBlockAdapter", "item removed: position=$position, block=${blocks[position]}")
         }
     }
 

@@ -16,4 +16,7 @@ object DeepLinkDestinations {
     val HOME_CURATION_DEEPLINK = R.string.home_curation_deeplink_url
     val LIKES_DEEPLINK = R.string.likes_deeplink_url
     val PROFILE_DEEPLINK = R.string.profile_deeplink_url
+
+    val CREATE_CURATION_DEEPLINK = R.string.create_curation_deeplink_url
+    val DETAIL_CURATION_DEEPLINK = R.string.detail_curation_deeplink_url
 }

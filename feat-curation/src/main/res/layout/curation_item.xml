@@ -12,7 +12,7 @@
             type="org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.HomeCurationViewModel" />
         <variable
             name="curation"
-            type="org.ktc2.cokaen.wouldyouin.data.model.Curation" />
+            type="org.ktc2.cokaen.wouldyouin.data.model.CurationRespond" />
         <variable
             name="position"
             type="Integer" />
@@ -87,7 +87,7 @@
             app:layout_constraintTop_toBottomOf="@id/title"
             app:layout_constraintStart_toStartOf="@id/curationCard"
             app:layout_constraintBottom_toBottomOf="@id/curationCard"
-            android:text="@{curation.content}"
+            android:text="@{curation.hashtags}"
             tools:text="#hashtag"
             android:textColor="@android:color/white"
             android:textSize="18sp"
