@@ -24,6 +24,10 @@ class SearchFragment : Fragment() {
         binding.search = this
         Log.d("test", "search")
 
+        binding.inputSearchMap.setOnClickListener {
+            findNavController().navigate(R.id.action_searchFragment_to_searchPageFragment)
+        }
+
         binding.imageViewBand.setOnClickListener {
             findNavController().navigate(R.id.action_searchFragment_to_categoryFragment)
         }
