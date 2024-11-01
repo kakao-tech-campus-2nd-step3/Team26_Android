@@ -8,33 +8,28 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.widget.ArrayAdapter
-import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
-import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
-import com.bumptech.glide.Glide
+import androidx.lifecycle.Observer
 import dagger.hilt.android.AndroidEntryPoint
-import org.ktc2.cokaen.wouldyouin.data.model.Block
 import org.ktc2.cokaen.wouldyouin.feat_curation.R
 import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CurationBlockAdapter
-import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CurationCreateBlockAdapter
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.ActivityCreateCurationBinding
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.NavigationEvent
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class CreateCurationActivity : AppCompatActivity() {
+class CreateCurationActivity : AppCompatActivity(), CurationBlockAdapter.DeleteClickListener, CurationBlockAdapter.TextChangeListener {
     val viewModel: CreateCurationViewModel by viewModels()
     private lateinit var binding: ActivityCreateCurationBinding
     private var currentPosition: Int = -1
+    private lateinit var adapter: CurationBlockAdapter
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -53,6 +48,9 @@ class CreateCurationActivity : AppCompatActivity() {
             }
         }
     }
+    override fun onDeleteClick(position: Int) {
+        viewModel.removeBlock(position)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,14 +60,40 @@ class CreateCurationActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
+        adapter = CurationBlockAdapter(viewModel, this, this).apply {
+            viewModel.blocksChangedEvent.observe(this@CreateCurationActivity, Observer { position ->
+                if (position == -1) {
+                    setItems(viewModel.blocks)
+                } else {
+                    removeItem(position)
+                }
+            })
+        }
+        binding.rvCurationBlocks.adapter = adapter
+
         viewModel.imagePickerEvent.observe(this) { position ->
             currentPosition = position
             checkAndRequestPermission()
         }
 
-        viewModel.curationBlocks.observe(this) { blocks ->
-            (binding.rvCurationBlocks.adapter as? CurationBlockAdapter)?.setItems(blocks)
+        binding.addCurationBlockButton.setOnClickListener {
+            viewModel.addNewBlock()
         }
+
+        viewModel.curationBlocks.observe(this) { blocks ->
+            adapter.setItems(blocks)
+        }
+
+        viewModel.blocksChangedEvent.observe(this) { position ->
+            if (position == -1) {
+                adapter.setItems(viewModel.blocks)
+            } else if (position in 0 until viewModel.blocks.size) {
+                adapter.removeItem(position)
+                viewModel.notifyBlocksChanged()
+            }
+        }
+
+        binding.btnRegister.isEnabled = viewModel.isFormValid.value ?: false
 
         setupRecyclerView()
         setupNavigation()
@@ -77,7 +101,7 @@ class CreateCurationActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        val adapter = CurationBlockAdapter(viewModel)
+        val adapter = CurationBlockAdapter(viewModel, this, this)
         binding.rvCurationBlocks.adapter = adapter
 
         viewModel.curationBlocks.observe(this) { blocks ->
@@ -122,6 +146,14 @@ class CreateCurationActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onTitleChanged(position: Int, newTitle: String) {
+        viewModel.updateBlockTitle(position, newTitle)
+    }
+
+    override fun onBodyChanged(position: Int, newBody: String) {
+        viewModel.updateBlockBody(position, newBody)
     }
 
     private fun openGallery() {

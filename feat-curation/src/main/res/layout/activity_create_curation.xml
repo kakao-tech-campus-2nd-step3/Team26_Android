@@ -126,7 +126,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_curation_block"/>
+                    tools:listitem="@layout/item_curation_block">
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+                <ImageView
+                    android:id="@+id/addCurationBlockButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginVertical="20dp"
+                    android:layout_gravity="center"
+                    android:onClick="@{() -> viewModel.addNewBlock()}"
+                    android:src="@drawable/plus_circle"/>
 
             </LinearLayout>
         </ScrollView>

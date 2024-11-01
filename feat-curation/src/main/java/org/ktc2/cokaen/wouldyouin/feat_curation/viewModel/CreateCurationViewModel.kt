@@ -55,6 +55,18 @@ class CreateCurationViewModel @Inject constructor(
     private val _selectedRegion = MutableStateFlow<String?>(null)
     val selectedRegion: StateFlow<String?> = _selectedRegion.asStateFlow()
 
+    private val _blocks = mutableListOf<Block>()
+    val blocks: List<Block> = _blocks
+
+//    private val _blocksChangedEvent = MutableLiveData<List<Block>>()
+//    val blocksChangedEvent: LiveData<List<Block>> = _blocksChangedEvent
+private val _blocksChangedEvent = MutableLiveData<Int>()
+    val blocksChangedEvent: LiveData<Int> = _blocksChangedEvent
+
+    fun notifyBlocksChanged() {
+        _blocksChangedEvent.postValue(-1)
+    }
+
     // 큐레이션 블록 데이터
     fun getBlockTitle(position: Int): String {
         return _curationBlocks.value?.getOrNull(position)?.title ?: ""
@@ -112,6 +124,8 @@ class CreateCurationViewModel @Inject constructor(
             )
         )
         _curationBlocks.value = currentBlocks
+        _blocks.add(currentBlocks.last())
+        notifyBlocksChanged()
     }
     fun onImageClick(position: Int) {
         _imagePickerEvent.value = position
@@ -140,11 +154,29 @@ class CreateCurationViewModel @Inject constructor(
     }
 
     // 블록 삭제
-    fun removeBlock(block: Block) {
-        val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
-        currentBlocks.remove(block)
-        _curationBlocks.value = currentBlocks
+    fun removeBlock(position: Int) {
+        val currentCurationBlocks = _curationBlocks.value.orEmpty().toMutableList()
+        val currentBlocks = _blocks.toMutableList()
+
+        if (position in currentCurationBlocks.indices) {
+            currentCurationBlocks.removeAt(position)
+            currentBlocks.removeAt(position)
+
+            _curationBlocks.value = currentCurationBlocks
+            _blocks.clear()
+            _blocks.addAll(currentBlocks)
+
+            notifyBlocksChanged()
+        }
     }
+
+    private fun notifyBlockRemoved(position: Int) {
+        _blocksChangedEvent.postValue(position)
+    }
+
+//    private fun notifyBlockRemoved(position: Int) {
+//        _blocksChangedEvent.postValue(position)
+//    }
 
     // 큐레이션 생성
     fun createCuration(): Curation {
@@ -168,15 +200,6 @@ class CreateCurationViewModel @Inject constructor(
             _navigationEvent.value = NavigationEvent.ShowExitConfirmation
         } else {
             _navigationEvent.value = NavigationEvent.Back
-        }
-    }
-
-    // 블록 삭제
-    fun removeBlock(position: Int) {
-        val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
-        if (position in currentBlocks.indices) {
-            currentBlocks.removeAt(position)
-            _curationBlocks.value = currentBlocks
         }
     }
 
