@@ -56,9 +56,6 @@ class CreateCurationViewModel @Inject constructor(
     private val _selectedRegion = MutableStateFlow<String?>(null)
     val selectedRegion: StateFlow<String?> = _selectedRegion.asStateFlow()
 
-    private val _blocks = mutableListOf<Block>()
-    val blocks: List<Block> = _blocks
-
 //    private val _blocksChangedEvent = MutableLiveData<List<Block>>()
 //    val blocksChangedEvent: LiveData<List<Block>> = _blocksChangedEvent
 private val _blocksChangedEvent = MutableLiveData<Int>()
@@ -69,31 +66,56 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
     }
 
     // 큐레이션 블록 데이터
+
+    fun getBlockImages(position: Int): List<String> {
+        return curationBlocks.value?.getOrNull(position)?.images ?: emptyList()
+    }
+
     fun getBlockTitle(position: Int): String {
-        return _curationBlocks.value?.getOrNull(position)?.title ?: ""
+        return curationBlocks.value?.getOrNull(position)?.title ?: ""
+    }
+
+    fun setBlockTitle(position: Int, title: String) {
+        val currentBlocks = curationBlocks.value.orEmpty().toMutableList()
+        currentBlocks.getOrNull(position)?.let { block ->
+            if (block.title != title) {
+                currentBlocks[position] = block.copy(title = title)
+                _curationBlocks.value = currentBlocks
+            }
+        }
     }
 
     fun getBlockBody(position: Int): String {
-        return _curationBlocks.value?.getOrNull(position)?.body ?: ""
+        return curationBlocks.value?.getOrNull(position)?.body ?: ""
     }
 
-    fun getBlockImages(position: Int): List<String> {
-        return _curationBlocks.value?.getOrNull(position)?.images ?: emptyList()
+    fun setBlockBody(position: Int, body: String) {
+        val currentBlocks = curationBlocks.value.orEmpty().toMutableList()
+        currentBlocks.getOrNull(position)?.let { block ->
+            if (block.body != body) {
+                currentBlocks[position] = block.copy(body = body)
+                _curationBlocks.value = currentBlocks
+            }
+        }
     }
 
     fun updateBlockTitle(position: Int, newTitle: String) {
         val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
-        currentBlocks.getOrNull(position)?.let { block ->
-            currentBlocks[position] = block.copy(title = newTitle)
-            _curationBlocks.value = currentBlocks
+        if (currentBlocks.getOrNull(position)?.title != newTitle) {
+            currentBlocks.getOrNull(position)?.let { block ->
+                currentBlocks[position] = block.copy(title = newTitle)
+                _curationBlocks.value = currentBlocks
+            }
         }
     }
 
     fun updateBlockBody(position: Int, newBody: String) {
         val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
-        currentBlocks.getOrNull(position)?.let { block ->
-            currentBlocks[position] = block.copy(body = newBody)
-            _curationBlocks.value = currentBlocks
+        if (currentBlocks.getOrNull(position)?.body != newBody) {
+            currentBlocks.getOrNull(position)?.let { block ->
+                currentBlocks[position] = block.copy(body = newBody)
+                _curationBlocks.value = currentBlocks
+            }
         }
     }
 
@@ -125,7 +147,6 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
             )
         )
         _curationBlocks.value = currentBlocks
-        _blocks.add(currentBlocks.last())
         notifyBlocksChanged()
     }
     fun onImageClick(position: Int) {
@@ -156,29 +177,18 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
 
     // 블록 삭제
     fun removeBlock(position: Int) {
-        Log.d("CurationBlockAdapter", "viewModel called")
-        val currentCurationBlocks = _curationBlocks.value.orEmpty().toMutableList()
-        val currentBlocks = _blocks.toMutableList()
+        val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
 
-        if (position in currentCurationBlocks.indices) {
-            currentCurationBlocks.removeAt(position)
+        if (position in currentBlocks.indices) {
             currentBlocks.removeAt(position)
-
-            _curationBlocks.value = currentCurationBlocks
-            _blocks.clear()
-            _blocks.addAll(currentBlocks)
-
-            notifyBlocksChanged()
+            _curationBlocks.postValue(currentBlocks)  // LiveData 업데이트
+            notifyBlockRemoved(position)  // 이벤트 발생
         }
     }
 
     private fun notifyBlockRemoved(position: Int) {
         _blocksChangedEvent.postValue(position)
     }
-
-//    private fun notifyBlockRemoved(position: Int) {
-//        _blocksChangedEvent.postValue(position)
-//    }
 
     // 큐레이션 생성
     fun createCuration(): CurationRequest {
@@ -189,7 +199,7 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
             area = _area.value ?: "",
             hashtags = _hashtags.value ?: "",
             blocks = _curationBlocks.value ?: listOf(),
-            eventList = listOf() // 이벤트 리스트는 필요에 따라 관리
+            eventList = listOf() // 추가
         )
     }
 
