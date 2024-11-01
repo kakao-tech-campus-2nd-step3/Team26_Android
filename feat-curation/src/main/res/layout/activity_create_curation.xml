@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -73,16 +73,16 @@
                     android:id="@+id/etContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.content}"
-                    android:afterTextChanged="@{(editable) -> viewModel.updateContent(editable.toString())}"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:hint="큐레이션을 요약하는 본문을 작성하세요."/>
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etHashtag"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.hashtags}"
-                    android:afterTextChanged="@{(editable) -> viewModel.updateHashtags(editable.toString())}"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:hint="#로 구분하여 해시태그를 입력해주세요."/>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -122,6 +122,7 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvCurationBlocks"
+                    android:nestedScrollingEnabled="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -140,7 +141,7 @@
                     android:src="@drawable/plus_circle"/>
 
             </LinearLayout>
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
         <ProgressBar
             android:layout_width="wrap_content"
