@@ -27,6 +27,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:padding="16dp">
 
             <ImageButton
@@ -93,11 +95,13 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etBlockTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:text="@{viewModel.getBlockTitle(position)}"
                     android:onTextChanged="@{(text, start, before, count) -> viewModel.updateBlockTitle(position, text.toString())}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:textStyle="bold"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:hint="큐레이션 블록의 제목을 입력하세요."/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -110,9 +114,11 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etBlockContent"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:text="@{viewModel.getBlockBody(position)}"
                     android:onTextChanged="@{(text, start, before, count) -> viewModel.updateBlockBody(position, text.toString())}"
+                    android:layout_height="wrap_content"
                     android:hint="본문을 입력하세요."
                     android:minLines="3"
                     android:gravity="top"/>

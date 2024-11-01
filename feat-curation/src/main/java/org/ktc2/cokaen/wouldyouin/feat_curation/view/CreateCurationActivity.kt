@@ -59,16 +59,22 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        adapter = CreateCurationBlockAdapter(viewModel, this, this).apply {
-            viewModel.blocksChangedEvent.observe(this@CreateCurationActivity, Observer { position ->
-                if (position == -1) {
-                    setItems(viewModel.blocks)
-                } else {
-                    removeItem(position)
+        adapter = CreateCurationBlockAdapter(viewModel, this).apply {
+            viewModel.curationBlocks.observe(this@CreateCurationActivity) { blocks ->
+                setBlocks(blocks)
+            }
+
+            viewModel.blocksChangedEvent.observe(this@CreateCurationActivity) { position ->
+                if (position >= 0) {  // position이 유효할 때만
+                    notifyItemRemoved(position)
+                    notifyItemRangeChanged(position, itemCount)
                 }
-            })
+            }
         }
+
         binding.rvCurationBlocks.adapter = adapter
+
+        binding.rvCurationBlocks.recycledViewPool.setMaxRecycledViews(0, 0)
 
         viewModel.imagePickerEvent.observe(this) { position ->
             currentPosition = position
@@ -80,15 +86,13 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
         }
 
         viewModel.curationBlocks.observe(this) { blocks ->
-            adapter.setItems(blocks)
+            adapter.setBlocks(blocks)
         }
 
         viewModel.blocksChangedEvent.observe(this) { position ->
-            if (position == -1) {
-                adapter.setItems(viewModel.blocks)
-            } else if (position in 0 until viewModel.blocks.size) {
-                adapter.removeItem(position)
-                viewModel.notifyBlocksChanged()
+            if (position >= 0) {
+                adapter.notifyItemRemoved(position)
+                adapter.notifyItemRangeChanged(position, adapter.itemCount)
             }
         }
 
@@ -100,11 +104,16 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
     }
 
     private fun setupRecyclerView() {
-        val adapter = CreateCurationBlockAdapter(viewModel, this, this)
-        binding.rvCurationBlocks.adapter = adapter
+        binding.rvCurationBlocks.apply {
+            setHasFixedSize(true)
+            itemAnimator = null  // 애니메이션으로 인한 문제 방지
+            adapter = this@CreateCurationActivity.adapter  // 이미 onCreate에서 생성한 adapter 사용
+        }
 
         viewModel.curationBlocks.observe(this) { blocks ->
-            adapter.setItems(blocks)
+            binding.rvCurationBlocks.post {
+                adapter.setBlocks(blocks)
+            }
         }
     }
 
@@ -145,14 +154,6 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
                 }
             }
         }
-    }
-
-    override fun onTitleChanged(position: Int, newTitle: String) {
-        viewModel.updateBlockTitle(position, newTitle)
-    }
-
-    override fun onBodyChanged(position: Int, newBody: String) {
-        viewModel.updateBlockBody(position, newBody)
     }
 
     private fun openGallery() {
