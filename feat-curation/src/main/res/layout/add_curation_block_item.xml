@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel" />
+
+        <variable
+            name="block"
+            type="org.ktc2.cokaen.wouldyouin.data.model.Block" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp">
+
+        <FrameLayout
+            android:id="@+id/btnAddBlock"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:onClick="@{() -> viewModel.addNewBlock()}"
+                android:src="@drawable/plus_circle"/>
+
+        </FrameLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

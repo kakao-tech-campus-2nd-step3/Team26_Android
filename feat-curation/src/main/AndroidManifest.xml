@@ -4,10 +4,28 @@
     <application>
         <activity
             android:name=".view.CurationDetailActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="wouldyouin"
+                    android:host="detail_curation" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".view.CreateCurationActivity"
-            android:exported="true" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="wouldyouin"
+                    android:host="create_curation" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
