@@ -24,7 +24,7 @@ import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewMode
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.NavigationEvent
 
 @AndroidEntryPoint
-class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.DeleteClickListener, CreateCurationBlockAdapter.TextChangeListener {
+class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.DeleteClickListener {
     val viewModel: CreateCurationViewModel by viewModels()
     private lateinit var binding: ActivityCreateCurationBinding
     private var currentPosition: Int = -1
