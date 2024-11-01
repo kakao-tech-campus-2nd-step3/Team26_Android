@@ -2,8 +2,8 @@ package org.ktc2.cokaen.wouldyouin.core_navigation
 
 import org.ktc2.cokaen.wouldyouin.core.navigation.R
 
+// DeepLinkDestinations.kt
 object DeepLinkDestinations {
-    // 온보딩
     val ONBOARDING_ACTIVITY = "wouldyouin://onboarding"
     val LOCATION_PERMISSION = R.string.location_permission_deeplink_url
     val SELECT_AREA = R.string.select_area_deeplink_url

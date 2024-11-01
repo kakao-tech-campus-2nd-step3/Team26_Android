@@ -7,10 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import dagger.hilt.android.AndroidEntryPoint
+import org.ktc2.cokaen.wouldyouin.core_navigation.ActivityNavigationOptions
+import org.ktc2.cokaen.wouldyouin.core_navigation.DeepLinkDestinations
+import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
+import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
+import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
 import org.ktc2.cokaen.wouldyouin.feat_curation.R
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.FragmentHomeCurationBinding
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class HomeCurationFragment : Fragment() {
+    @Inject
+    lateinit var navigationUtil: NavigationUtil
 
     private var _binding: FragmentHomeCurationBinding? = null
     private val binding get() = _binding!!
@@ -31,13 +41,17 @@ class HomeCurationFragment : Fragment() {
         binding.autoCompleteTextView.setAdapter(arrayAdapter)
 
         binding.createCurationButton.setOnClickListener {
-            val intent = Intent(requireActivity(), CreateCurationActivity::class.java)
-            startActivity(intent)
+            startCreateCurationActivity()
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun startCreateCurationActivity() {
+        val intent = Intent(requireContext(), CreateCurationActivity::class.java)
+        startActivity(intent)
     }
 }

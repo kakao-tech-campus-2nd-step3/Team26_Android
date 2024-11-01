@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.text.TextWatcher"/>
+        <import type="android.text.Editable"/>
+        <import type="android.view.View"/>
+        <variable
+            name="position"
+            type="Integer" />
+
+        <variable
+            name="viewModel"
+            type="org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:background="@drawable/bg_border"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/xmark"
+                android:onClick="@{() -> viewModel.removeBlock(position)}"/>
+
+            <FrameLayout
+                android:id="@+id/imageContainer"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="16dp"
+                android:onClick="@{() -> viewModel.onImageClick(position)}"
+                android:background="@drawable/bg_dashed_border">
+
+                <ImageView
+                    android:id="@+id/ivAddImage"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:visibility="@{viewModel.getBlockImages(position).empty ? View.VISIBLE : View.GONE}"
+                    android:onClick="@{() -> viewModel.onImageClick(position)}"
+                    android:src="@drawable/photo_badge_plus"/>
+
+                <!-- 이미지 목록 -->
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="@{viewModel.getBlockImages(position).empty ? View.GONE : View.VISIBLE}">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <!-- 이미지 추가 버튼 -->
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="8dp"
+                            android:onClick="@{() -> viewModel.onImageClick(position)}"
+                            android:src="@drawable/photo_badge_plus"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvImages"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            android:layout_marginHorizontal="8dp"/>
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+            </FrameLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etBlockTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.getBlockTitle(position)}"
+                    android:onTextChanged="@{(text, start, before, count) -> viewModel.updateBlockTitle(position, text.toString())}"
+                    android:textStyle="bold"
+                    android:hint="큐레이션 블록의 제목을 입력하세요."/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etBlockContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.getBlockBody(position)}"
+                    android:onTextChanged="@{(text, start, before, count) -> viewModel.updateBlockBody(position, text.toString())}"
+                    android:hint="본문을 입력하세요."
+                    android:minLines="3"
+                    android:gravity="top"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>

@@ -5,6 +5,7 @@
 
     <!-- HomeCuration  -->
     <string name="home_curation_deeplink_url">wouldyouin://home</string>
+    <string name="create_curation_deeplink_url">wouldyouin://create_curation</string>
 
     <!-- Search -->
     <string name="search_deeplink_url">wouldyouin://search</string>
