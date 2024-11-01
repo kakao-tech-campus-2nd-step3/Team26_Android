@@ -52,6 +52,19 @@ class EventDetailActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.viewProfile.setOnClickListener {
+            //네비게이션 부탁드립니다
+            //val intent = Intent(this, ProfileActivity::class.java)
+            //intent.putExtra("userId", userId)  // 필요 시 사용자 ID 전달
+            startActivity(intent)
+        }
+
+        // 지도 카드(MapFragment)에서 전달받은 데이터 사용 시
+        /*
+        val placeName = intent.getStringExtra("place_name")
+        binding.placeName.text = placeName
+         */
+
         mapView = binding.mapView
         mapView.start(object : MapLifeCycleCallback() {
             override fun onMapDestroy() {
