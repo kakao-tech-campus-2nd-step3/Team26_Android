@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<data>
+    <variable
+        name="imageUrl"
+        type="String" />
+    <variable
+        name="viewModel"
+        type="org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel" />
+    <variable
+        name="blockPosition"
+        type="Integer" />
+    <variable
+        name="imagePosition"
+        type="Integer" />
+</data>
+
+<FrameLayout
+    android:layout_width="160dp"
+    android:layout_height="match_parent"
+    android:layout_marginEnd="8dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        imageUrl="@{imageUrl}"/>
+
+    <ImageButton
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="4dp"
+        android:src="@drawable/xmark"
+        android:onClick="@{() -> viewModel.removeBlockImage(blockPosition, imagePosition)}"/>
+
+</FrameLayout>
+</layout>

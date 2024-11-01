@@ -91,7 +91,7 @@
                 android:layout_height="match_parent"
                 android:dropDownHeight="300dp"
                 android:inputType="none"
-                android:text="전체" />
+                android:text="선택" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

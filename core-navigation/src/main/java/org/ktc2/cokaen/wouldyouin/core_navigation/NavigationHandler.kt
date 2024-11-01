@@ -19,7 +19,7 @@ class NavigationHandler @Inject constructor(
         navController = controller
     }
     override fun navigate(command: NavigationCommand) {
-        when (command.destination) {
+        when (val destination = command.destination) {
             is NavigationDestination.Fragment -> navigateToFragment(command)
             is NavigationDestination.Activity -> navigateToActivity(command)
         }
