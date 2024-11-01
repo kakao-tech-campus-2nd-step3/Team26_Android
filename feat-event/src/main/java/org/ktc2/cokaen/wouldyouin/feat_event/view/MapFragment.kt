@@ -1,5 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.feat_event.view
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -31,7 +32,7 @@ class MapFragment : Fragment() {
         Location(name = "행사 장소 2", latitude = 37.5655, longitude = 126.9770),
         Location(name = "행사 장소 3", latitude = 37.5645, longitude = 126.9760)
     )
-    
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -75,6 +76,13 @@ class MapFragment : Fragment() {
 
             }
         })
+
+        binding.cardView.setOnClickListener {
+            val intent = Intent(requireContext(), EventDetailActivity::class.java)
+            //행사 Id 또는 정보 전달 시
+            //intent.putExtra("place_name", "새벽 울림")
+            startActivity(intent)
+        }
 
         return binding.root
     }
