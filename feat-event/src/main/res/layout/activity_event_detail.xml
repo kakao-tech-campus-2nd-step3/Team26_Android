@@ -115,6 +115,7 @@
                         android:layout_marginTop="4dp"/>
 
                     <TextView
+                        android:id="@+id/eventFee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="₩4000"
@@ -144,7 +145,7 @@
                 android:layout_marginBottom="4dp"/>
 
             <TextView
-                android:id="@+id/ticketAvailability"
+                android:id="@+id/eventSeats"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="12/35"
