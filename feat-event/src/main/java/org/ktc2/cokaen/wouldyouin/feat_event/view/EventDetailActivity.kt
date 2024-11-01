@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import com.bumptech.glide.Glide
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.MapLifeCycleCallback
@@ -22,6 +23,28 @@ class EventDetailActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_event_detail)
         binding.eventdetail = this
+
+        val eventTitle = intent.getStringExtra("event_title")
+        val eventStartTime = intent.getStringExtra("event_startTime")
+        val eventEndTime = intent.getStringExtra("event_endTime")
+        val eventLocation = intent.getStringExtra("event_location")
+        val eventPrice = intent.getStringExtra("event_price")
+        val eventSeats = intent.getStringExtra("event_totalSeats")
+        val eventDescription = intent.getStringExtra("event_description")
+        val eventImage = intent.getStringExtra("event_image")
+
+        binding.eventName.text = eventTitle
+        binding.eventTime.text = eventStartTime
+        binding.eventLocation.text = eventLocation
+        binding.eventFee.text = "입장료 ${eventPrice}₩"
+        binding.eventSeats.text = "${eventSeats}"
+        binding.eventDescription.text = eventDescription
+
+        if (!eventImage.isNullOrEmpty()) {
+            Glide.with(this)
+                .load(eventImage)
+                .into(binding.posterImage)
+        }
 
         binding.bookButton.setOnClickListener {
             //네비게이션 부탁드립니다(import도 주석 처리 했습니다)
