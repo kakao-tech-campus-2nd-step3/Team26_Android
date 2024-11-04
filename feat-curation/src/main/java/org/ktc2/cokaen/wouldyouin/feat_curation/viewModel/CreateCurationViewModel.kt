@@ -55,9 +55,9 @@ class CreateCurationViewModel @Inject constructor(
     private val _selectedRegion = MutableLiveData<String>()
     val selectedRegion: LiveData<String> = _selectedRegion
 
-    //    private val _blocksChangedEvent = MutableLiveData<List<Block>>()
+//    private val _blocksChangedEvent = MutableLiveData<List<Block>>()
 //    val blocksChangedEvent: LiveData<List<Block>> = _blocksChangedEvent
-    private val _blocksChangedEvent = MutableLiveData<Int>()
+private val _blocksChangedEvent = MutableLiveData<Int>()
     val blocksChangedEvent: LiveData<Int> = _blocksChangedEvent
 
     private val _hasUnsavedChanges = MutableLiveData(false)
@@ -147,7 +147,7 @@ class CreateCurationViewModel @Inject constructor(
             _isLoading.postValue(true)
             try {
                 val uploadedImageUrl = curationRepository.uploadImage(uri)
-                
+
                 val currentBlocks = _curationBlocks.value?.toMutableList() ?: return@launch
 
                 if (position < currentBlocks.size) {
