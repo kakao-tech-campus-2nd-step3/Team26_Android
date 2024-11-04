@@ -8,12 +8,17 @@
 
         <!-- 추후 수정 -->
         <variable
-            name="sampleText"
-            type="String" />
-
+            name="viewModel"
+            type="org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.HomeCurationViewModel" />
         <variable
-            name="imageUrl"
-            type="String" />
+            name="curation"
+            type="org.ktc2.cokaen.wouldyouin.data.model.CurationRespond" />
+        <variable
+            name="position"
+            type="Integer" />
+        <variable
+            name="clickListener"
+            type="org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CurationCardAdapter.OnItemClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,6 +32,7 @@
             android:id="@+id/curationCard"
             android:layout_width="350dp"
             android:layout_height="491dp"
+            android:onClick="@{() -> clickListener.onItemClick(position)}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +51,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@{imageUrl}" />
+                    imageUrl="@{curation.blocks[0].images[0]}" />
 
                 <View
                     android:layout_width="match_parent"
@@ -64,7 +70,7 @@
             android:paddingVertical="6dp"
             app:layout_constraintStart_toStartOf="@id/curationCard"
             app:layout_constraintBottom_toTopOf="@id/title"
-            android:text="@{sampleText}"
+            android:text="@{curation.area}"
             tools:text="location"
             android:background="@drawable/location_background"
             android:textColor="@android:color/black"
@@ -81,7 +87,7 @@
             app:layout_constraintTop_toBottomOf="@id/title"
             app:layout_constraintStart_toStartOf="@id/curationCard"
             app:layout_constraintBottom_toBottomOf="@id/curationCard"
-            android:text="@{sampleText}"
+            android:text="@{curation.hashtags}"
             tools:text="#hashtag"
             android:textColor="@android:color/white"
             android:textSize="18sp"
@@ -93,7 +99,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@{sampleText}"
+            android:text="@{curation.title}"
             app:layout_constraintStart_toStartOf="@id/curationCard"
             app:layout_constraintTop_toTopOf="@id/location"
             tools:text="title here"

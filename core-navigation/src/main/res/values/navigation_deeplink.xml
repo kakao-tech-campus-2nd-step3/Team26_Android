@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- MainActivity -->
+    <string name="main_deeplink_url">wouldyouin://main</string>
+
     <!-- HomeCuration  -->
     <string name="home_curation_deeplink_url">wouldyouin://home</string>
+    <string name="create_curation_deeplink_url">wouldyouin://create_curation</string>
+    <string name="detail_curation_deeplink_url">wouldyouin://detail_curation</string>
 
     <!-- Search -->
     <string name="search_deeplink_url">wouldyouin://search</string>
@@ -14,4 +19,8 @@
 
     <!--  Profile  -->
     <string name="profile_deeplink_url">wouldyouin://profile</string>
+
+    <!-- Onboarding -->
+    <string name="location_permission_deeplink_url">wouldyouin://location_permission</string>
+    <string name="select_area_deeplink_url">wouldyouin://select_area</string>
 </resources>

@@ -14,7 +14,6 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="52dp"
         tools:context=".HomeCurationFragment">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -22,9 +21,44 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:listitem="@layout/curation_item"
-            />
+            app:layout_constraintVertical_bias="0.0"
+            tools:listitem="@layout/curation_item" />
 
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:id="@+id/region_dropdown_button"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="20dp"
+            android:elevation="8dp"
+            android:translationZ="8dp"
+            app:boxBackgroundColor="@color/white"
+            app:boxStrokeColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:dropDownHeight="300dp"
+                android:inputType="none"
+                android:text="전체" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:id="@+id/createCurationButton"
+            android:layout_marginEnd="20dp"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:elevation="8dp"
+            android:translationZ="8dp"
+            android:src="@drawable/square_and_pencil"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/region_dropdown_button"
+            app:layout_constraintBottom_toBottomOf="@id/region_dropdown_button"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

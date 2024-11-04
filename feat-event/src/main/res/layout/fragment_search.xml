@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp">
 
-                <TextView
+                <EditText
                     android:id="@+id/inputSearchMap"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -42,7 +42,9 @@
                     android:drawableRight="@drawable/drawable_resize"
                     android:gravity="center_vertical"
                     android:padding="15dp"
-                    android:layout_margin="16dp"/>
+                    android:layout_margin="16dp"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
