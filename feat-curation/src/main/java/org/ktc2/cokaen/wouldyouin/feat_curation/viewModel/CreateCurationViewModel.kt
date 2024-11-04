@@ -39,16 +39,16 @@ class CreateCurationViewModel @Inject constructor(
 
     // 큐레이션 데이터
     private val _title = MutableLiveData("")
-    val title: MutableLiveData<String> = _title  // MutableLiveData로 변경
+    val title: LiveData<String> = _title
 
     private val _content = MutableLiveData("")
-    val content: MutableLiveData<String> = _content  // MutableLiveData로 변경
+    val content: LiveData<String> = _content
 
     private val _area = MutableLiveData("")
-    val area: MutableLiveData<String> = _area  // MutableLiveData로 변경
+    val area: LiveData<String> = _area
 
     private val _hashtags = MutableLiveData("")
-    val hashtags: MutableLiveData<String> = _hashtags  // MutableLiveData로 변경
+    val hashtags: LiveData<String> = _hashtags 
 
     private val _curationBlocks = MutableLiveData<List<Block>>(listOf())
     val curationBlocks: LiveData<List<Block>> = _curationBlocks
@@ -56,10 +56,11 @@ class CreateCurationViewModel @Inject constructor(
     private val _selectedRegion = MutableStateFlow<String?>(null)
     val selectedRegion: StateFlow<String?> = _selectedRegion.asStateFlow()
 
-//    private val _blocksChangedEvent = MutableLiveData<List<Block>>()
-//    val blocksChangedEvent: LiveData<List<Block>> = _blocksChangedEvent
-private val _blocksChangedEvent = MutableLiveData<Int>()
+    private val _blocksChangedEvent = MutableLiveData<Int>()
     val blocksChangedEvent: LiveData<Int> = _blocksChangedEvent
+
+    private val _hasUnsavedChanges = MutableLiveData(false)
+    val hasUnsavedChanges: LiveData<Boolean> = _hasUnsavedChanges
 
     fun notifyBlocksChanged() {
         _blocksChangedEvent.postValue(-1)
@@ -75,36 +76,17 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
         return curationBlocks.value?.getOrNull(position)?.title ?: ""
     }
 
-    fun setBlockTitle(position: Int, title: String) {
-        val currentBlocks = curationBlocks.value.orEmpty().toMutableList()
-        currentBlocks.getOrNull(position)?.let { block ->
-            if (block.title != title) {
-                currentBlocks[position] = block.copy(title = title)
-                _curationBlocks.value = currentBlocks
-            }
-        }
-    }
-
     fun getBlockBody(position: Int): String {
         return curationBlocks.value?.getOrNull(position)?.body ?: ""
     }
 
-    fun setBlockBody(position: Int, body: String) {
-        val currentBlocks = curationBlocks.value.orEmpty().toMutableList()
-        currentBlocks.getOrNull(position)?.let { block ->
-            if (block.body != body) {
-                currentBlocks[position] = block.copy(body = body)
-                _curationBlocks.value = currentBlocks
-            }
-        }
-    }
-
+    // ViewModel 수정
     fun updateBlockTitle(position: Int, newTitle: String) {
         val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
         if (currentBlocks.getOrNull(position)?.title != newTitle) {
             currentBlocks.getOrNull(position)?.let { block ->
                 currentBlocks[position] = block.copy(title = newTitle)
-                _curationBlocks.value = currentBlocks
+                _curationBlocks.postValue(currentBlocks)  // setValue 대신 postValue 사용
             }
         }
     }
@@ -114,7 +96,7 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
         if (currentBlocks.getOrNull(position)?.body != newBody) {
             currentBlocks.getOrNull(position)?.let { block ->
                 currentBlocks[position] = block.copy(body = newBody)
-                _curationBlocks.value = currentBlocks
+                _curationBlocks.postValue(currentBlocks)  // setValue 대신 postValue 사용
             }
         }
     }
@@ -122,18 +104,22 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
     // 입력 데이터 업데이트 함수들
     fun updateTitle(newTitle: String) {
         _title.value = newTitle
+        checkUnsavedChanges()
     }
 
     fun updateContent(newContent: String) {
         _content.value = newContent
-    }
-
-    fun updateArea(newArea: String) {
-        _area.value = newArea
+        checkUnsavedChanges()
     }
 
     fun updateHashtags(newHashtags: String) {
         _hashtags.value = newHashtags
+        checkUnsavedChanges()
+    }
+
+    fun updateArea(newArea: String) {
+        _area.value = newArea
+        checkUnsavedChanges()
     }
 
     // 블록 추가
@@ -181,8 +167,8 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
 
         if (position in currentBlocks.indices) {
             currentBlocks.removeAt(position)
-            _curationBlocks.postValue(currentBlocks)  // LiveData 업데이트
-            notifyBlockRemoved(position)  // 이벤트 발생
+            _curationBlocks.postValue(currentBlocks)
+            notifyBlockRemoved(position)
         }
     }
 
@@ -208,14 +194,6 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
         _selectedRegion.value = region
     }
 
-    fun onBackPressed() {
-        if (hasUnsavedChanges.value == true) {
-            _navigationEvent.value = NavigationEvent.ShowExitConfirmation
-        } else {
-            _navigationEvent.value = NavigationEvent.Back
-        }
-    }
-
     // 블록 내 이미지 삭제
     fun removeBlockImage(blockPosition: Int, imagePosition: Int) {
         val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
@@ -230,27 +208,25 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
         }
     }
 
-    private val _hasUnsavedChanges = MediatorLiveData<Boolean>().apply {
-        fun checkChanges() {
-            val hasTitle = !_title.value.isNullOrBlank()
-            val hasContent = !_content.value.isNullOrBlank()
-            val hasArea = !_area.value.isNullOrBlank()
-            val hasHashtags = !_hashtags.value.isNullOrBlank()
-            val hasBlocks = _curationBlocks.value?.any { block ->
-                !block.title.isNullOrBlank() || !block.body.isNullOrBlank()
-            } ?: false
-
-            value = hasTitle || hasContent || hasArea || hasHashtags || hasBlocks
+    fun onBackPressed() {
+        if (hasUnsavedChanges.value == true) {
+            _navigationEvent.value = NavigationEvent.ShowExitConfirmation
+        } else {
+            _navigationEvent.value = NavigationEvent.Back
         }
-
-        // 모든 데이터 변경 감지
-        addSource(_title) { checkChanges() }
-        addSource(_content) { checkChanges() }
-        addSource(_area) { checkChanges() }
-        addSource(_hashtags) { checkChanges() }
-        addSource(_curationBlocks) { checkChanges() }
     }
-    val hasUnsavedChanges: LiveData<Boolean> = _hasUnsavedChanges
+
+    private fun checkUnsavedChanges() {
+        val hasTitle = !_title.value.isNullOrBlank()
+        val hasContent = !_content.value.isNullOrBlank()
+        val hasArea = !_area.value.isNullOrBlank()
+        val hasHashtags = !_hashtags.value.isNullOrBlank()
+        val hasBlocks = _curationBlocks.value?.any { block ->
+            !block.title.isNullOrBlank() || !block.body.isNullOrBlank()
+        } ?: false
+
+        _hasUnsavedChanges.value = hasTitle || hasContent || hasArea || hasHashtags || hasBlocks
+    }
 
     private val _isFormValid = MediatorLiveData<Boolean>().apply {
         fun checkValidity() {

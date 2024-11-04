@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.ktc2.cokaen.wouldyouin.data.model.Block
@@ -24,7 +26,6 @@ class CreateCurationBlockAdapter(
     }
 
     fun setBlocks(newBlocks: List<Block>) {
-        Log.d("CurationBlockAdapter", "setBlocks called with ${newBlocks.size} items")
         blocks = newBlocks.toList()
         notifyDataSetChanged()
     }
@@ -45,9 +46,8 @@ class CreateCurationBlockAdapter(
 
     override fun onViewRecycled(holder: CurationBlockViewHolder) {
         super.onViewRecycled(holder)
-        holder.unbind()  // ViewHolder가 재사용되기 전에 리소스 정리
+        holder.unbind()
     }
-
 
     override fun getItemCount(): Int = blocks.size
 
@@ -58,82 +58,34 @@ class CreateCurationBlockAdapter(
         private var titleTextWatcher: TextWatcher? = null
         private var contentTextWatcher: TextWatcher? = null
 
-        init {
-            // 각 EditText에 대해 터치 이벤트 처리
-            binding.etBlockTitle.setOnTouchListener { v, event ->
-                v.parent.requestDisallowInterceptTouchEvent(true)
-                if (event.action == MotionEvent.ACTION_UP) {
-                    v.performClick()
-                }
-                false
-            }
-
-            binding.etBlockContent.setOnTouchListener { v, event ->
-                v.parent.requestDisallowInterceptTouchEvent(true)
-                if (event.action == MotionEvent.ACTION_UP) {
-                    v.performClick()
-                }
-                false
-            }
-        }
-
         fun bind(position: Int) {
             binding.viewModel = viewModel
             binding.position = position
 
-            // 이전 TextWatcher 제거
-            removeTextWatchers()
-
-            binding.etBlockTitle.apply {
-                setText(viewModel.getBlockTitle(position))
-                isFocusableInTouchMode = true
-                setOnFocusChangeListener { view, hasFocus ->
-                    if (hasFocus) {
-                        post {
-                            if (titleTextWatcher == null) {
-                                titleTextWatcher = object : TextWatcher {
-                                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                                        val currentPosition = bindingAdapterPosition
-                                        if (currentPosition != RecyclerView.NO_POSITION) {
-                                            viewModel.updateBlockTitle(currentPosition, s.toString())
-                                        }
-                                    }
-                                    override fun afterTextChanged(s: Editable?) {}
-                                }
-                                addTextChangedListener(titleTextWatcher)
-                            }
-                        }
-                    }
-                }
-            }
-
-            binding.etBlockContent.apply {
-                setText(viewModel.getBlockBody(position))
-                isFocusableInTouchMode = true
-                setOnFocusChangeListener { view, hasFocus ->
-                    if (hasFocus) {
-                        post {
-                            if (contentTextWatcher == null) {
-                                contentTextWatcher = object : TextWatcher {
-                                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                                        val currentPosition = bindingAdapterPosition
-                                        if (currentPosition != RecyclerView.NO_POSITION) {
-                                            viewModel.updateBlockBody(currentPosition, s.toString())
-                                        }
-                                    }
-                                    override fun afterTextChanged(s: Editable?) {}
-                                }
-                                addTextChangedListener(contentTextWatcher)
-                            }
-                        }
-                    }
-                }
-            }
-
+            // 삭제 버튼 클릭 리스너
             binding.removeCurationBlocks.setOnClickListener {
                 deleteClickListener.onDeleteClick(bindingAdapterPosition)
+            }
+
+            // 기본 텍스트 설정
+            binding.etBlockTitle.setText(viewModel.getBlockTitle(position))
+            binding.etBlockContent.setText(viewModel.getBlockBody(position))
+
+            // 포커스 잃을 때 저장
+            binding.etBlockTitle.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    binding.etBlockTitle.post {
+                        viewModel.updateBlockTitle(position, binding.etBlockTitle.text.toString())
+                    }
+                }
+            }
+
+            binding.etBlockContent.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    binding.etBlockContent.post {
+                        viewModel.updateBlockBody(position, binding.etBlockContent.text.toString())
+                    }
+                }
             }
 
             binding.executePendingBindings()
@@ -148,8 +100,6 @@ class CreateCurationBlockAdapter(
 
         fun unbind() {
             removeTextWatchers()
-            binding.etBlockTitle.onFocusChangeListener = null
-            binding.etBlockContent.onFocusChangeListener = null
         }
     }
 }

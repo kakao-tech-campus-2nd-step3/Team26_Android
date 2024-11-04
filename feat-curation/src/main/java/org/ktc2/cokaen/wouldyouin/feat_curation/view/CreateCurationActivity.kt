@@ -8,7 +8,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.ArrayAdapter
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -98,8 +101,40 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
 
         binding.btnRegister.isEnabled = viewModel.isFormValid.value ?: false
 
+        binding.etTitle.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.updateTitle(s.toString())
+            }
+        })
+
+        binding.etContent.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.updateContent(s.toString())
+            }
+        })
+
+        binding.etHashtag.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.updateHashtags(s.toString())
+            }
+        })
+
         setupRecyclerView()
         setupNavigation()
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    viewModel.onBackPressed()
+                }
+            }
+        )
         setupRegionSpinner()
     }
 
@@ -216,10 +251,5 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
             .setPositiveButton("나가기") { _, _ -> finish() }
             .setNegativeButton("계속 작성하기", null)
             .show()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        viewModel.onBackPressed()
     }
 }

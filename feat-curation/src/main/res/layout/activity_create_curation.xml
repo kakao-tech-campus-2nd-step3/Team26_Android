@@ -73,6 +73,8 @@
                     android:id="@+id/etContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@{viewModel.content}"
+                    android:afterTextChanged="@{(editable) -> viewModel.updateContent(editable.toString())}"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:hint="큐레이션을 요약하는 본문을 작성하세요."/>
@@ -81,6 +83,8 @@
                     android:id="@+id/etHashtag"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@{viewModel.hashtags}"
+                    android:afterTextChanged="@{(editable) -> viewModel.updateHashtags(editable.toString())}"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:hint="#로 구분하여 해시태그를 입력해주세요."/>
