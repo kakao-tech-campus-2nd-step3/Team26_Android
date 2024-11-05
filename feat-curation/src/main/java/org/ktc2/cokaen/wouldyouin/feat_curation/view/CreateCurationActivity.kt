@@ -266,7 +266,7 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
     private fun showExitConfirmationDialog() {
         AlertDialog.Builder(this)
             .setTitle("작성 취소")
-            .setMessage("작성 중인 내용이 있습니다. 정말 나가시겠습니까?")
+            .setMessage("작성 중인 내용이 있습니다. \n정말 나가시겠습니까?")
             .setPositiveButton("나가기") { _, _ -> finish() }
             .setNegativeButton("계속 작성하기", null)
             .show()

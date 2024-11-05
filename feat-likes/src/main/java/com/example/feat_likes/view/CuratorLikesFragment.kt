@@ -5,20 +5,30 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import org.ktc2.cokaen.wouldyouin.feat_likes.R
-import org.ktc2.cokaen.wouldyouin.feat_likes.databinding.FragmentCuratorLikesBinding
-import org.ktc2.cokaen.wouldyouin.feat_likes.databinding.FragmentOrganizerLikesBinding
+import androidx.fragment.app.viewModels
+import com.example.feat_likes.adapter.LikedMemberAdapter
+import com.example.feat_likes.viewModel.LikesViewModel
+import org.ktc2.cokaen.wouldyouin.feat_likes.databinding.MemberLikesBinding
 
 class CuratorLikesFragment : Fragment() {
-    private lateinit var binding: FragmentCuratorLikesBinding
+    private val viewModel: LikesViewModel by viewModels({ requireParentFragment() })
+    private lateinit var binding: MemberLikesBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_curator_likes, container, false)
+    ): View {
+        binding = MemberLikesBinding.inflate(inflater, container, false).apply {
+            lifecycleOwner = viewLifecycleOwner
+            viewModel = this@CuratorLikesFragment.viewModel
+        }
 
+        setupRecyclerView()
         return binding.root
+    }
+
+    private fun setupRecyclerView() {
+        binding.likedMembersList.adapter = LikedMemberAdapter()
     }
 }
