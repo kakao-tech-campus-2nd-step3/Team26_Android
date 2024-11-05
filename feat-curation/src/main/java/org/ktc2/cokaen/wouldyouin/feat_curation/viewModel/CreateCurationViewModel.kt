@@ -44,17 +44,14 @@ class CreateCurationViewModel @Inject constructor(
     private val _content = MutableLiveData("")
     val content: LiveData<String> = _content
 
-    private val _area = MutableLiveData("")
-    val area: LiveData<String> = _area
-
     private val _hashtags = MutableLiveData("")
     val hashtags: LiveData<String> = _hashtags 
 
     private val _curationBlocks = MutableLiveData<List<Block>>(listOf())
     val curationBlocks: LiveData<List<Block>> = _curationBlocks
 
-    private val _selectedRegion = MutableStateFlow<String?>(null)
-    val selectedRegion: StateFlow<String?> = _selectedRegion.asStateFlow()
+    private val _selectedRegion = MutableLiveData<String>()
+    val selectedRegion: LiveData<String> = _selectedRegion
 
     private val _blocksChangedEvent = MutableLiveData<Int>()
     val blocksChangedEvent: LiveData<Int> = _blocksChangedEvent
@@ -117,9 +114,8 @@ class CreateCurationViewModel @Inject constructor(
         checkUnsavedChanges()
     }
 
-    fun updateArea(newArea: String) {
-        _area.value = newArea
-        checkUnsavedChanges()
+    fun updateSelectedRegion(region: String) {
+        _selectedRegion.value = region
     }
 
     // 블록 추가
@@ -182,7 +178,7 @@ class CreateCurationViewModel @Inject constructor(
         return CurationRequest(
             title = _title.value ?: "",
             content = _content.value ?: "",
-            area = _area.value ?: "",
+            area = _selectedRegion.value ?: "",
             hashtags = _hashtags.value ?: "",
             blocks = _curationBlocks.value ?: listOf(),
             eventList = listOf() // 추가
@@ -219,7 +215,7 @@ class CreateCurationViewModel @Inject constructor(
     private fun checkUnsavedChanges() {
         val hasTitle = !_title.value.isNullOrBlank()
         val hasContent = !_content.value.isNullOrBlank()
-        val hasArea = !_area.value.isNullOrBlank()
+        val hasArea = !_selectedRegion.value.isNullOrBlank()
         val hasHashtags = !_hashtags.value.isNullOrBlank()
         val hasBlocks = _curationBlocks.value?.any { block ->
             !block.title.isNullOrBlank() || !block.body.isNullOrBlank()
@@ -232,7 +228,7 @@ class CreateCurationViewModel @Inject constructor(
         fun checkValidity() {
             val hasTitle = !_title.value.isNullOrBlank()
             val hasContent = !_content.value.isNullOrBlank()
-            val hasArea = !_area.value.isNullOrBlank()
+            val hasArea = !_selectedRegion.value.isNullOrBlank()
             val hasHashtags = !_hashtags.value.isNullOrBlank()
             val hasValidBlocks = _curationBlocks.value?.all { block ->
                 !block.title.isNullOrBlank() && !block.body.isNullOrBlank()
@@ -245,7 +241,7 @@ class CreateCurationViewModel @Inject constructor(
 
         addSource(_title) { checkValidity() }
         addSource(_content) { checkValidity() }
-        addSource(_area) { checkValidity() }
+        addSource(_selectedRegion) { checkValidity() }
         addSource(_hashtags) { checkValidity() }
         addSource(_curationBlocks) { checkValidity() }
     }

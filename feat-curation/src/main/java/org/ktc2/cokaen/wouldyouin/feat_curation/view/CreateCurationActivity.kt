@@ -19,7 +19,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.feat_curation.R
 import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CreateCurationBlockAdapter
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.ActivityCreateCurationBinding
@@ -127,6 +129,7 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
 
         setupRecyclerView()
         setupNavigation()
+
         onBackPressedDispatcher.addCallback(
             this,
             object : OnBackPressedCallback(true) {
@@ -136,6 +139,22 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
             }
         )
         setupRegionSpinner()
+
+        val hashtagPattern = "^#(?:[A-Za-z가-힣0-9_]+#?)+$".toRegex()
+
+        binding.etHashtag.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val input = s.toString()
+                if (hashtagPattern.matches(input)) {
+                    binding.textInputLayoutHashtag.error = null
+                } else {
+                    binding.textInputLayoutHashtag.error = "해시태그 형식이 올바르지 않습니다."
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
 
     private fun setupRecyclerView() {
