@@ -1,6 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.data.model
 
-data class Event(
+data class EventRequest(
     val startTime: String,
     val endTime: String,
     val location: Location,
