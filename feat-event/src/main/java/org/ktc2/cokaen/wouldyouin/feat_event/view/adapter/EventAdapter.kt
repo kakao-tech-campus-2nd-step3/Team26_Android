@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import org.ktc2.cokaen.wouldyouin.data.model.Event
+import org.ktc2.cokaen.wouldyouin.data.model.EventRequest
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.CategoryItemBinding
 import org.ktc2.cokaen.wouldyouin.feat_event.view.EventDetailActivity
 
-class EventAdapter(private val events: List<Event>) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
+class EventAdapter(private val events: List<EventRequest>) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
     inner class EventViewHolder(private val binding: CategoryItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(event: Event) {
+        fun bind(event: EventRequest) {
             binding.eventTitle.text = event.title
             binding.eventDate.text = event.startTime
             binding.eventLocation.text = event.location.name
