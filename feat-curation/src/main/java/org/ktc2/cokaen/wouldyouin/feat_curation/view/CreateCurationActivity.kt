@@ -138,23 +138,14 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
                 }
             }
         )
+
+        // 입력 검사
         setupRegionSpinner()
-
-        val hashtagPattern = "^#(?:[A-Za-z가-힣0-9_]+#?)+$".toRegex()
-
-        binding.etHashtag.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                val input = s.toString()
-                if (hashtagPattern.matches(input)) {
-                    binding.textInputLayoutHashtag.error = null
-                } else {
-                    binding.textInputLayoutHashtag.error = "해시태그 형식이 올바르지 않습니다."
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
+        checkCurationTitle()
+        checkCurationBody()
+        checkCurationCardTitle()
+        checkCurationCardBody()
+        checkHashtags()
     }
 
     private fun setupRecyclerView() {
@@ -270,5 +261,43 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
             .setPositiveButton("나가기") { _, _ -> finish() }
             .setNegativeButton("계속 작성하기", null)
             .show()
+    }
+
+    private fun checkHashtags() {
+        val hashtagPattern = "^#(?:[A-Za-z가-힣0-9_]+#?)+$".toRegex()
+
+        binding.etHashtag.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val input = s.toString()
+                if (hashtagPattern.matches(input)) {
+                    binding.textInputLayoutHashtag.error = null
+                } else {
+                    binding.textInputLayoutHashtag.error = "해시태그 형식이 올바르지 않습니다."
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+    }
+
+    private fun checkCurationTitle() {
+        // 빈칸, "" 안됨
+    }
+
+    private fun checkCurationBody() {
+        // 20자 이상, 1000자 이내
+    }
+
+    private fun checkCurationCardTitle() {
+        // 빈칸, "" 안됨
+    }
+
+    private fun checkCurationCardBody() {
+        // 20자 이상, 1000자 이내
+    }
+
+    private fun checkCurationCardImages() {
+        // 각 이미지 url 원소 담은 배열 길이가 5 초과되면 예외
     }
 }
