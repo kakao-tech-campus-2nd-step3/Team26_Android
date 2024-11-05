@@ -1,4 +1,4 @@
-package org.ktc2.cokaen.wouldyouin.network
+package org.ktc2.cokaen.wouldyouin.network.Service
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

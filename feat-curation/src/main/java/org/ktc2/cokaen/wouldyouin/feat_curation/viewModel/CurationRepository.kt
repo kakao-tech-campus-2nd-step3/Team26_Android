@@ -1,13 +1,12 @@
 package org.ktc2.cokaen.wouldyouin.feat_curation.viewModel
 
 import android.app.Application
-import android.content.Context
 import android.net.Uri
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.ktc2.cokaen.wouldyouin.data.model.CurationRespond
-import org.ktc2.cokaen.wouldyouin.network.ServerAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.Service.ServerAPIRetrofitService
 import retrofit2.HttpException
 import java.io.File
 import java.io.IOException

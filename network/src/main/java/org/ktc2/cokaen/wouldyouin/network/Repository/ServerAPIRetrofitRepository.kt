@@ -1,13 +1,10 @@
-package org.ktc2.cokaen.wouldyouin.network
+package org.ktc2.cokaen.wouldyouin.network.Repository
 
 import android.content.Context
-import android.widget.Toast
 import okhttp3.MultipartBody
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import org.ktc2.cokaen.wouldyouin.network.Service.ServerAPIRetrofitService
 import javax.inject.Inject
 
 open class ServerAPIRetrofitRepository @Inject constructor(
