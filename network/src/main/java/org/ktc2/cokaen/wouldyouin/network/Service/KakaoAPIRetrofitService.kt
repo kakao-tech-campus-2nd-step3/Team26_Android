@@ -1,5 +1,6 @@
-package org.ktc2.cokaen.wouldyouin.network
+package org.ktc2.cokaen.wouldyouin.network.Service
 
+import org.ktc2.cokaen.wouldyouin.network.KakaoSearchData
 import retrofit2.http.GET
 import retrofit2.http.Query
 
