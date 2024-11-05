@@ -61,33 +61,55 @@
 
                 </androidx.appcompat.widget.Toolbar>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etTitle"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewModel.title}"
-                    android:afterTextChanged="@{(editable) -> viewModel.updateTitle(editable.toString())}"
-                    android:hint="전체 큐레이션 제목을 입력하세요."/>
+                    android:layout_height="wrap_content">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etContent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewModel.content}"
-                    android:afterTextChanged="@{(editable) -> viewModel.updateContent(editable.toString())}"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:hint="큐레이션을 요약하는 본문을 작성하세요."/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.title}"
+                        android:afterTextChanged="@{(editable) -> viewModel.updateTitle(editable.toString())}"
+                        android:hint="전체 큐레이션 제목을 입력하세요."/>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etHashtag"
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewModel.hashtags}"
-                    android:afterTextChanged="@{(editable) -> viewModel.updateHashtags(editable.toString())}"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:hint="#로 구분하여 해시태그를 입력해주세요."/>
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.content}"
+                        android:afterTextChanged="@{(editable) -> viewModel.updateContent(editable.toString())}"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:minLines="5"
+                        android:hint="큐레이션을 요약하는 본문을 작성하세요."/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etHashtag"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.hashtags}"
+                        android:afterTextChanged="@{(editable) -> viewModel.updateHashtags(editable.toString())}"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:hint="#로 구분하여 해시태그를 입력해주세요."/>
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -120,7 +142,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Tip - 첫 번째 사진이 썸네일이 됩니다."
+                    android:text="Tip - 첫 번째 사진이 썸네일이 됩니다.\n 3:4 비율의 사진이 적합합니다."
                     android:textSize="12sp"
                     android:textColor="@android:color/darker_gray"/>
 
