@@ -6,7 +6,9 @@ import org.ktc2.cokaen.wouldyouin.network.Service.ReservationAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationRequest
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationResponse
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 open class ReservationAPIRetrofitRepository @Inject constructor(
     private val retrofitService: ReservationAPIRetrofitService
 ) {
