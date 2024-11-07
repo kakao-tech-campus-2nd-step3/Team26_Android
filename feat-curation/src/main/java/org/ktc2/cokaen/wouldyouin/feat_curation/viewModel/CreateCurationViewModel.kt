@@ -17,6 +17,8 @@ import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.model.Block
 import org.ktc2.cokaen.wouldyouin.data.model.CurationRequest
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,7 +47,7 @@ class CreateCurationViewModel @Inject constructor(
     val content: LiveData<String> = _content
 
     private val _hashtags = MutableLiveData("")
-    val hashtags: LiveData<String> = _hashtags 
+    val hashtags: LiveData<String> = _hashtags
 
     private val _curationBlocks = MutableLiveData<List<Block>>(listOf())
     val curationBlocks: LiveData<List<Block>> = _curationBlocks
@@ -53,6 +55,8 @@ class CreateCurationViewModel @Inject constructor(
     private val _selectedRegion = MutableLiveData<String>()
     val selectedRegion: LiveData<String> = _selectedRegion
 
+    //    private val _blocksChangedEvent = MutableLiveData<List<Block>>()
+//    val blocksChangedEvent: LiveData<List<Block>> = _blocksChangedEvent
     private val _blocksChangedEvent = MutableLiveData<Int>()
     val blocksChangedEvent: LiveData<Int> = _blocksChangedEvent
 
@@ -131,6 +135,7 @@ class CreateCurationViewModel @Inject constructor(
         _curationBlocks.value = currentBlocks
         notifyBlocksChanged()
     }
+
     fun onImageClick(position: Int) {
         _imagePickerEvent.value = position
     }
@@ -139,20 +144,59 @@ class CreateCurationViewModel @Inject constructor(
     // 선택된 이미지 URI 처리
     fun handleSelectedImage(position: Int, uri: Uri) {
         viewModelScope.launch {
-            _isLoading.value = true
+            _isLoading.postValue(true)
             try {
                 val uploadedImageUrl = curationRepository.uploadImage(uri)
-                val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
-                currentBlocks.getOrNull(position)?.let { block ->
-                    currentBlocks[position] = block.copy(
-                        images = block.images + uploadedImageUrl
+                
+                val currentBlocks = _curationBlocks.value?.toMutableList() ?: return@launch
+
+                if (position < currentBlocks.size) {
+
+                    val currentBlock = currentBlocks[position]
+                    currentBlocks[position] = currentBlock.copy(
+                        images = currentBlock.images + uploadedImageUrl
                     )
-                    _curationBlocks.value = currentBlocks
+
+                    _curationBlocks.postValue(currentBlocks)
                 }
             } catch (e: Exception) {
-                ToastUtils.showShortToast(context, e.message ?: "이미지 업로드에 실패했습니다")
+                val errorMessage = when (e) {
+                    is IOException -> "네트워크 연결을 확인해주세요"
+                    is HttpException -> "서버 통신 중 오류가 발생했습니다"
+                    else -> e.message ?: "이미지 업로드에 실패했습니다"
+                }
+                ToastUtils.showShortToast(context, errorMessage)
             } finally {
-                _isLoading.value = false
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun handleImageDelete(position: Int, imageId: Long) {
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            try {
+                val success = curationRepository.deleteImage(imageId)
+                if (success) {
+                    // 현재 블록 리스트에서 해당 이미지 제거
+                    val currentBlocks = _curationBlocks.value?.toMutableList() ?: return@launch
+
+                    if (position < currentBlocks.size) {
+                        val currentBlock = currentBlocks[position]
+                        // 이미지 ID를 통해 해당 이미지 URL 찾아서 제거
+                        // 여기서는 이미지 URL에 ID가 포함되어 있다고 가정
+                        currentBlocks[position] = currentBlock.copy(
+                            images = currentBlock.images.filterNot { url ->
+                                url.contains(imageId.toString())
+                            }
+                        )
+                        _curationBlocks.postValue(currentBlocks)
+                    }
+                }
+            } catch (e: Exception) {
+                ToastUtils.showShortToast(context, e.message ?: "이미지 삭제에 실패했습니다")
+            } finally {
+                _isLoading.postValue(false)
             }
         }
     }
