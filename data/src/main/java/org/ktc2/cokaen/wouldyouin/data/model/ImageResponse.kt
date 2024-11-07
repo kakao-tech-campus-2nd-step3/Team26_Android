@@ -2,9 +2,30 @@ package org.ktc2.cokaen.wouldyouin.data.model
 
 import com.google.gson.annotations.SerializedName
 
+data class ApiResponseBodyListImageResponse(
+    @SerializedName("success")
+    val success: Boolean,
+
+    @SerializedName("data")
+    val data: List<ImageResponse>?,
+
+    @SerializedName("code")
+    val code: String?,
+
+    @SerializedName("message")
+    val message: String?
+)
+
 data class ImageResponse(
-    @SerializedName("image_id") val imageId: String,        // 이미지 ID
-    @SerializedName("url") val url: String,                 // 이미지 URL
-    @SerializedName("event_id") val eventId: String? = null, // 행사 ID (nullable)
-    @SerializedName("curation_id") val curationId: String? = null // 큐레이션 ID (nullable)
+    @SerializedName("id")
+    val id: Long,
+
+    @SerializedName("url")
+    val url: String,
+
+    @SerializedName("createdDate")
+    val createdDate: String, // date-time 형식
+
+    @SerializedName("size")
+    val size: Long
 )

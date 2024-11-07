@@ -15,7 +15,7 @@ class EventAdapter(private val events: List<EventRequest>) : RecyclerView.Adapte
         fun bind(event: EventRequest) {
             binding.eventTitle.text = event.title
             binding.eventDate.text = event.startTime
-            binding.eventLocation.text = event.location.name
+            binding.eventLocation.text = "공연 장소"
             binding.eventFee.text = "입장료 ${event.price}₩"
             binding.eventSeats.text = "${event.totalSeats}"
             binding.eventDescription.text = event.content

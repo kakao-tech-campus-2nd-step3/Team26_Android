@@ -1,14 +1,73 @@
 package org.ktc2.cokaen.wouldyouin.data.model
 import com.google.gson.annotations.SerializedName
 
-data class ReservationResponse(
-    @SerializedName("reservation_id")
-    val reservationId: String,
-    val member: MemberResponse,
-    val event: EventResponse,
-    val price: Int,
-    @SerializedName("reservation_time")
-    val reservationTime: String,
-    @SerializedName("reservation_count")
-    val reservationCount: Int
+data class ApiResponseBodyReservationSliceResponse(
+    @SerializedName("success")
+    val success: Boolean,
+
+    @SerializedName("data")
+    val data: ReservationSliceResponse,
+
+    @SerializedName("code")
+    val code: String,
+
+    @SerializedName("message")
+    val message: String
 )
+
+data class ReservationSliceResponse(
+    @SerializedName("reservations")
+    val reservations: List<ReservationResponse>,
+
+    @SerializedName("sliceInfo")
+    val sliceInfo: SliceInfo
+)
+
+data class ReservationResponse(
+    @SerializedName("id")
+    val id: Long,
+
+    @SerializedName("member")
+    val member: ReservationMemberResponse,
+
+    @SerializedName("event")
+    val event: ReservationEventResponse,
+
+    @SerializedName("price")
+    val price: Int,
+
+    @SerializedName("quantity")
+    val quantity: Int,
+
+    @SerializedName("reservationDate")
+    val reservationDate: String
+)
+
+data class ReservationMemberResponse(
+    @SerializedName("id")
+    val id: Long,
+
+    @SerializedName("email")
+    val email: String,
+
+    @SerializedName("nickname")
+    val nickname: String,
+
+    @SerializedName("phone")
+    val phone: String,
+
+    @SerializedName("gender")
+    val gender: String
+)
+
+data class ReservationEventResponse(
+    @SerializedName("id")
+    val id: Long,
+
+    @SerializedName("title")
+    val title: String,
+
+    @SerializedName("price")
+    val price: Int
+)
+

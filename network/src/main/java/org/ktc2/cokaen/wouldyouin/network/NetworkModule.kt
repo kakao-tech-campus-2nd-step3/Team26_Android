@@ -36,7 +36,7 @@ object NetworkModule {
     @Named("Server")
     fun provideServerRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://서버주소")
+            .baseUrl("http://52.78.71.136/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

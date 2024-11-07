@@ -6,7 +6,9 @@ import org.ktc2.cokaen.wouldyouin.network.Service.EventAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.data.model.EventRequest
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 open class EventAPIRetrofitRepository @Inject constructor(
     private val retrofitService: EventAPIRetrofitService
 ) {
