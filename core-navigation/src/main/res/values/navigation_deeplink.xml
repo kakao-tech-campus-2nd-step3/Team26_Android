@@ -21,7 +21,7 @@
 
     <!--  Profile  -->
     <string name="profile_deeplink_url">wouldyouin://profile</string>
-    <string name="member_profile_deeplink_url">wouldyouin://profile</string>
+    <string name="member_profile_deeplink_url">wouldyouin://profile/member</string>
 
     <!-- Onboarding -->
     <string name="location_permission_deeplink_url">wouldyouin://location_permission</string>
