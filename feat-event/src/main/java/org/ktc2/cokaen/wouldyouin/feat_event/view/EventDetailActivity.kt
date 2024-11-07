@@ -9,12 +9,21 @@ import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
+import dagger.hilt.android.AndroidEntryPoint
+import org.ktc2.cokaen.wouldyouin.core_navigation.ActivityNavigationOptions
+import org.ktc2.cokaen.wouldyouin.core_navigation.DeepLinkDestinations
+import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
+import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
+import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
 //import org.ktc2.cokaen.wouldyouin.feat_booking.view.BookingActivity
 import org.ktc2.cokaen.wouldyouin.feat_event.R
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.ActivityEventDetailBinding
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class EventDetailActivity : AppCompatActivity() {
-
+    @Inject
+    lateinit var navigationUtil: NavigationUtil
     private lateinit var binding: ActivityEventDetailBinding
     private lateinit var mapView: MapView
 
@@ -48,15 +57,11 @@ class EventDetailActivity : AppCompatActivity() {
 
         binding.bookButton.setOnClickListener {
             //네비게이션 부탁드립니다(import도 주석 처리 했습니다)
-            //val intent = Intent(this, BookingActivity::class.java)
-            startActivity(intent)
+            startBookingActivity()
         }
 
         binding.viewProfile.setOnClickListener {
-            //네비게이션 부탁드립니다
-            //val intent = Intent(this, ProfileActivity::class.java)
-            //intent.putExtra("userId", userId)  // 필요 시 사용자 ID 전달
-            startActivity(intent)
+            startMemberProfileActivity()
         }
 
         // 지도 카드(MapFragment)에서 전달받은 데이터 사용 시
@@ -89,5 +94,34 @@ class EventDetailActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         mapView.pause()
+    }
+
+    private fun startBookingActivity() {
+        navigationUtil.navigate(
+            NavigationCommand(
+                destination = NavigationDestination.Activity(DeepLinkDestinations.PAYMENT_CHECK_ACTIVITY),
+                activityOptions = ActivityNavigationOptions(
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK,
+                    clearTop = true
+                ),
+                data = mapOf(
+                    "bookingId" to "123",
+                    "userId" to "456"
+                ) // 여기에 필요한 데이터(id) 넘겨주시면 됩니다!!
+            )
+        )
+    }
+
+    private fun startMemberProfileActivity() {
+        navigationUtil.navigate(
+            NavigationCommand(
+                destination = NavigationDestination.Activity(DeepLinkDestinations.MEMBER_PROFILE_ACTIVITY),
+                activityOptions = ActivityNavigationOptions(
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK,
+                    clearTop = true
+                ),
+                data = mapOf() // 여기에 필요한 데이터(id) 넘겨주시면 됩니다!!
+            )
+        )
     }
 }
