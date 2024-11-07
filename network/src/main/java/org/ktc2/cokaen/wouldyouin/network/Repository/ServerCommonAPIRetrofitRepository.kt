@@ -7,7 +7,7 @@ import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.network.Service.ServerAPIRetrofitService
 import javax.inject.Inject
 
-open class ServerAPIRetrofitRepository @Inject constructor(
+open class ServerCommonAPIRetrofitRepository @Inject constructor(
     private val retrofitService: ServerAPIRetrofitService
 ) {
     open suspend fun uploadImage(imageFile: MultipartBody.Part, context: Context): ImageResponse? {
