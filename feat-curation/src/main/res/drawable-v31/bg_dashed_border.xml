@@ -9,6 +9,6 @@
         android:width="2dp"
         android:color="@android:color/system_neutral1_800"
         android:dashGap="2dp"
-        android:dashWidth="4dp"/>
+        android:dashWidth="2dp"/>
 
 </shape>
