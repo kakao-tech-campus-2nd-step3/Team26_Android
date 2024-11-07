@@ -10,6 +10,7 @@ import javax.inject.Inject
 open class ServerCommonAPIRetrofitRepository @Inject constructor(
     private val retrofitService: ServerAPIRetrofitService
 ) {
+    // 공통으로 사용하는 기능 ex) 이미지 업로드, 이미지 로드 등 기능
     open suspend fun uploadImage(imageFile: MultipartBody.Part, context: Context): ImageResponse? {
         return try {
             val response = retrofitService.uploadImage(imageFile)
