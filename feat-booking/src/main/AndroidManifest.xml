@@ -3,7 +3,16 @@
 
     <application>
     <activity
-        android:name=".view.BookingActivity" />
+        android:name=".view.BookingActivity"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="wouldyouin" android:host="booking" android:path="/payment/check"/>
+        </intent-filter>
+    </activity>
+
     </application>
 
 </manifest>

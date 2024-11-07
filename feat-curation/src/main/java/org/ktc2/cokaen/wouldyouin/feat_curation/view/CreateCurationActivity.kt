@@ -8,7 +8,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.ArrayAdapter
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -16,7 +19,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.feat_curation.R
 import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CreateCurationBlockAdapter
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.ActivityCreateCurationBinding
@@ -98,9 +103,49 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
 
         binding.btnRegister.isEnabled = viewModel.isFormValid.value ?: false
 
+        binding.etTitle.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.updateTitle(s.toString())
+            }
+        })
+
+        binding.etContent.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.updateContent(s.toString())
+            }
+        })
+
+        binding.etHashtag.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.updateHashtags(s.toString())
+            }
+        })
+
         setupRecyclerView()
         setupNavigation()
+
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    viewModel.onBackPressed()
+                }
+            }
+        )
+
+        // 입력 검사
         setupRegionSpinner()
+        checkCurationTitle()
+        checkCurationBody()
+        checkCurationCardTitle()
+        checkCurationCardBody()
+        checkHashtags()
     }
 
     private fun setupRecyclerView() {
@@ -212,14 +257,47 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
     private fun showExitConfirmationDialog() {
         AlertDialog.Builder(this)
             .setTitle("작성 취소")
-            .setMessage("작성 중인 내용이 있습니다. 정말 나가시겠습니까?")
+            .setMessage("작성 중인 내용이 있습니다. \n정말 나가시겠습니까?")
             .setPositiveButton("나가기") { _, _ -> finish() }
             .setNegativeButton("계속 작성하기", null)
             .show()
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        viewModel.onBackPressed()
+    private fun checkHashtags() {
+        val hashtagPattern = "^#(?:[A-Za-z가-힣0-9_]+#?)+$".toRegex()
+
+        binding.etHashtag.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val input = s.toString()
+                if (hashtagPattern.matches(input)) {
+                    binding.textInputLayoutHashtag.error = null
+                } else {
+                    binding.textInputLayoutHashtag.error = "해시태그 형식이 올바르지 않습니다."
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+    }
+
+    private fun checkCurationTitle() {
+        // 빈칸, "" 안됨
+    }
+
+    private fun checkCurationBody() {
+        // 20자 이상, 1000자 이내
+    }
+
+    private fun checkCurationCardTitle() {
+        // 빈칸, "" 안됨
+    }
+
+    private fun checkCurationCardBody() {
+        // 20자 이상, 1000자 이내
+    }
+
+    private fun checkCurationCardImages() {
+        // 각 이미지 url 원소 담은 배열 길이가 5 초과되면 예외
     }
 }

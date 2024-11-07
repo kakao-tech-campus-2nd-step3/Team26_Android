@@ -11,14 +11,17 @@
     <!-- Search -->
     <string name="search_deeplink_url">wouldyouin://search</string>
 
+
     <!-- Likes   -->
     <string name="likes_deeplink_url">wouldyouin://likes</string>
 
     <!-- Booking  -->
     <string name="booking_deeplink_url">wouldyouin://booking</string>
+    <string name="payment_check_deeplink_url">wouldyouin://booking/payment/check</string>
 
     <!--  Profile  -->
     <string name="profile_deeplink_url">wouldyouin://profile</string>
+    <string name="member_profile_deeplink_url">wouldyouin://profile/member</string>
 
     <!-- Onboarding -->
     <string name="location_permission_deeplink_url">wouldyouin://location_permission</string>
