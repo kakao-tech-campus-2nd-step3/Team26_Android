@@ -73,5 +73,7 @@ dependencies {
     implementation(libs.material)
     implementation("com.kakao.sdk:v2-all:2.20.3")
     implementation("com.kakao.maps.open:android:2.9.5")
+
+    implementation("com.google.android.gms:play-services-location:21.1.0")
 }
 fun getApiKey(key: String): String = gradleLocalProperties(rootDir, providers).getProperty(key)
