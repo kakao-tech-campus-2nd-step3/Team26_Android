@@ -11,7 +11,7 @@ class CurationSliceResponse {
     )
 
     data class CurationSliceResponse(
-        // 추후 수정 필요
-        val temp : String
+        @SerializedName("events") val events: List<CurationResponse>,
+        @SerializedName("slice") val slice: SliceInfo
     )
 }
