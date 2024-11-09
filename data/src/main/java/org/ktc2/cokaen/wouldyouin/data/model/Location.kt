@@ -3,7 +3,6 @@ package org.ktc2.cokaen.wouldyouin.data.model
 import com.google.gson.annotations.SerializedName
 
 data class Location(
-    val name: String,
     val latitude: Double,
     val longitude: Double
 )
