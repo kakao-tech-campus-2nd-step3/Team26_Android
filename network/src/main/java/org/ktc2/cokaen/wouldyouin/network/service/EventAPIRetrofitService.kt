@@ -1,4 +1,4 @@
-package org.ktc2.cokaen.wouldyouin.network.Service
+package org.ktc2.cokaen.wouldyouin.network.service
 
 import retrofit2.http.GET
 import retrofit2.http.POST

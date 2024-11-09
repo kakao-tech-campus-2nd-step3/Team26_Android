@@ -1,8 +1,8 @@
-package org.ktc2.cokaen.wouldyouin.network.Repository
+package org.ktc2.cokaen.wouldyouin.network.repository
 
 import android.content.Context
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
-import org.ktc2.cokaen.wouldyouin.network.Service.EventAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.service.EventAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.data.model.EventRequest
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
 import javax.inject.Inject

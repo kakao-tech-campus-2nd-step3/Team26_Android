@@ -5,8 +5,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
-import org.ktc2.cokaen.wouldyouin.network.Service.KakaoAPIRetrofitService
-import org.ktc2.cokaen.wouldyouin.network.Service.ServerAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.service.KakaoAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.service.ServerAPIRetrofitService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named

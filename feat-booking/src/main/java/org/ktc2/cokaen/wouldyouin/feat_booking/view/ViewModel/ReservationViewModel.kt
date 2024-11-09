@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationRequest
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationResponse
-import org.ktc2.cokaen.wouldyouin.network.Repository.ReservationAPIRetrofitRepository
+import org.ktc2.cokaen.wouldyouin.network.repository.ReservationAPIRetrofitRepository
 import javax.inject.Inject
 
 class ReservationViewModel @Inject constructor(

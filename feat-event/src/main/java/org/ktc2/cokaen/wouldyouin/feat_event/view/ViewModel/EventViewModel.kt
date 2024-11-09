@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.data.model.EventRequest
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
-import org.ktc2.cokaen.wouldyouin.network.Repository.EventAPIRetrofitRepository
+import org.ktc2.cokaen.wouldyouin.network.repository.EventAPIRetrofitRepository
 import javax.inject.Inject
 
 class EventViewModel @Inject constructor(
