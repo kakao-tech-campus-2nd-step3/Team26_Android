@@ -1,4 +1,4 @@
-package org.ktc2.cokaen.wouldyouin.feat_event.view.ViewModel
+package org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.LiveData
