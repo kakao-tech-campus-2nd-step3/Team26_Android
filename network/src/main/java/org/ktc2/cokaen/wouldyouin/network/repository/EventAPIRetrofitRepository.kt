@@ -3,6 +3,7 @@ package org.ktc2.cokaen.wouldyouin.network.repository
 import android.content.Context
 import android.util.Log
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
+import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyEventResponse
 import org.ktc2.cokaen.wouldyouin.network.service.EventAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyEventSliceResponse
 import javax.inject.Inject
@@ -21,6 +22,12 @@ class EventAPIRetrofitRepository @Inject constructor(
         endLongitude: Double,
         latitude: Double,
         longitude: Double,
+        title: String? = null,
+        category: String? = null,
+        area: String? = null,
+        page: Int? = null,
+        size: Int? = null,
+        lastId: Long? = null,
         context: Context
     ): ApiResponseBodyEventSliceResponse? {
         return try {
@@ -30,7 +37,7 @@ class EventAPIRetrofitRepository @Inject constructor(
             Log.d("EventAPIRetrofitRepository", "latitude: $latitude, longitude: $longitude")
 
             val response = retrofitService.getEventList(
-                startLatitude, startLongitude, endLatitude, endLongitude, latitude, longitude
+                startLatitude, startLongitude, endLatitude, endLongitude, latitude, longitude, title, category, area, page, size, lastId
             )
 
             Log.d("EventAPIRetrofitRepository", "Received response with code: ${response.code()}")
@@ -44,7 +51,58 @@ class EventAPIRetrofitRepository @Inject constructor(
                 null
             }
         } catch (e: Exception) {
-            Log.e("EventAPIRetrofitRepository", "Exception occurred: ${e.message}", e)
+            Log.e("EventAPIRetrofitRepository", "Exception occurred Event list: ${e.message}", e)
+            ToastUtils.showShortToast(context, "오류 발생: ${e.message}")
+            null
+        }
+    }
+
+    // 단일 행사 상세 조회
+    suspend fun getEventDetails(eventId: Long, context: Context): ApiResponseBodyEventResponse? {
+        return try {
+            Log.d("EventAPIRetrofitRepository", "Fetching event details for eventId: $eventId")
+
+            val response = retrofitService.getEventDetails(eventId)
+            if (response.isSuccessful) {
+                Log.d("EventAPIRetrofitRepository", "Event details fetched successfully for eventId: $eventId. Body: ${response.body()}")
+                response.body()
+            } else {
+                Log.e("EventAPIRetrofitRepository", "Failed to fetch event details. Code: ${response.code()}, Error: ${response.errorBody()?.string()}")
+                ToastUtils.showShortToast(context, "행사 상세 조회에 실패했습니다.")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("EventAPIRetrofitRepository", "Exception occurred Event Details: ${e.message}", e)
+            ToastUtils.showShortToast(context, "오류 발생: ${e.message}")
+            null
+        }
+    }
+
+    //주최자별 행사 조회
+    suspend fun getEventsByHost(
+        hostId: Long,
+        page: Int? = null,
+        size: Int? = null,
+        lastId: Long? = null,
+        context: Context
+    ): ApiResponseBodyEventSliceResponse? {
+        return try {
+            Log.d("EventAPIRetrofitRepository", "Fetching events by host with hostId: $hostId, page: $page, size: $size, lastId: $lastId")
+
+            val response = retrofitService.getEventsByHost(hostId, page, size, lastId)
+
+            Log.d("EventAPIRetrofitRepository", "Received response with code: ${response.code()}")
+
+            if (response.isSuccessful) {
+                Log.d("EventAPIRetrofitRepository", "Events by host fetched successfully. Body: ${response.body()}")
+                response.body()
+            } else {
+                Log.e("EventAPIRetrofitRepository", "Failed to fetch events by host. Code: ${response.code()}, Error: ${response.errorBody()?.string()}")
+                ToastUtils.showShortToast(context, "주최자별 행사 조회에 실패했습니다.")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("EventAPIRetrofitRepository", "Exception occurred in Events by Host: ${e.message}", e)
             ToastUtils.showShortToast(context, "오류 발생: ${e.message}")
             null
         }

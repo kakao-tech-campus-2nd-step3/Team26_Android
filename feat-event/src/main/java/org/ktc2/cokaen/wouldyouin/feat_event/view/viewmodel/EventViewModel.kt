@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyEventResponse
 import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyEventSliceResponse
 import org.ktc2.cokaen.wouldyouin.network.repository.EventAPIRetrofitRepository
 import javax.inject.Inject
@@ -16,9 +17,20 @@ class EventViewModel @Inject constructor(
     private val repository: EventAPIRetrofitRepository
 ) : ViewModel() {
 
+    //전체 행사 목록 조회
     private val _eventList = MutableLiveData<ApiResponseBodyEventSliceResponse?>()
     val eventList: LiveData<ApiResponseBodyEventSliceResponse?> get() = _eventList
 
+    //단일 행사 상세 조회
+    private val _eventDetails = MutableLiveData<ApiResponseBodyEventResponse?>()
+    val eventDetails: LiveData<ApiResponseBodyEventResponse?> get() = _eventDetails
+
+    //주최자별 행사 조회
+    private val _eventsByHost = MutableLiveData<ApiResponseBodyEventSliceResponse?>()
+    val eventsByHost: LiveData<ApiResponseBodyEventSliceResponse?> get() = _eventsByHost
+
+
+    //전체 행사 목록 조회
     fun fetchEventList(
         startLatitude: Double,
         startLongitude: Double,
@@ -26,12 +38,38 @@ class EventViewModel @Inject constructor(
         endLongitude: Double,
         latitude: Double,
         longitude: Double,
+        title: String? = null,
+        category: String? = null,
+        area: String? = null,
+        page: Int? = null,
+        size: Int? = null,
+        lastId: Long? = null,
         context: Context
     ) {
         viewModelScope.launch {
             _eventList.value = repository.getEventList(
-                startLatitude, startLongitude, endLatitude, endLongitude, latitude, longitude, context
+                startLatitude, startLongitude, endLatitude, endLongitude, latitude, longitude, title, category, area, page, size, lastId, context
             )
+        }
+    }
+
+    //단일 행사 상세 조회
+    fun fetchEventDetails(eventId: Long, context: Context) {
+        viewModelScope.launch {
+            _eventDetails.value = repository.getEventDetails(eventId, context)
+        }
+    }
+
+    //주최자별 행사 조회
+    fun fetchEventsByHost(
+        hostId: Long,
+        page: Int? = null,
+        size: Int? = null,
+        lastId: Long? = null,
+        context: Context
+    ) {
+        viewModelScope.launch {
+            _eventsByHost.value = repository.getEventsByHost(hostId, page, size, lastId, context)
         }
     }
 }
