@@ -46,12 +46,12 @@ class MapFragment : Fragment() {
     private var mapInitialized = false
     private var centerLabel: Label? = null
 
-
+    /*
     private val locations = listOf(
         Location(name = "행사 장소 1", latitude = 35.1784, longitude = 126.9096),
         Location(name = "행사 장소 2", latitude = 35.1790, longitude = 126.9096),
         Location(name = "행사 장소 3", latitude = 35.1784, longitude = 126.9100)
-    )
+    )*/
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -98,7 +98,7 @@ class MapFragment : Fragment() {
                 if (!mapInitialized) {
                     mapInitialized = true
                     getCurrentLocationAndStartMap()
-                    addMarkersToMap()
+                    //addMarkersToMap()
                 }
             }
         })
@@ -174,6 +174,7 @@ class MapFragment : Fragment() {
         }
     }
 
+    /*
     private fun addMarkersToMap() {
         kakaoMap?.let { map ->
             val lodLabelLayer = map.labelManager?.lodLayer
@@ -187,7 +188,7 @@ class MapFragment : Fragment() {
                 lodLabelLayer?.addLodLabel(options)
             }
         }
-    }
+    }*/
 
     private fun updateMapWithCurrentLocation(latitude: Double, longitude: Double) {
         kakaoMap?.moveCamera(CameraUpdateFactory.newCenterPosition(LatLng.from(latitude, longitude), 15))

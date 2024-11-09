@@ -25,7 +25,7 @@ class SearchResultFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_result, container, false)
         binding.searchResult = this
 
-
+        /*
         val events = listOf(
             EventRequest(
                 startTime = "2024-02-15 19:00",
@@ -49,9 +49,9 @@ class SearchResultFragment : Fragment() {
                 eventImages = listOf("https://example.com/image2.jpg"),
                 totalSeats = 50
             )
-        )
+        )*/
 
-        eventAdapter = EventAdapter(events)
+        //eventAdapter = EventAdapter(events)
 
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)

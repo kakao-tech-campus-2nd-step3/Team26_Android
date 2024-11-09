@@ -5,6 +5,46 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyEventSliceResponse
+import org.ktc2.cokaen.wouldyouin.network.repository.EventAPIRetrofitRepository
+import javax.inject.Inject
+
+@HiltViewModel
+class EventViewModel @Inject constructor(
+    private val repository: EventAPIRetrofitRepository
+) : ViewModel() {
+
+    private val _eventList = MutableLiveData<ApiResponseBodyEventSliceResponse?>()
+    val eventList: LiveData<ApiResponseBodyEventSliceResponse?> get() = _eventList
+
+    fun fetchEventList(
+        startLatitude: Double,
+        startLongitude: Double,
+        endLatitude: Double,
+        endLongitude: Double,
+        latitude: Double,
+        longitude: Double,
+        context: Context
+    ) {
+        viewModelScope.launch {
+            _eventList.value = repository.getEventList(
+                startLatitude, startLongitude, endLatitude, endLongitude, latitude, longitude, context
+            )
+        }
+    }
+}
+
+
+/*
+package org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel
+
+import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.data.model.EventRequest
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
@@ -60,4 +100,4 @@ class EventViewModel @Inject constructor(
             _operationSuccess.value = repository.updateEvent(eventId, eventRequest, context) != null
         }
     }
-}
+}*/

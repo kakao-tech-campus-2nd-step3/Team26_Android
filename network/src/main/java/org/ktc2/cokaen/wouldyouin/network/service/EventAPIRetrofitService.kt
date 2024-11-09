@@ -1,5 +1,28 @@
 package org.ktc2.cokaen.wouldyouin.network.service
 
+import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyEventSliceResponse
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Query
+
+interface EventAPIRetrofitService {
+
+    // 전체 행사 목록 조회 (GET 방식)
+    @GET("/api/events")
+    suspend fun getEventList(
+        @Query("startLatitude") startLatitude: Double,
+        @Query("startLongitude") startLongitude: Double,
+        @Query("endLatitude") endLatitude: Double,
+        @Query("endLongitude") endLongitude: Double,
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double
+    ): Response<ApiResponseBodyEventSliceResponse>
+}
+
+
+/*
+package org.ktc2.cokaen.wouldyouin.network.service
+
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -47,4 +70,4 @@ interface EventAPIRetrofitService {
         @Path("eventId") eventId: String,
         @Body eventRequest: EventRequest
     ): Response<EventResponse>
-}
+}*/
