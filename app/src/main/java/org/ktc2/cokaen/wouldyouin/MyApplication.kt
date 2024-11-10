@@ -8,11 +8,8 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class MyApplication : Application() {
 
-    lateinit var appContext: Context
-
     override fun onCreate() {
         super.onCreate()
         KakaoMapSdk.init(this, getString(R.string.kakao_api_key))
-        appContext = applicationContext
     }
 }

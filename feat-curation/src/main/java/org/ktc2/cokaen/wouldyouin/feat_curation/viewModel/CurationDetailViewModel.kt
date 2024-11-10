@@ -26,14 +26,14 @@ class CurationDetailViewModel @Inject constructor(
 
     fun loadCurationDetail(curationId: String) {
         viewModelScope.launch {
-            val curationDetail = curationRepository.getCurationDetail(curationId)
-            _curation.value = curationDetail
-            if (curationDetail != null) {
-                _curationBlocks.value = curationDetail.blocks
-            }
-            if (curationDetail != null) {
-                _hashtags.value = curationDetail.hashtags.split("#").map { it.trim() }
-            }
+//            val curationDetail = curationRepository.getCurationDetail(curationId)
+//            _curation.value = curationDetail
+//            if (curationDetail != null) {
+//                _curationBlocks.value = curationDetail.blocks
+//            }
+//            if (curationDetail != null) {
+//                _hashtags.value = curationDetail.hashtags.split("#").map { it.trim() }
+//            }
         }
     }
 }

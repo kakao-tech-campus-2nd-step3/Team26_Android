@@ -5,6 +5,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import org.ktc2.cokaen.wouldyouin.network.Service.KakaoAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.Service.ServerAPIRetrofitService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named
@@ -34,7 +36,7 @@ object NetworkModule {
     @Named("Server")
     fun provideServerRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://서버주소")
+            .baseUrl("http://52.78.71.136/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

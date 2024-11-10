@@ -1,4 +1,4 @@
-package org.ktc2.cokaen.wouldyouin.network
+package org.ktc2.cokaen.wouldyouin.network.Client
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

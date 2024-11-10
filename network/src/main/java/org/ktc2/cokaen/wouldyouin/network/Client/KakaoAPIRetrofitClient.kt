@@ -1,8 +1,10 @@
-package org.ktc2.cokaen.wouldyouin.network
+package org.ktc2.cokaen.wouldyouin.network.Client
 
 import okhttp3.OkHttpClient
-import retrofit2.Retrofit
+import org.ktc2.cokaen.wouldyouin.network.AuthInterceptor
 import org.ktc2.cokaen.wouldyouin.network.BuildConfig
+import org.ktc2.cokaen.wouldyouin.network.Service.KakaoAPIRetrofitService
+import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object KakaoAPIRetrofitClient {

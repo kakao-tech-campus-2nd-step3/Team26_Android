@@ -17,6 +17,8 @@ import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.model.Block
 import org.ktc2.cokaen.wouldyouin.data.model.CurationRequest
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,79 +41,85 @@ class CreateCurationViewModel @Inject constructor(
 
     // 큐레이션 데이터
     private val _title = MutableLiveData("")
-    val title: MutableLiveData<String> = _title  // MutableLiveData로 변경
+    val title: LiveData<String> = _title
 
     private val _content = MutableLiveData("")
-    val content: MutableLiveData<String> = _content  // MutableLiveData로 변경
-
-    private val _area = MutableLiveData("")
-    val area: MutableLiveData<String> = _area  // MutableLiveData로 변경
+    val content: LiveData<String> = _content
 
     private val _hashtags = MutableLiveData("")
-    val hashtags: MutableLiveData<String> = _hashtags  // MutableLiveData로 변경
+    val hashtags: LiveData<String> = _hashtags
 
     private val _curationBlocks = MutableLiveData<List<Block>>(listOf())
     val curationBlocks: LiveData<List<Block>> = _curationBlocks
 
-    private val _selectedRegion = MutableStateFlow<String?>(null)
-    val selectedRegion: StateFlow<String?> = _selectedRegion.asStateFlow()
+    private val _selectedRegion = MutableLiveData<String>()
+    val selectedRegion: LiveData<String> = _selectedRegion
 
-    private val _blocks = mutableListOf<Block>()
-    val blocks: List<Block> = _blocks
-
-//    private val _blocksChangedEvent = MutableLiveData<List<Block>>()
+    //    private val _blocksChangedEvent = MutableLiveData<List<Block>>()
 //    val blocksChangedEvent: LiveData<List<Block>> = _blocksChangedEvent
-private val _blocksChangedEvent = MutableLiveData<Int>()
+    private val _blocksChangedEvent = MutableLiveData<Int>()
     val blocksChangedEvent: LiveData<Int> = _blocksChangedEvent
+
+    private val _hasUnsavedChanges = MutableLiveData(false)
+    val hasUnsavedChanges: LiveData<Boolean> = _hasUnsavedChanges
 
     fun notifyBlocksChanged() {
         _blocksChangedEvent.postValue(-1)
     }
 
     // 큐레이션 블록 데이터
+
+    fun getBlockImages(position: Int): List<String> {
+        return curationBlocks.value?.getOrNull(position)?.images ?: emptyList()
+    }
+
     fun getBlockTitle(position: Int): String {
-        return _curationBlocks.value?.getOrNull(position)?.title ?: ""
+        return curationBlocks.value?.getOrNull(position)?.title ?: ""
     }
 
     fun getBlockBody(position: Int): String {
-        return _curationBlocks.value?.getOrNull(position)?.body ?: ""
+        return curationBlocks.value?.getOrNull(position)?.body ?: ""
     }
 
-    fun getBlockImages(position: Int): List<String> {
-        return _curationBlocks.value?.getOrNull(position)?.images ?: emptyList()
-    }
-
+    // ViewModel 수정
     fun updateBlockTitle(position: Int, newTitle: String) {
         val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
-        currentBlocks.getOrNull(position)?.let { block ->
-            currentBlocks[position] = block.copy(title = newTitle)
-            _curationBlocks.value = currentBlocks
+        if (currentBlocks.getOrNull(position)?.title != newTitle) {
+            currentBlocks.getOrNull(position)?.let { block ->
+                currentBlocks[position] = block.copy(title = newTitle)
+                _curationBlocks.postValue(currentBlocks)  // setValue 대신 postValue 사용
+            }
         }
     }
 
     fun updateBlockBody(position: Int, newBody: String) {
         val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
-        currentBlocks.getOrNull(position)?.let { block ->
-            currentBlocks[position] = block.copy(body = newBody)
-            _curationBlocks.value = currentBlocks
+        if (currentBlocks.getOrNull(position)?.body != newBody) {
+            currentBlocks.getOrNull(position)?.let { block ->
+                currentBlocks[position] = block.copy(body = newBody)
+                _curationBlocks.postValue(currentBlocks)  // setValue 대신 postValue 사용
+            }
         }
     }
 
     // 입력 데이터 업데이트 함수들
     fun updateTitle(newTitle: String) {
         _title.value = newTitle
+        checkUnsavedChanges()
     }
 
     fun updateContent(newContent: String) {
         _content.value = newContent
-    }
-
-    fun updateArea(newArea: String) {
-        _area.value = newArea
+        checkUnsavedChanges()
     }
 
     fun updateHashtags(newHashtags: String) {
         _hashtags.value = newHashtags
+        checkUnsavedChanges()
+    }
+
+    fun updateSelectedRegion(region: String) {
+        _selectedRegion.value = region
     }
 
     // 블록 추가
@@ -125,9 +133,9 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
             )
         )
         _curationBlocks.value = currentBlocks
-        _blocks.add(currentBlocks.last())
         notifyBlocksChanged()
     }
+
     fun onImageClick(position: Int) {
         _imagePickerEvent.value = position
     }
@@ -136,39 +144,71 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
     // 선택된 이미지 URI 처리
     fun handleSelectedImage(position: Int, uri: Uri) {
         viewModelScope.launch {
-            _isLoading.value = true
+            _isLoading.postValue(true)
             try {
                 val uploadedImageUrl = curationRepository.uploadImage(uri)
-                val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
-                currentBlocks.getOrNull(position)?.let { block ->
-                    currentBlocks[position] = block.copy(
-                        images = block.images + uploadedImageUrl
+                
+                val currentBlocks = _curationBlocks.value?.toMutableList() ?: return@launch
+
+                if (position < currentBlocks.size) {
+
+                    val currentBlock = currentBlocks[position]
+                    currentBlocks[position] = currentBlock.copy(
+                        images = currentBlock.images + uploadedImageUrl
                     )
-                    _curationBlocks.value = currentBlocks
+
+                    _curationBlocks.postValue(currentBlocks)
                 }
             } catch (e: Exception) {
-                ToastUtils.showShortToast(context, e.message ?: "이미지 업로드에 실패했습니다")
+                val errorMessage = when (e) {
+                    is IOException -> "네트워크 연결을 확인해주세요"
+                    is HttpException -> "서버 통신 중 오류가 발생했습니다"
+                    else -> e.message ?: "이미지 업로드에 실패했습니다"
+                }
+                ToastUtils.showShortToast(context, errorMessage)
             } finally {
-                _isLoading.value = false
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun handleImageDelete(position: Int, imageId: Long) {
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            try {
+                val success = curationRepository.deleteImage(imageId)
+                if (success) {
+                    // 현재 블록 리스트에서 해당 이미지 제거
+                    val currentBlocks = _curationBlocks.value?.toMutableList() ?: return@launch
+
+                    if (position < currentBlocks.size) {
+                        val currentBlock = currentBlocks[position]
+                        // 이미지 ID를 통해 해당 이미지 URL 찾아서 제거
+                        // 여기서는 이미지 URL에 ID가 포함되어 있다고 가정
+                        currentBlocks[position] = currentBlock.copy(
+                            images = currentBlock.images.filterNot { url ->
+                                url.contains(imageId.toString())
+                            }
+                        )
+                        _curationBlocks.postValue(currentBlocks)
+                    }
+                }
+            } catch (e: Exception) {
+                ToastUtils.showShortToast(context, e.message ?: "이미지 삭제에 실패했습니다")
+            } finally {
+                _isLoading.postValue(false)
             }
         }
     }
 
     // 블록 삭제
     fun removeBlock(position: Int) {
-        Log.d("CurationBlockAdapter", "viewModel called")
-        val currentCurationBlocks = _curationBlocks.value.orEmpty().toMutableList()
-        val currentBlocks = _blocks.toMutableList()
+        val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
 
-        if (position in currentCurationBlocks.indices) {
-            currentCurationBlocks.removeAt(position)
+        if (position in currentBlocks.indices) {
             currentBlocks.removeAt(position)
-
-            _curationBlocks.value = currentCurationBlocks
-            _blocks.clear()
-            _blocks.addAll(currentBlocks)
-
-            notifyBlocksChanged()
+            _curationBlocks.postValue(currentBlocks)
+            notifyBlockRemoved(position)
         }
     }
 
@@ -176,34 +216,22 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
         _blocksChangedEvent.postValue(position)
     }
 
-//    private fun notifyBlockRemoved(position: Int) {
-//        _blocksChangedEvent.postValue(position)
-//    }
-
     // 큐레이션 생성
     fun createCuration(): CurationRequest {
         // 수정
         return CurationRequest(
             title = _title.value ?: "",
             content = _content.value ?: "",
-            area = _area.value ?: "",
+            area = _selectedRegion.value ?: "",
             hashtags = _hashtags.value ?: "",
             blocks = _curationBlocks.value ?: listOf(),
-            eventList = listOf() // 이벤트 리스트는 필요에 따라 관리
+            eventList = listOf() // 추가
         )
     }
 
     // 지역 업데이트
     fun updateRegion(region: String) {
         _selectedRegion.value = region
-    }
-
-    fun onBackPressed() {
-        if (hasUnsavedChanges.value == true) {
-            _navigationEvent.value = NavigationEvent.ShowExitConfirmation
-        } else {
-            _navigationEvent.value = NavigationEvent.Back
-        }
     }
 
     // 블록 내 이미지 삭제
@@ -220,33 +248,31 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
         }
     }
 
-    private val _hasUnsavedChanges = MediatorLiveData<Boolean>().apply {
-        fun checkChanges() {
-            val hasTitle = !_title.value.isNullOrBlank()
-            val hasContent = !_content.value.isNullOrBlank()
-            val hasArea = !_area.value.isNullOrBlank()
-            val hasHashtags = !_hashtags.value.isNullOrBlank()
-            val hasBlocks = _curationBlocks.value?.any { block ->
-                !block.title.isNullOrBlank() || !block.body.isNullOrBlank()
-            } ?: false
-
-            value = hasTitle || hasContent || hasArea || hasHashtags || hasBlocks
+    fun onBackPressed() {
+        if (hasUnsavedChanges.value == true) {
+            _navigationEvent.value = NavigationEvent.ShowExitConfirmation
+        } else {
+            _navigationEvent.value = NavigationEvent.Back
         }
-
-        // 모든 데이터 변경 감지
-        addSource(_title) { checkChanges() }
-        addSource(_content) { checkChanges() }
-        addSource(_area) { checkChanges() }
-        addSource(_hashtags) { checkChanges() }
-        addSource(_curationBlocks) { checkChanges() }
     }
-    val hasUnsavedChanges: LiveData<Boolean> = _hasUnsavedChanges
+
+    private fun checkUnsavedChanges() {
+        val hasTitle = !_title.value.isNullOrBlank()
+        val hasContent = !_content.value.isNullOrBlank()
+        val hasArea = !_selectedRegion.value.isNullOrBlank()
+        val hasHashtags = !_hashtags.value.isNullOrBlank()
+        val hasBlocks = _curationBlocks.value?.any { block ->
+            !block.title.isNullOrBlank() || !block.body.isNullOrBlank()
+        } ?: false
+
+        _hasUnsavedChanges.value = hasTitle || hasContent || hasArea || hasHashtags || hasBlocks
+    }
 
     private val _isFormValid = MediatorLiveData<Boolean>().apply {
         fun checkValidity() {
             val hasTitle = !_title.value.isNullOrBlank()
             val hasContent = !_content.value.isNullOrBlank()
-            val hasArea = !_area.value.isNullOrBlank()
+            val hasArea = !_selectedRegion.value.isNullOrBlank()
             val hasHashtags = !_hashtags.value.isNullOrBlank()
             val hasValidBlocks = _curationBlocks.value?.all { block ->
                 !block.title.isNullOrBlank() && !block.body.isNullOrBlank()
@@ -259,7 +285,7 @@ private val _blocksChangedEvent = MutableLiveData<Int>()
 
         addSource(_title) { checkValidity() }
         addSource(_content) { checkValidity() }
-        addSource(_area) { checkValidity() }
+        addSource(_selectedRegion) { checkValidity() }
         addSource(_hashtags) { checkValidity() }
         addSource(_curationBlocks) { checkValidity() }
     }

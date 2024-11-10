@@ -26,12 +26,12 @@ class HomeCurationViewModel @Inject constructor(
 
     private fun loadCurationList() {
         viewModelScope.launch {
-            try {
-                val curations = curationRepository.getAllCurations()
-                _curationList.value = curations
-            } catch (e: Exception) {
-                // 에러 처리
-            }
+//            try {
+//                val curations = curationRepository.getAllCurations()
+//                _curationList.value = curations
+//            } catch (e: Exception) {
+//                // 에러 처리
+//            }
         }
     }
 

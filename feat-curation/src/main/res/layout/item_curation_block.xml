@@ -95,8 +95,8 @@
                     android:id="@+id/etBlockTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.getBlockTitle(position)}"
-                    android:onTextChanged="@{(text, start, before, count) -> viewModel.updateBlockTitle(position, text.toString())}"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:textStyle="bold"
                     android:hint="큐레이션 블록의 제목을 입력하세요."/>
             </com.google.android.material.textfield.TextInputLayout>
@@ -111,8 +111,8 @@
                     android:id="@+id/etBlockContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.getBlockBody(position)}"
-                    android:onTextChanged="@{(text, start, before, count) -> viewModel.updateBlockBody(position, text.toString())}"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:hint="본문을 입력하세요."
                     android:minLines="3"
                     android:gravity="top"/>
