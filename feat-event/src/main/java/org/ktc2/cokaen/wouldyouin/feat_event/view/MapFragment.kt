@@ -33,7 +33,10 @@ import org.ktc2.cokaen.wouldyouin.feat_event.databinding.FragmentMapBinding
 import android.Manifest
 import android.content.Intent
 import android.widget.Toast
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.kakao.vectormap.label.Label
+import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
 
 class MapFragment : Fragment() {
 
@@ -45,6 +48,7 @@ class MapFragment : Fragment() {
     private var kakaoMap: KakaoMap? = null
     private var mapInitialized = false
     private var centerLabel: Label? = null
+    private lateinit var eventList: Array<EventResponse> // 전달된 이벤트 목록을 저장
 
     /*
     private val locations = listOf(
@@ -55,6 +59,17 @@ class MapFragment : Fragment() {
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
+    }
+
+    //데이터 받기
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.getStringArray("eventList")?.let { jsonEventList ->
+            val gson = Gson()
+            eventList = jsonEventList.map { gson.fromJson(it, EventResponse::class.java) }.toTypedArray()
+        } ?: run {
+            eventList = emptyArray()
+        }
     }
 
     override fun onCreateView(
@@ -98,7 +113,7 @@ class MapFragment : Fragment() {
                 if (!mapInitialized) {
                     mapInitialized = true
                     getCurrentLocationAndStartMap()
-                    //addMarkersToMap()
+                    addMarkersToMap()
                 }
             }
         })
@@ -174,6 +189,20 @@ class MapFragment : Fragment() {
         }
     }
 
+    private fun addMarkersToMap() { // 수정된 부분: 이벤트 마커를 추가하는 함수 구현
+        kakaoMap?.let { map ->
+            val lodLabelLayer = map.labelManager?.lodLayer
+            eventList.forEach { event ->
+                val markerBitmap = BitmapFactory.decodeResource(resources, R.drawable.marker)
+                val scaledBitmap = Bitmap.createScaledBitmap(markerBitmap, 50, 50, true)
+                val labelStyle = LabelStyle.from(scaledBitmap)
+                val labelStyles = LabelStyles.from(labelStyle)
+                val options = LabelOptions.from(LatLng.from(event.location.latitude, event.location.longitude))
+                    .setStyles(labelStyles)
+                lodLabelLayer?.addLodLabel(options)
+            }
+        }
+    }
     /*
     private fun addMarkersToMap() {
         kakaoMap?.let { map ->

@@ -10,7 +10,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
+import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
 import org.ktc2.cokaen.wouldyouin.feat_event.R
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.FragmentCategoryBinding
 import org.ktc2.cokaen.wouldyouin.feat_event.view.adapter.EventAdapter
@@ -22,6 +24,7 @@ class CategoryFragment : Fragment() {
     private lateinit var binding: FragmentCategoryBinding
     private lateinit var eventAdapter: EventAdapter
     private val eventViewModel: EventViewModel by viewModels()
+    private var eventList = listOf<EventResponse>() // MapFragment로 전달할 데이터 리스트
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,8 +46,16 @@ class CategoryFragment : Fragment() {
                 binding.recyclerView.adapter = eventAdapter
             }
         })*/
+        /*
         eventViewModel.eventList.observe(viewLifecycleOwner, Observer { eventList ->
             eventList?.data?.events?.let { events ->
+                eventAdapter = EventAdapter(events)
+                binding.recyclerView.adapter = eventAdapter
+            }
+        })*/
+        eventViewModel.eventList.observe(viewLifecycleOwner, Observer { eventListResponse ->
+            eventListResponse?.data?.events?.let { events ->
+                eventList = events // MapFragment에 전달할 데이터를 저장
                 eventAdapter = EventAdapter(events)
                 binding.recyclerView.adapter = eventAdapter
             }
@@ -70,7 +81,15 @@ class CategoryFragment : Fragment() {
         )
 
         binding.mapButton.setOnClickListener {
-            findNavController().navigate(R.id.action_categoryFragment_to_mapFragment)
+            //findNavController().navigate(R.id.action_categoryFragment_to_mapFragment)
+
+            val gson = Gson()
+            val jsonEventList = eventList.map { gson.toJson(it) }.toTypedArray() // JSON 문자열 배열로 변환
+
+            val bundle = Bundle().apply {
+                putStringArray("eventList", jsonEventList)
+            }
+            findNavController().navigate(R.id.action_categoryFragment_to_mapFragment, bundle)
         }
 
         return binding.root
