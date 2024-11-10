@@ -18,7 +18,7 @@ class EventAdapter(private val events: List<EventResponse>) : RecyclerView.Adapt
             binding.eventDate.text = event.startTime
             binding.eventLocation.text = "공연 장소"
             binding.eventFee.text = "입장료 ${event.price}₩"
-            binding.eventSeats.text = "${event.totalSeat}"
+            binding.eventSeats.text = "${event.leftSeat}/${event.totalSeat}"
             binding.eventDescription.text = event.content
             /*
             if (event.eventImages.isNotEmpty()) {
@@ -27,15 +27,24 @@ class EventAdapter(private val events: List<EventResponse>) : RecyclerView.Adapt
                     .into(binding.eventImage)
             }*/
 
+
+            binding.root.setOnClickListener {
+                val context = binding.root.context
+                val intent = Intent(context, EventDetailActivity::class.java).apply {
+                    putExtra("event_id", event.id)
+                }
+                context.startActivity(intent)
+            }
+            /*
             binding.root.setOnClickListener {
                 val context = binding.root.context
                 val intent = Intent(context, EventDetailActivity::class.java).apply {
                     putExtra("event_title", event.title)
                     putExtra("event_startTime", event.startTime)
                     putExtra("event_endTime", event.endTime)
-                    //putExtra("event_location", event.location.name)
-                    putExtra("event_price", event.price.toString())
-                    putExtra("event_totalSeats", event.totalSeat.toString())
+                    putExtra("event_location", "공연 장소")
+                    putExtra("event_price", "₩ ${event.price}")
+                    putExtra("event_totalSeats", "${event.leftSeat}/${event.totalSeat}")
                     putExtra("event_description", event.content)
                     /*
                     if (event.eventImages.isNotEmpty()) {
@@ -43,7 +52,7 @@ class EventAdapter(private val events: List<EventResponse>) : RecyclerView.Adapt
                     }*/
                 }
                 context.startActivity(intent)
-            }
+            }*/
         }
     }
 

@@ -35,9 +35,16 @@ class CategoryFragment : Fragment() {
         binding.recyclerView.adapter = eventAdapter
 
         // ViewModel에서 이벤트 목록을 관찰하여 RecyclerView 업데이트
+        /*
         eventViewModel.eventList.observe(viewLifecycleOwner, Observer { events ->
             events?.let {
                 eventAdapter = EventAdapter(it.data.events)
+                binding.recyclerView.adapter = eventAdapter
+            }
+        })*/
+        eventViewModel.eventList.observe(viewLifecycleOwner, Observer { eventList ->
+            eventList?.data?.events?.let { events ->
+                eventAdapter = EventAdapter(events)
                 binding.recyclerView.adapter = eventAdapter
             }
         })

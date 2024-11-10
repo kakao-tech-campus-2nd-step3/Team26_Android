@@ -2,6 +2,7 @@ package org.ktc2.cokaen.wouldyouin.feat_event.view
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
@@ -15,9 +16,9 @@ import org.ktc2.cokaen.wouldyouin.core_navigation.DeepLinkDestinations
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
-//import org.ktc2.cokaen.wouldyouin.feat_booking.view.BookingActivity
 import org.ktc2.cokaen.wouldyouin.feat_event.R
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.ActivityEventDetailBinding
+import org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel.EventViewModel
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -26,13 +27,32 @@ class EventDetailActivity : AppCompatActivity() {
     lateinit var navigationUtil: NavigationUtil
     private lateinit var binding: ActivityEventDetailBinding
     private lateinit var mapView: MapView
+    private val eventViewModel: EventViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_event_detail)
-        binding.eventdetail = this
+        //binding.eventdetail = this
 
+        val eventId = intent.getLongExtra("event_id", -1)
+        if (eventId != -1L) {
+            eventViewModel.fetchEventDetails(eventId, this)
+        }
+
+        // ViewModel의 LiveData 관찰하여 UI 업데이트
+        eventViewModel.eventDetails.observe(this) { eventResponse ->
+            eventResponse?.let { event ->
+                binding.eventName.text = event.data?.title
+                binding.eventTime.text = "${event.data?.startTime} - ${event.data?.endTime}"
+                //binding.eventLocation.text = event.data?.location?.name
+                binding.eventFee.text = "입장료 ₩${event.data?.price}"
+                binding.eventSeats.text = "${event.data?.leftSeat}/${event.data?.totalSeat}"
+                binding.eventDescription.text = event.data?.content
+            }
+        }
+
+        /*
         val eventTitle = intent.getStringExtra("event_title")
         val eventStartTime = intent.getStringExtra("event_startTime")
         val eventEndTime = intent.getStringExtra("event_endTime")
@@ -43,7 +63,7 @@ class EventDetailActivity : AppCompatActivity() {
         val eventImage = intent.getStringExtra("event_image")
 
         binding.eventName.text = eventTitle
-        binding.eventTime.text = eventStartTime
+        binding.eventTime.text = "$eventStartTime - $eventEndTime"
         binding.eventLocation.text = eventLocation
         binding.eventFee.text = "입장료 ${eventPrice}₩"
         binding.eventSeats.text = "${eventSeats}"
@@ -53,10 +73,9 @@ class EventDetailActivity : AppCompatActivity() {
             Glide.with(this)
                 .load(eventImage)
                 .into(binding.posterImage)
-        }
+        }*/
 
         binding.bookButton.setOnClickListener {
-            //네비게이션 부탁드립니다(import도 주석 처리 했습니다)
             startBookingActivity()
         }
 
