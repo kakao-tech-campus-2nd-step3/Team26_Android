@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,6 +29,9 @@ class EventDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEventDetailBinding
     private lateinit var mapView: MapView
     private val eventViewModel: EventViewModel by viewModels()
+    //행사 위치 변수 추가
+    private var eventLatitude: Double? = null
+    private var eventLongitude: Double? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +53,10 @@ class EventDetailActivity : AppCompatActivity() {
                 binding.eventFee.text = "입장료 ₩${event.data?.price}"
                 binding.eventSeats.text = "${event.data?.leftSeat}/${event.data?.totalSeat}"
                 binding.eventDescription.text = event.data?.content
+
+                //행사 위치 정보 설정
+                eventLatitude = event.data?.location?.latitude
+                eventLongitude = event.data?.location?.longitude
             }
         }
 
@@ -101,6 +109,16 @@ class EventDetailActivity : AppCompatActivity() {
         }, object : KakaoMapReadyCallback() {
             override fun onMapReady(kakaoMap: KakaoMap) {
                 // 인증 후 API가 정상적으로 실행될 때 호출됨
+                //행사 위치로 카메라 이동
+                eventLatitude?.let { latitude ->
+                    eventLongitude?.let { longitude ->
+                        kakaoMap.moveCamera(
+                            com.kakao.vectormap.camera.CameraUpdateFactory.newCenterPosition(
+                                LatLng.from(latitude, longitude), 15
+                            )
+                        )
+                    }
+                }
             }
         })
     }
