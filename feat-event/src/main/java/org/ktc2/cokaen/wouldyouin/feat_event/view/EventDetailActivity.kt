@@ -40,11 +40,11 @@ class EventDetailActivity : AppCompatActivity() {
             eventViewModel.fetchEventDetails(eventId, this)
         }
 
-        // ViewModel의 LiveData 관찰하여 UI 업데이트
         eventViewModel.eventDetails.observe(this) { eventResponse ->
             eventResponse?.let { event ->
                 binding.eventName.text = event.data?.title
-                binding.eventTime.text = "${event.data?.startTime} - ${event.data?.endTime}"
+                binding.eventTime.text = event.data?.startTime
+                binding.eventDuration.text = "약 ${event.data?.endTime} - ${event.data?.startTime}분"
                 //binding.eventLocation.text = event.data?.location?.name
                 binding.eventFee.text = "입장료 ₩${event.data?.price}"
                 binding.eventSeats.text = "${event.data?.leftSeat}/${event.data?.totalSeat}"
