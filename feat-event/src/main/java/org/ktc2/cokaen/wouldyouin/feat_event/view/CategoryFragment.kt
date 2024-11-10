@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import org.ktc2.cokaen.wouldyouin.feat_event.R
@@ -67,6 +68,10 @@ class CategoryFragment : Fragment() {
             longitude = longitude,
             context = requireContext()
         )
+
+        binding.mapButton.setOnClickListener {
+            findNavController().navigate(R.id.action_categoryFragment_to_mapFragment)
+        }
 
         return binding.root
     }
