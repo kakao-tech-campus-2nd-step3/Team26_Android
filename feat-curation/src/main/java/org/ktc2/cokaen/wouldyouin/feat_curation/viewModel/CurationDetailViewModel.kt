@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.data.model.Block
+import org.ktc2.cokaen.wouldyouin.data.model.CurationCardResponse
 import org.ktc2.cokaen.wouldyouin.data.model.CurationRespond
 import javax.inject.Inject
 
@@ -18,8 +19,8 @@ class CurationDetailViewModel @Inject constructor(
     private val _curation = MutableLiveData<CurationRespond?>()
     val curation: MutableLiveData<CurationRespond?> = _curation
 
-    private val _curationBlocks = MutableLiveData<List<Block>>()
-    val curationBlocks: LiveData<List<Block>> = _curationBlocks
+    private val _curationBlocks = MutableLiveData<List<CurationCardResponse>>()
+    val curationBlocks: LiveData<List<CurationCardResponse>> = _curationBlocks
 
     private val _hashtags = MutableLiveData<List<String>>()
     val hashtags: LiveData<List<String>> = _hashtags

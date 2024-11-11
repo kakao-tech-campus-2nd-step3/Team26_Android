@@ -8,7 +8,7 @@ data class MemberRequest(
 
 data class MemberIdentifier(
     @SerializedName("id") val id: Long,
-    @SerializedName("type") val type: AccountType
+    @SerializedName("type") val type: String
 )
 
 data class MemberEditRequest(

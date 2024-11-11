@@ -3,23 +3,28 @@ package org.ktc2.cokaen.wouldyouin.feat_curation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.BlockImageItemBinding
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel
 
-class BlockImagesAdapter(
+class CreateBlockImagesAdapter(
     private val viewModel: CreateCurationViewModel,
     private val blockPosition: Int
-) : RecyclerView.Adapter<BlockImagesAdapter.ImageViewHolder>() {
+) : RecyclerView.Adapter<CreateBlockImagesAdapter.ImageViewHolder>() {  // ImageDiffCallback 제거
 
-    private var images: List<String> = emptyList()
+    private var images: List<ImageResponse> = emptyList()  // String -> ImageResponse
 
-    fun setImages(newImages: List<String>) {
+    fun setImages(newImages: List<ImageResponse>) {  // String -> ImageResponse
         images = newImages
         notifyDataSetChanged()
     }
 
+    interface OnImageClickListener {
+        fun onImageDeleteClick(blockPosition: Int, image: ImageResponse)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        val binding = BlockImageItemBinding.inflate(
+        val binding = org.ktc2.cokaen.wouldyouin.feat_curation.databinding.BlockImageItemBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
         return ImageViewHolder(binding)
@@ -34,12 +39,13 @@ class BlockImagesAdapter(
     inner class ImageViewHolder(
         private val binding: BlockImageItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(imageUrl: String, position: Int) {
+        fun bind(image: ImageResponse, position: Int) {
             binding.apply {
-                this.imageUrl = imageUrl
-                this.viewModel = this@BlockImagesAdapter.viewModel
-                this.blockPosition = this@BlockImagesAdapter.blockPosition
+                this.image = image
+                this.viewModel = this@CreateBlockImagesAdapter.viewModel
+                this.blockPosition = this@CreateBlockImagesAdapter.blockPosition
                 this.imagePosition = position
+
                 executePendingBindings()
             }
         }

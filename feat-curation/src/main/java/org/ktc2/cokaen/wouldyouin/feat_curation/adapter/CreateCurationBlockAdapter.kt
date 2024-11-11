@@ -11,6 +11,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.ktc2.cokaen.wouldyouin.data.model.Block
+import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.ItemCurationBlockBinding
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel
 
@@ -23,6 +24,16 @@ class CreateCurationBlockAdapter(
 
     interface DeleteClickListener {
         fun onDeleteClick(position: Int)
+    }
+
+    interface OnImageClickListener {
+        fun onImageDeleteClick(blockPosition: Int, image: ImageResponse)
+    }
+
+    private var imageClickListener: OnImageClickListener? = null
+
+    fun setOnImageClickListener(listener: OnImageClickListener) {
+        imageClickListener = listener
     }
 
     fun setBlocks(newBlocks: List<Block>) {
@@ -55,12 +66,23 @@ class CreateCurationBlockAdapter(
         private val binding: ItemCurationBlockBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        private var imageAdapter: CreateBlockImagesAdapter? = null
+
         private var titleTextWatcher: TextWatcher? = null
         private var contentTextWatcher: TextWatcher? = null
 
         fun bind(position: Int) {
+            val block = blocks[position]
             binding.viewModel = viewModel
             binding.position = position
+
+            // 이미지 어댑터에 이미지를 설정
+            imageAdapter = CreateBlockImagesAdapter(viewModel, position)
+            imageAdapter?.setImages(block.images)  // block.images로 이미지를 설정
+
+            // 이미지가 표시될 RecyclerView 설정
+            binding.rvImages.layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
+            binding.rvImages.adapter = imageAdapter
 
             // 삭제 버튼 클릭 리스너
             binding.removeCurationBlocks.setOnClickListener {

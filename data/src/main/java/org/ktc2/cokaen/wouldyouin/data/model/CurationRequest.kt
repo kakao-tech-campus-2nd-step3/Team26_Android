@@ -41,18 +41,6 @@ data class CurationRequest(
     val eventList: List<String>
 )
 
-data class CurationCardRequest(
-    @SerializedName("subtitle")
-    val subtitle: String,
-
-    @SerializedName("content")
-    val content: String,
-
-    @SerializedName("imageIds")
-    val imageIds: List<Long>
-)
-
-
 data class CurationRespond(
     val curationId: String,
     val generatedAt: String,
@@ -66,7 +54,7 @@ data class CurationRespond(
 
 data class Block(
     val title: String,
-    val images: List<String>,
+    val images: List<ImageResponse>,
     val body: String
 )
 

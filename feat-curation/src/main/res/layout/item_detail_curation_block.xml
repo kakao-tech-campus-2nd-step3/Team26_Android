@@ -6,7 +6,7 @@
     <data>
         <variable
             name="block"
-            type="org.ktc2.cokaen.wouldyouin.data.model.Block" />
+            type="org.ktc2.cokaen.wouldyouin.data.model.CurationCardResponse" />
     </data>
 
     <LinearLayout

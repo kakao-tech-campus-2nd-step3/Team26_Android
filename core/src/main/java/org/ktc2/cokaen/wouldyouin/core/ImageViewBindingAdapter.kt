@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.core
 
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
@@ -21,11 +22,10 @@ fun setImageUrl(imageView: ImageView, path: String?, placeHolder: Drawable?) {
         return
     }
 
-    // 수정해야할수도...
-    val fullUrl = "http://52.78.71.136/api/$path"
+    Log.d("Adapter called", "Hi")
 
     Glide.with(imageView.context)
-        .load(fullUrl)
+        .load(path)
         .placeholder(ph)
         .error(ph)
         .into(imageView)

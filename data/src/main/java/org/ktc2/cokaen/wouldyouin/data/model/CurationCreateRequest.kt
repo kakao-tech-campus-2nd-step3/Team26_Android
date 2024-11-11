@@ -12,21 +12,23 @@ data class CurationCreateRequestWrapper(
 )
 
 data class CurationCreateRequest(
-    @SerializedName("title")
     val title: String,
-
-    @SerializedName("content")
     val content: String,
-
-    @SerializedName("curationCards")
     val curationCards: List<CurationCardRequest>,
-
-    @SerializedName("area")
-    val area: String, // 예시: "서울"
-
-    @SerializedName("hashTag")
+    val area: String,
     val hashTag: List<String>,
+    val eventIds: List<Long>,
+    val curationCardsSizeValid: Boolean = true
+)
 
-    @SerializedName("eventIds")
-    val eventIds: List<Long>
+data class CurationCardRequest(
+    val subtitle: String,
+    val content: String,
+    val imageIds: List<Long>,
+    val imageSizeValid: Boolean = true
+)
+
+data class CreateCurationRequestBody(
+    val curationCreateRequest: CurationCreateRequest,
+    val curator: CuratorRequest
 )
