@@ -63,10 +63,10 @@ open class ServerCommonAPIRetrofitRepository @Inject constructor(
     suspend fun deleteImage(imageId: Long, type: String): Boolean {
         return try {
             val response = retrofitService.deleteImage(imageId, type)
-            if (response.isSuccessful && response.body()?.success == true) {
+            if (response.isSuccessful) {
                 true
             } else {
-                throw Exception(response.body()?.message ?: "이미지 삭제에 실패했습니다.")
+                throw Exception("이미지 삭제에 실패했습니다. 오류 코드: ${response.code()}")
             }
         } catch (e: Exception) {
             when (e) {
