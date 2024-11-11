@@ -49,6 +49,10 @@ class CurationCardAdapter(
             binding.curation = curation
             binding.position = position
 
+
+            val firstImageUrl = curation.curationCards.firstOrNull()?.imageUrls?.get(0)
+            binding.imageUrl = firstImageUrl  // 이미지 URL을 binding에 설정
+
             // 해시태그 처리 (첫 번째 해시태그를 #으로 표시)
             val hashtags = curation.hashTag.firstOrNull()?.split("#")?.filter { it.isNotEmpty() }
             if (!hashtags.isNullOrEmpty()) {
