@@ -165,16 +165,6 @@
                 android:textSize="16sp"
                 android:textColor="@android:color/black"
                 android:layout_marginBottom="8dp"/>
-
-            <!--
-            <ImageView
-                android:id="@+id/mapImage"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:src="@drawable/sample_map"
-                android:scaleType="centerCrop"
-                android:layout_marginBottom="16dp"/>
-                -->
             
             <com.kakao.vectormap.MapView
                 android:id="@+id/map_view"
@@ -258,7 +248,6 @@
                 android:textColor="@android:color/black"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- 문의 정보 -->
             <TextView
                 android:id="@+id/contactInfoTitle"
                 android:layout_width="wrap_content"

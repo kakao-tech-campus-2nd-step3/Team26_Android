@@ -57,6 +57,13 @@ class EventDetailActivity : AppCompatActivity() {
                 //행사 위치 정보 설정
                 eventLatitude = event.data?.location?.latitude
                 eventLongitude = event.data?.location?.longitude
+                
+                //주최자 정보 설정
+                binding.organizerName.text = event.data?.host?.nickname
+                binding.organizerInfo.text = event.data?.host?.intro
+                binding.eventDescriptionTitle.text = event.data?.content
+                binding.contactPhone.text = event.data?.host?.phone
+                binding.contactEmail.text = event.data?.host?.email
             }
         }
 
