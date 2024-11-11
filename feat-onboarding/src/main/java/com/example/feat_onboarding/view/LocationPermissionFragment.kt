@@ -2,13 +2,17 @@ package com.example.feat_onboarding.view
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +22,8 @@ import com.example.feat_onboarding.databinding.FragmentLocationPermissionBinding
 import com.example.feat_onboarding.viewModel.LocationPerMissionFragmentViewModel
 import com.example.feat_onboarding.viewModel.NavigationEvent
 import com.example.feat_onboarding.viewModel.PermissionState
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -29,6 +35,9 @@ class LocationPermissionFragment : Fragment() {
 
     private val viewModel: LocationPerMissionFragmentViewModel by viewModels()
 
+    // 위치 클라이언트 추가
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -36,10 +45,12 @@ class LocationPermissionFragment : Fragment() {
             permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
                 // 정확한 위치 권한 승인
                 viewModel.onPermissionGranted()
+                fetchCurrentLocation() // 권한 승인 후 위치 가져오기 호출
             }
             permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
                 // 대략적인 위치 권한 승인
                 viewModel.onPermissionGranted()
+                fetchCurrentLocation() // 권한 승인 후 위치 가져오기 호출
             }
             else -> {
                 // 권한 거부
@@ -52,6 +63,30 @@ class LocationPermissionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupBindings()
         setupObservers()
+    }
+
+    // 위치 가져오기 함수 추가
+    private fun fetchCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+                    Log.d("LocationPermissionFragment", "Latitude: $latitude, Longitude: $longitude")
+                } else {
+                    Toast.makeText(context, "현재 위치를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener {
+                Toast.makeText(context, "위치 정보를 가져오는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun setupBindings() {
@@ -148,6 +183,9 @@ class LocationPermissionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = com.example.feat_onboarding.databinding.FragmentLocationPermissionBinding.inflate(inflater, container, false)
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
         return binding.root
     }
 }
