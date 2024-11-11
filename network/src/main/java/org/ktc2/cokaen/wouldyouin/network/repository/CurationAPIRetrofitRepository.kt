@@ -1,11 +1,17 @@
 package org.ktc2.cokaen.wouldyouin.network.repository
 
 import android.util.Log
+import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyCurationResponse
+import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyCurationSliceResponse
 import org.ktc2.cokaen.wouldyouin.data.model.CurationCreateRequestWrapper
 import org.ktc2.cokaen.wouldyouin.data.model.CurationEditRequestWrapper
 import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
+import org.ktc2.cokaen.wouldyouin.data.model.CurationSliceResponse
 import org.ktc2.cokaen.wouldyouin.network.service.CurationAPIRetrofitService
 import retrofit2.HttpException
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Query
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -28,8 +34,10 @@ open class CurationAPIRetrofitRepository @Inject constructor(
                                 body.message ?: "큐레이션 생성에 실패했습니다"
                             )
                         }
-                    } ?: throw ServerCommonAPIRetrofitRepository.CustomException("서버로부터 유효한 응답을 받지 못했습니다")
+                    }
+                        ?: throw ServerCommonAPIRetrofitRepository.CustomException("서버로부터 유효한 응답을 받지 못했습니다")
                 }
+
                 else -> {
                     val errorBody = response.errorBody()?.string()
                     throw ServerCommonAPIRetrofitRepository.CustomException("서버 응답 오류: ${response.code()}")
@@ -37,7 +45,7 @@ open class CurationAPIRetrofitRepository @Inject constructor(
             }
         } catch (e: Exception) {
             Log.e("CreateCuration", "Create failed", e)
-            throw when(e) {
+            throw when (e) {
                 is IOException -> ServerCommonAPIRetrofitRepository.CustomException("네트워크 연결을 확인해주세요")
                 is HttpException -> ServerCommonAPIRetrofitRepository.CustomException("서버 통신 오류: ${e.code()}")
                 else -> e
@@ -59,8 +67,10 @@ open class CurationAPIRetrofitRepository @Inject constructor(
                                 body.message ?: "큐레이션 생성에 실패했습니다"
                             )
                         }
-                    } ?: throw ServerCommonAPIRetrofitRepository.CustomException("서버로부터 유효한 응답을 받지 못했습니다")
+                    }
+                        ?: throw ServerCommonAPIRetrofitRepository.CustomException("서버로부터 유효한 응답을 받지 못했습니다")
                 }
+
                 else -> {
                     val errorBody = response.errorBody()?.string()
                     throw ServerCommonAPIRetrofitRepository.CustomException("서버 응답 오류: ${response.code()}")
@@ -68,7 +78,44 @@ open class CurationAPIRetrofitRepository @Inject constructor(
             }
         } catch (e: Exception) {
             Log.e("CreateCuration", "Create failed", e)
-            throw when(e) {
+            throw when (e) {
+                is IOException -> ServerCommonAPIRetrofitRepository.CustomException("네트워크 연결을 확인해주세요")
+                is HttpException -> ServerCommonAPIRetrofitRepository.CustomException("서버 통신 오류: ${e.code()}")
+                else -> e
+            }
+        }
+    }
+
+    suspend fun getCurationList(
+        area: String = "전체",
+        page: Int = 0,
+        size: Int = 10,
+        lastId: Long = Long.MAX_VALUE
+    ): CurationSliceResponse {
+        try {
+            val response = curationRetrofitService.getCurationList(area, page, size, lastId)
+            return when {
+                response.isSuccessful -> {
+                    response.body()?.let { body ->
+                        if (body.success) {
+                            body.data
+                        } else {
+                            throw ServerCommonAPIRetrofitRepository.CustomException(
+                                body.message ?: "큐레이션 목록 조회에 실패했습니다"
+                            )
+                        }
+                    }
+                        ?: throw ServerCommonAPIRetrofitRepository.CustomException("서버로부터 유효한 응답을 받지 못했습니다")
+                }
+
+                else -> {
+                    val errorBody = response.errorBody()?.string()
+                    throw ServerCommonAPIRetrofitRepository.CustomException("서버 응답 오류: ${response.code()}")
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("GetCurationList", "Create failed", e)
+            throw when (e) {
                 is IOException -> ServerCommonAPIRetrofitRepository.CustomException("네트워크 연결을 확인해주세요")
                 is HttpException -> ServerCommonAPIRetrofitRepository.CustomException("서버 통신 오류: ${e.code()}")
                 else -> e

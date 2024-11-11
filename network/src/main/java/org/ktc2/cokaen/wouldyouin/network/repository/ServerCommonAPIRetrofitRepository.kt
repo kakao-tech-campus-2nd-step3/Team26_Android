@@ -13,8 +13,7 @@ import javax.inject.Singleton
 // 공통 기능 구현
 @Singleton
 open class ServerCommonAPIRetrofitRepository @Inject constructor(
-    private val retrofitService: ServerAPIRetrofitService,
-    private val application: Application
+    private val retrofitService: ServerAPIRetrofitService
 ) {
     suspend fun uploadImageWithPart(imagePart: MultipartBody.Part, imageDomain: String): ImageResponse {
         try {

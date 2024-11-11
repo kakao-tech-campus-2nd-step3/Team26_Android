@@ -9,6 +9,7 @@ import org.ktc2.cokaen.wouldyouin.data.model.CurationCreateRequestWrapper
 import org.ktc2.cokaen.wouldyouin.data.model.CurationEditRequestWrapper
 import org.ktc2.cokaen.wouldyouin.data.model.CurationRespond
 import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
+import org.ktc2.cokaen.wouldyouin.data.model.CurationSliceResponse
 import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.network.repository.CurationAPIRetrofitRepository
 import org.ktc2.cokaen.wouldyouin.network.service.ServerAPIRetrofitService
@@ -40,5 +41,14 @@ class CurationRepository @Inject constructor(
     suspend fun deleteImage(imageId: Long): Boolean {
         return commonRepository.deleteImage(imageId, "CURATION")
     }
+
+   suspend fun getCurationList(
+       area: String = "전체",
+       page: Int = 0,
+       size: Int = 10,
+       lastId: Long = Long.MAX_VALUE
+   ): CurationSliceResponse {
+       return curationRepository.getCurationList(area, page, size, lastId)
+   }
 
 }
