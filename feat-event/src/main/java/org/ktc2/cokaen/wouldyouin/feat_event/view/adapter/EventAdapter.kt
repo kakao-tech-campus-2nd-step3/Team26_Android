@@ -16,7 +16,7 @@ class EventAdapter(private var events: List<EventResponse>) : RecyclerView.Adapt
         fun bind(event: EventResponse) {
             binding.eventTitle.text = event.title
             binding.eventDate.text = event.startTime
-            binding.eventLocation.text = "공연 장소"
+            binding.eventLocation.text = event.location.detailAddress
             binding.eventFee.text = "입장료 ${event.price}₩"
             binding.eventSeats.text = "${event.leftSeat}/${event.totalSeat}"
             binding.eventDescription.text = event.content

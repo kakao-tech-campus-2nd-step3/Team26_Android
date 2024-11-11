@@ -49,7 +49,7 @@ class EventDetailActivity : AppCompatActivity() {
                 binding.eventName.text = event.data?.title
                 binding.eventTime.text = event.data?.startTime
                 binding.eventDuration.text = "약 ${event.data?.endTime} - ${event.data?.startTime}분"
-                //binding.eventLocation.text = event.data?.location?.name
+                binding.eventLocation.text = event.data?.location?.detailAddress
                 binding.eventFee.text = "입장료 ₩${event.data?.price}"
                 binding.eventSeats.text = "${event.data?.leftSeat}/${event.data?.totalSeat}"
                 binding.eventDescription.text = event.data?.content
