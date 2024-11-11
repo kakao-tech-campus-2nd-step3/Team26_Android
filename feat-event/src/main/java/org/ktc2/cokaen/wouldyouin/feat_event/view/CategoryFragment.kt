@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
+import org.ktc2.cokaen.wouldyouin.data.model.Category
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
 import org.ktc2.cokaen.wouldyouin.feat_event.R
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.FragmentCategoryBinding
@@ -33,6 +34,10 @@ class CategoryFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_category, container, false)
         binding.category = this
 
+        // 전달받은 카테고리 값 수신
+        val category = arguments?.getString("category") ?: Category.전체.name
+        binding.array.text = category // UI에서 카테고리명 표시
+
         // RecyclerView 초기화
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         eventAdapter = EventAdapter(emptyList())
@@ -53,11 +58,18 @@ class CategoryFragment : Fragment() {
                 binding.recyclerView.adapter = eventAdapter
             }
         })*/
+        /*
         eventViewModel.eventList.observe(viewLifecycleOwner, Observer { eventListResponse ->
             eventListResponse?.data?.events?.let { events ->
                 eventList = events // MapFragment에 전달할 데이터를 저장
                 eventAdapter = EventAdapter(events)
                 binding.recyclerView.adapter = eventAdapter
+            }
+        })*/
+        eventViewModel.eventList.observe(viewLifecycleOwner, Observer { eventListResponse ->
+            eventListResponse?.data?.events?.let { events ->
+                eventList = events
+                eventAdapter.submitList(events)
             }
         })
 
@@ -77,6 +89,7 @@ class CategoryFragment : Fragment() {
             endLongitude = endLongitude,
             latitude = latitude,
             longitude = longitude,
+            category = category,
             context = requireContext()
         )
 
