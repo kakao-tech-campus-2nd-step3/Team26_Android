@@ -2,8 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 <data>
     <variable
-        name="imageUrl"
-        type="String" />
+        name="image"
+        type="org.ktc2.cokaen.wouldyouin.data.model.ImageResponse" />
     <variable
         name="viewModel"
         type="org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel" />
@@ -16,15 +16,15 @@
 </data>
 
 <FrameLayout
-    android:layout_width="160dp"
-    android:layout_height="match_parent"
+    android:layout_width="120dp"
+    android:layout_height="160dp"
     android:layout_marginEnd="8dp">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        imageUrl="@{imageUrl}"/>
+        imageUrl="@{image.url}"/>
 
     <ImageButton
         android:layout_width="24dp"
@@ -32,7 +32,7 @@
         android:layout_gravity="top|end"
         android:layout_margin="4dp"
         android:src="@drawable/xmark"
-        android:onClick="@{() -> viewModel.removeBlockImage(blockPosition, imagePosition)}"/>
+        android:onClick="@{() -> viewModel.handleImageDelete(blockPosition, image)}"/>
 
 </FrameLayout>
 </layout>

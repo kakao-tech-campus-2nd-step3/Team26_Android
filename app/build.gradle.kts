@@ -80,6 +80,10 @@ dependencies {
     implementation(libs.philjay.mpandroidchart)
     implementation(libs.androidx.navigation.fragment.ktx.v282)
     implementation(libs.androidx.navigation.ui.ktx.v282)
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.room.runtime)
+    kapt(libs.room.compiler)
 
     // Testing dependencies
     testImplementation(libs.junit)

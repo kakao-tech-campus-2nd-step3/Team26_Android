@@ -41,9 +41,14 @@ legacySupportV4 = "1.0.0"
 fragmentKtx = "1.8.3"
 junitKtx = "1.2.1"
 monitor = "1.7.2"
+roomCommon = "2.6.1"
+roomKtx = "2.6.1"
+transportRuntime = "4.0.0"
 
 
 [libraries]
+room-runtime = "androidx.room:room-runtime:2.6.1"
+room-compiler = "androidx.room:room-compiler:2.6.1"
 androidx-appcompat-v161 = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
 androidx-core-ktx-v1101 = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
 androidx-core-ktx-v190 = { module = "androidx.core:core-ktx", version.ref = "androidxCoreKtx" }
@@ -96,6 +101,9 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
+androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
+transport-runtime = { group = "com.google.android.datatransport", name = "transport-runtime", version.ref = "transportRuntime" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
