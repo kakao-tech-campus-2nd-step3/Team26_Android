@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.core
 
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
@@ -15,17 +16,17 @@ import com.bumptech.glide.request.RequestOptions
 fun setImageUrl(imageView: ImageView, path: String?, placeHolder: Drawable?) {
     val ph = placeHolder ?: ContextCompat.getDrawable(imageView.context, R.drawable.default_image)
 
+    val tempUrl = "http://52.78.71.136/api/images/curation/1ac60366aa6f4de6b903b5a2e2721244.png"
     // path가 null이거나 빈 문자열이면 플레이스홀더 표시
     if (path.isNullOrEmpty()) {
         imageView.setImageDrawable(ph)
         return
     }
 
-    // 수정해야할수도...
-    val fullUrl = "http://52.78.71.136/api/$path"
+    Log.d("Adapter called", "Hi")
 
     Glide.with(imageView.context)
-        .load(fullUrl)
+        .load(tempUrl)
         .placeholder(ph)
         .error(ph)
         .into(imageView)

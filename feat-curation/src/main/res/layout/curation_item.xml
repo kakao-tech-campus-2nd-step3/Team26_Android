@@ -12,7 +12,10 @@
             type="org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.HomeCurationViewModel" />
         <variable
             name="curation"
-            type="org.ktc2.cokaen.wouldyouin.data.model.CurationRespond" />
+            type="org.ktc2.cokaen.wouldyouin.data.model.CurationRespond"/>
+        <variable
+            name="imageUrl"
+            type="String" />
         <variable
             name="position"
             type="Integer" />
@@ -51,7 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    imageUrl="@{curation.blocks[0].images[0]}" />
+                    imageUrl="@{imageUrl}" />
 
                 <View
                     android:layout_width="match_parent"
