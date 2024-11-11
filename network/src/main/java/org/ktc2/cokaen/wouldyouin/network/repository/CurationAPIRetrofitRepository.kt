@@ -1,6 +1,6 @@
-package org.ktc2.cokaen.wouldyouin.network.Repository
+package org.ktc2.cokaen.wouldyouin.network.repository
 
-import org.ktc2.cokaen.wouldyouin.network.Service.ServerAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.service.ServerAPIRetrofitService
 import javax.inject.Inject
 import javax.inject.Singleton
 

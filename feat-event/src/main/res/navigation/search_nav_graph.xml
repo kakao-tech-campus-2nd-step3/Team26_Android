@@ -14,9 +14,20 @@
             android:id="@+id/action_searchFragment_to_categoryFragment"
             app:destination="@id/categoryFragment" />
 
+        <action
+            android:id="@+id/action_searchFragment_to_searchResultFragment"
+            app:destination="@id/searchResultFragment" />
+
+
         <deepLink
             app:uri="@string/search_deeplink_url" />
     </fragment>
+
+    <fragment
+        android:id="@+id/searchResultFragment"
+        android:name="org.ktc2.cokaen.wouldyouin.feat_event.view.SearchResultFragment"
+        android:label="SearchResultFragment"
+        tools:layout="@layout/fragment_search_result"/>
 
     <fragment
         android:id="@+id/categoryFragment"

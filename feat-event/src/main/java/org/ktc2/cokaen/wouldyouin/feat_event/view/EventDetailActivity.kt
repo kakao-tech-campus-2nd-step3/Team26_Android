@@ -2,11 +2,13 @@ package org.ktc2.cokaen.wouldyouin.feat_event.view
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,9 +17,9 @@ import org.ktc2.cokaen.wouldyouin.core_navigation.DeepLinkDestinations
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
-//import org.ktc2.cokaen.wouldyouin.feat_booking.view.BookingActivity
 import org.ktc2.cokaen.wouldyouin.feat_event.R
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.ActivityEventDetailBinding
+import org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel.EventViewModel
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -26,13 +28,39 @@ class EventDetailActivity : AppCompatActivity() {
     lateinit var navigationUtil: NavigationUtil
     private lateinit var binding: ActivityEventDetailBinding
     private lateinit var mapView: MapView
+    private val eventViewModel: EventViewModel by viewModels()
+    //행사 위치 변수 추가
+    private var eventLatitude: Double? = null
+    private var eventLongitude: Double? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_event_detail)
-        binding.eventdetail = this
+        //binding.eventdetail = this
 
+        val eventId = intent.getLongExtra("event_id", -1)
+        if (eventId != -1L) {
+            eventViewModel.fetchEventDetails(eventId, this)
+        }
+
+        eventViewModel.eventDetails.observe(this) { eventResponse ->
+            eventResponse?.let { event ->
+                binding.eventName.text = event.data?.title
+                binding.eventTime.text = event.data?.startTime
+                binding.eventDuration.text = "약 ${event.data?.endTime} - ${event.data?.startTime}분"
+                binding.eventLocation.text = event.data?.location?.detailAddress
+                binding.eventFee.text = "입장료 ₩${event.data?.price}"
+                binding.eventSeats.text = "${event.data?.leftSeat}/${event.data?.totalSeat}"
+                binding.eventDescription.text = event.data?.content
+
+                //행사 위치 정보 설정
+                eventLatitude = event.data?.location?.latitude
+                eventLongitude = event.data?.location?.longitude
+            }
+        }
+
+        /*
         val eventTitle = intent.getStringExtra("event_title")
         val eventStartTime = intent.getStringExtra("event_startTime")
         val eventEndTime = intent.getStringExtra("event_endTime")
@@ -43,7 +71,7 @@ class EventDetailActivity : AppCompatActivity() {
         val eventImage = intent.getStringExtra("event_image")
 
         binding.eventName.text = eventTitle
-        binding.eventTime.text = eventStartTime
+        binding.eventTime.text = "$eventStartTime - $eventEndTime"
         binding.eventLocation.text = eventLocation
         binding.eventFee.text = "입장료 ${eventPrice}₩"
         binding.eventSeats.text = "${eventSeats}"
@@ -53,10 +81,9 @@ class EventDetailActivity : AppCompatActivity() {
             Glide.with(this)
                 .load(eventImage)
                 .into(binding.posterImage)
-        }
+        }*/
 
         binding.bookButton.setOnClickListener {
-            //네비게이션 부탁드립니다(import도 주석 처리 했습니다)
             startBookingActivity()
         }
 
@@ -82,6 +109,16 @@ class EventDetailActivity : AppCompatActivity() {
         }, object : KakaoMapReadyCallback() {
             override fun onMapReady(kakaoMap: KakaoMap) {
                 // 인증 후 API가 정상적으로 실행될 때 호출됨
+                //행사 위치로 카메라 이동
+                eventLatitude?.let { latitude ->
+                    eventLongitude?.let { longitude ->
+                        kakaoMap.moveCamera(
+                            com.kakao.vectormap.camera.CameraUpdateFactory.newCenterPosition(
+                                LatLng.from(latitude, longitude), 15
+                            )
+                        )
+                    }
+                }
             }
         })
     }

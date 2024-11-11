@@ -5,8 +5,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
-import org.ktc2.cokaen.wouldyouin.network.Service.KakaoAPIRetrofitService
-import org.ktc2.cokaen.wouldyouin.network.Service.ServerAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.service.EventAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.service.KakaoAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.service.ServerAPIRetrofitService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named
@@ -36,7 +37,7 @@ object NetworkModule {
     @Named("Server")
     fun provideServerRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://52.78.71.136/api/")
+            .baseUrl("http://52.78.71.136")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -51,6 +52,12 @@ object NetworkModule {
     @Singleton
     fun provideServerService(@Named("Server") retrofit: Retrofit): ServerAPIRetrofitService {
         return retrofit.create(ServerAPIRetrofitService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEventAPIRetrofitService(@Named("Server") retrofit: Retrofit): EventAPIRetrofitService {
+        return retrofit.create(EventAPIRetrofitService::class.java)
     }
 }
 
