@@ -6,6 +6,7 @@ import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyEventResponse
 import org.ktc2.cokaen.wouldyouin.network.service.EventAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyEventSliceResponse
+import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -52,6 +53,42 @@ class EventAPIRetrofitRepository @Inject constructor(
             }
         } catch (e: Exception) {
             Log.e("EventAPIRetrofitRepository", "Exception occurred Event list: ${e.message}", e)
+            ToastUtils.showShortToast(context, "오류 발생: ${e.message}")
+            null
+        }
+    }
+
+    suspend fun searchEvents(
+        query: String,
+        startLatitude: Double,
+        startLongitude: Double,
+        endLatitude: Double,
+        endLongitude: Double,
+        latitude: Double,
+        longitude: Double,
+        page: Int = 1,
+        size: Int = 10,
+        context: Context
+    ): List<EventResponse>? {
+        return try {
+            val response = retrofitService.getEventList(
+                startLatitude = startLatitude,
+                startLongitude = startLongitude,
+                endLatitude = endLatitude,
+                endLongitude = endLongitude,
+                latitude = latitude,
+                longitude = longitude,
+                title = query,
+                page = page,
+                size = size
+            )
+            if (response.isSuccessful && response.body()?.success == true) {
+                response.body()?.data?.events
+            } else {
+                ToastUtils.showShortToast(context, "검색에 실패했습니다.")
+                null
+            }
+        } catch (e: Exception) {
             ToastUtils.showShortToast(context, "오류 발생: ${e.message}")
             null
         }

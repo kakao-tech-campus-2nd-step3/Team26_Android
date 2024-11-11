@@ -12,13 +12,18 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import org.ktc2.cokaen.wouldyouin.feat_event.R
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.FragmentSearchBinding
+import org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel.SearchViewModel
 
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
+    private val viewModel: SearchViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -94,8 +99,19 @@ class SearchFragment : Fragment() {
 
     private fun performSearch(query: String) {
         if (query.isNotEmpty()) {
-            //서버에 검색 요청 보내기
-            Toast.makeText(requireContext(), "검색어: $query", Toast.LENGTH_SHORT).show()
+            viewModel.searchEvents(
+                //수정 필요
+                query = query,
+                startLatitude = 37.5665,      // 예시값
+                startLongitude = 126.9780,
+                endLatitude = 37.5765,
+                endLongitude = 126.9880,
+                latitude = 37.5665,
+                longitude = 126.9780,
+                context = requireContext()
+            )
+            findNavController().navigate(R.id.action_searchFragment_to_searchResultFragment)
+            //Toast.makeText(requireContext(), "검색어: $query", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), "검색어를 입력하세요.", Toast.LENGTH_SHORT).show()
         }

@@ -10,7 +10,7 @@ import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.CategoryItemBinding
 import org.ktc2.cokaen.wouldyouin.feat_event.view.EventDetailActivity
 
-class EventAdapter(private val events: List<EventResponse>) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
+class EventAdapter(private var events: List<EventResponse>) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
     inner class EventViewHolder(private val binding: CategoryItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(event: EventResponse) {
@@ -66,4 +66,9 @@ class EventAdapter(private val events: List<EventResponse>) : RecyclerView.Adapt
     }
 
     override fun getItemCount(): Int = events.size
+
+    fun submitList(newEvents: List<EventResponse>) {
+        events = newEvents
+        notifyDataSetChanged()
+    }
 }
