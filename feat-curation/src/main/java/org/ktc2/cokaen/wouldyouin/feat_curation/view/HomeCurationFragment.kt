@@ -102,14 +102,11 @@ class HomeCurationFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                // RecyclerView의 맨 아래로 스크롤했을 때
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 val totalItemCount = layoutManager.itemCount
                 val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
 
-                // 마지막 5개 항목 근처에 도달하면 다음 데이터를 불러옴
                 if (!viewModel.isLoading.value!! && totalItemCount <= lastVisibleItem + 5) {
-                    // 더 많은 데이터를 로드
                     viewModel.loadCurationList()
                 }
             }

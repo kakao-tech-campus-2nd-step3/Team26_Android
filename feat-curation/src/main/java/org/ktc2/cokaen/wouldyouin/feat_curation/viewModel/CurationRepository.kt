@@ -51,4 +51,7 @@ class CurationRepository @Inject constructor(
        return curationRepository.getCurationList(area, page, size, lastId)
    }
 
+    suspend fun getCurationDetail(curatorId: Long): CurationResponse {
+        return curationRepository.getCurationDetail(curatorId)
+    }
 }
