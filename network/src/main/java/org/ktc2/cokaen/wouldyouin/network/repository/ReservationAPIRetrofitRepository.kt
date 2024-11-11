@@ -1,8 +1,8 @@
-package org.ktc2.cokaen.wouldyouin.network.Repository
+package org.ktc2.cokaen.wouldyouin.network.repository
 
 import android.content.Context
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
-import org.ktc2.cokaen.wouldyouin.network.Service.ReservationAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.service.ReservationAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationRequest
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationResponse
 import javax.inject.Inject

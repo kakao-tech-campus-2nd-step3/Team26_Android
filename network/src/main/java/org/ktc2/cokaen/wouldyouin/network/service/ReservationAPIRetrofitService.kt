@@ -1,12 +1,10 @@
-package org.ktc2.cokaen.wouldyouin.network.Service
+package org.ktc2.cokaen.wouldyouin.network.service
 
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
-import retrofit2.http.Query
 import retrofit2.http.Body
 import retrofit2.http.DELETE
-import retrofit2.http.PUT
 import retrofit2.Response
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationRequest
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationResponse

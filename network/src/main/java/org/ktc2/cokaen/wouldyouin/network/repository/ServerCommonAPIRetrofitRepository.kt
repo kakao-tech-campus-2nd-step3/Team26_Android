@@ -1,18 +1,14 @@
-package org.ktc2.cokaen.wouldyouin.network.Repository
+package org.ktc2.cokaen.wouldyouin.network.repository
 
 import android.app.Application
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MultipartBody
-import org.ktc2.cokaen.wouldyouin.core.ToastUtils
-import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.data.model.ImageUploadRequest
-import org.ktc2.cokaen.wouldyouin.network.Service.ServerAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.service.ServerAPIRetrofitService
 import retrofit2.HttpException
 import java.io.File
 import java.io.IOException
