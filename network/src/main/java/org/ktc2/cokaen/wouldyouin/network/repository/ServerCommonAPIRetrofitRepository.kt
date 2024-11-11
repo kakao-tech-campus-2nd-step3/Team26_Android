@@ -1,16 +1,11 @@
 package org.ktc2.cokaen.wouldyouin.network.repository
 
 import android.app.Application
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.util.Base64
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.ktc2.cokaen.wouldyouin.data.model.ImageUploadRequest
+import android.util.Log
+import okhttp3.MultipartBody
+import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.network.service.ServerAPIRetrofitService
 import retrofit2.HttpException
-import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,163 +13,65 @@ import javax.inject.Singleton
 // 공통 기능 구현
 @Singleton
 open class ServerCommonAPIRetrofitRepository @Inject constructor(
-    private val retrofitService: ServerAPIRetrofitService,
-    private val application: Application
+    private val retrofitService: ServerAPIRetrofitService
 ) {
-    private val context = application.applicationContext
-
-    suspend fun uploadImage(uri: Uri, type: String): String {
+    suspend fun uploadImageWithPart(imagePart: MultipartBody.Part, imageDomain: String): ImageResponse {
         try {
-            val file = getFileFromUri(uri)
+            Log.d("ImageUpload", "==== Request Details ====")
+            Log.d("ImageUpload", "Content-Disposition: ${imagePart.headers?.get("Content-Disposition")}")
+            Log.d("ImageUpload", "Content-Type: ${imagePart.headers?.get("Content-Type")}")
+            Log.d("ImageUpload", "Image Domain: $imageDomain")
 
-            try {
-                val base64Image = file.inputStream().use { input ->
-                    Base64.encodeToString(input.readBytes(), Base64.DEFAULT)
-                }
-
-                val request = ImageUploadRequest(
-                    type = type,
-                    images = listOf(base64Image)
-                )
-
-                val response = retrofitService.uploadImages(request)
-                if (response.isSuccessful && response.body()?.success == true) {
-                    return response.body()?.data?.firstOrNull()?.url
-                        ?: throw Exception("이미지 URL을 받지 못했습니다")
-                } else {
-                    throw Exception(when(response.code()) {
-                        413 -> "파일이 너무 큽니다"
-                        401 -> "인증에 실패했습니다"
-                        500 -> "서버 오류가 발생했습니다"
-                        else -> response.body()?.message
-                            ?: "업로드에 실패했습니다 (${response.code()})"
-                    })
-                }
-            } finally {
-                file.delete()
-            }
-        } catch (e: Exception) {
-            when (e) {
-                is IOException -> throw Exception("네트워크 연결을 확인해주세요")
-                is HttpException -> throw Exception("서버 통신 중 오류가 발생했습니다")
-                is OutOfMemoryError -> throw Exception("이미지 크기가 너무 큽니다")
-                else -> throw e
-            }
-        }
-    }
-
-    suspend fun uploadMultipleImages(uris: List<Uri>, type: String): List<String> {
-        try {
-            val base64Images = uris.map { uri ->
-                val file = getFileFromUri(uri)
-                try {
-                    file.inputStream().use { input ->
-                        Base64.encodeToString(input.readBytes(), Base64.DEFAULT)
-                    }
-                } finally {
-                    file.delete()
-                }
-            }
-
-            val request = ImageUploadRequest(
-                type = type,
-                images = base64Images
+            val response = retrofitService.uploadImageWithPart(
+                type = imageDomain.uppercase(),
+                images = imagePart
             )
 
-            val response = retrofitService.uploadImages(request)
-            if (response.isSuccessful && response.body()?.success == true) {
-                return response.body()?.data?.map { it.url }
-                    ?: throw Exception("이미지 URL을 받지 못했습니다")
-            } else {
-                throw Exception(when(response.code()) {
-                    413 -> "파일이 너무 큽니다"
-                    401 -> "인증에 실패했습니다"
-                    500 -> "서버 오류가 발생했습니다"
-                    else -> response.body()?.message
-                        ?: "업로드에 실패했습니다 (${response.code()})"
-                })
+            Log.d("ImageUpload", "Response Code: ${response.code()}")
+            Log.d("ImageUpload", "Response Headers: ${response.headers()}")
+
+            return when {
+                response.isSuccessful -> {
+                    response.body()?.let { body ->
+                        if (body.success) {
+                            body.data?.firstOrNull()
+                                ?: throw CustomException("이미지 데이터가 없습니다")
+                        } else {
+                            throw CustomException(body.message ?: "이미지 업로드에 실패했습니다")
+                        }
+                    } ?: throw CustomException("서버로부터 유효한 응답을 받지 못했습니다")
+                }
+                else -> {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("ImageUpload", "Error Response: $errorBody")
+                    throw CustomException("서버 응답 오류: ${response.code()}")
+                }
             }
         } catch (e: Exception) {
-            when (e) {
-                is IOException -> throw Exception("네트워크 연결을 확인해주세요")
-                is HttpException -> throw Exception("서버 통신 중 오류가 발생했습니다")
-                is OutOfMemoryError -> throw Exception("이미지 크기가 너무 큽니다")
-                else -> throw e
+            Log.e("ImageUpload", "Upload failed", e)
+            throw when(e) {
+                is IOException -> CustomException("네트워크 연결을 확인해주세요")
+                is HttpException -> CustomException("서버 통신 오류: ${e.code()}")
+                else -> e
             }
         }
     }
 
-    private fun getFileFromUri(uri: Uri): File {
-        val inputStream = context.contentResolver.openInputStream(uri)
-            ?: throw IllegalStateException("Cannot open input stream for uri: $uri")
-
-        val file = File(context.cacheDir, "upload_${System.currentTimeMillis()}.jpg")
-
-        inputStream.use { input ->
-            file.outputStream().use { output ->
-                input.copyTo(output)
-            }
-        }
-
-        return file
-    }
+    class CustomException(message: String) : Exception(message)
 
     suspend fun deleteImage(imageId: Long, type: String): Boolean {
         return try {
             val response = retrofitService.deleteImage(imageId, type)
-            if (response.isSuccessful && response.body()?.success == true) {
+            if (response.isSuccessful) {
                 true
             } else {
-                throw Exception(response.body()?.message ?: "이미지 삭제에 실패했습니다.")
+                throw Exception("이미지 삭제에 실패했습니다. 오류 코드: ${response.code()}")
             }
         } catch (e: Exception) {
             when (e) {
                 is IOException -> throw Exception("네트워크 연결을 확인해주세요")
                 is HttpException -> throw Exception("서버 통신 중 오류가 발생했습니다")
                 else -> throw e
-            }
-        }
-    }
-
-    suspend fun loadImage(path: String): ByteArray? {
-        return try {
-            val response = retrofitService.loadImage(path)
-            if (response.isSuccessful) {
-                response.body()?.bytes()
-            } else {
-                throw Exception("이미지를 불러오는데 실패했습니다")
-            }
-        } catch (e: Exception) {
-            when (e) {
-                is IOException -> throw Exception("네트워크 연결을 확인해주세요")
-                is HttpException -> throw Exception("서버 통신 중 오류가 발생했습니다")
-                else -> throw e
-            }
-        }
-    }
-
-    // 이미지를 비트맵으로 변환하는 함수
-    suspend fun loadImageAsBitmap(path: String): Bitmap? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val imageBytes = loadImage(path) ?: return@withContext null
-                BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-            } catch (e: Exception) {
-                null
-            }
-        }
-    }
-
-    // 이미지를 파일로 저장하는 함수
-    suspend fun loadImageToFile(path: String, fileName: String): File? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val imageBytes = loadImage(path) ?: return@withContext null
-                val file = File(application.cacheDir, fileName)
-                file.writeBytes(imageBytes)
-                file
-            } catch (e: Exception) {
-                null
             }
         }
     }

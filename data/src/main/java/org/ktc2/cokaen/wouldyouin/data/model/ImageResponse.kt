@@ -21,10 +21,10 @@ data class ImageResponse(
     val id: Long,
 
     @SerializedName("url")
-    val url: String,
+    var url: String,
 
     @SerializedName("createdDate")
-    val createdDate: String, // date-time 형식
+    val createdDate: List<Int>,
 
     @SerializedName("size")
     val size: Long

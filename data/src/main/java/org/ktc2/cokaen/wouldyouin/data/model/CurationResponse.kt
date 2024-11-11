@@ -31,9 +31,8 @@ data class CurationCuratorResponse(
 )
 
 data class CurationCardResponse(
-    // 임시 -> 추후 수정 필요!!!
     val title: String,
-    val images: List<String>,
+    val imageUrls: List<String>,
     val body: String
 )
 
@@ -45,4 +44,12 @@ data class CurationEventResponse(
     val thumbnailImageUrl: String,
     val hostProfileImageUrl: String,
     val hostNickname: String
+)
+
+
+data class LocalCurationCard(
+    // 임시 -> 추후 수정 필요!!!
+    val title: String,
+    val images: List<ImageResponse>,
+    val body: String
 )

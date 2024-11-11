@@ -94,6 +94,7 @@ class LocationPermissionFragment : Fragment() {
             NavigationEvent.NavigateToNext -> {
                 findNavController().navigate(R.id.action_locationPermission_to_selectArea)
             }
+            else -> {}
         }
     }
 

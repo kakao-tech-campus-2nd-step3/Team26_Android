@@ -1,10 +1,12 @@
 package org.ktc2.cokaen.wouldyouin.network
 
+import android.util.Log
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.ktc2.cokaen.wouldyouin.network.service.EventAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.KakaoAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.ServerAPIRetrofitService
@@ -36,7 +38,31 @@ object NetworkModule {
     @Singleton
     @Named("Server")
     fun provideServerRetrofit(): Retrofit {
+        val loggingInterceptor = HttpLoggingInterceptor { message ->
+            Log.d("OkHttp", message)
+        }.apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .addInterceptor { chain ->
+                val request = chain.request()
+                Log.d("OkHttp", "Request URL: ${request.url}")
+                Log.d("OkHttp", "Request Method: ${request.method}")
+                Log.d("OkHttp", "Request Headers: ${request.headers}")
+                Log.d("OkHttp", "Request Body: ${request.body}")
+
+                val response = chain.proceed(request)
+                Log.d("OkHttp", "Response Code: ${response.code}")
+                Log.d("OkHttp", "Response Message: ${response.message}")
+                Log.d("OkHttp", "Response Headers: ${response.headers}")
+
+                response
+            }
+            .build()
         return Retrofit.Builder()
+            .client(client)
             .baseUrl("http://52.78.71.136")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -52,6 +78,12 @@ object NetworkModule {
     @Singleton
     fun provideServerService(@Named("Server") retrofit: Retrofit): ServerAPIRetrofitService {
         return retrofit.create(ServerAPIRetrofitService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCurationAPIRetrofitService(@Named("Server") retrofit: Retrofit): CurationAPIRetrofitService {
+        return retrofit.create(CurationAPIRetrofitService::class.java)
     }
 
     @Provides
