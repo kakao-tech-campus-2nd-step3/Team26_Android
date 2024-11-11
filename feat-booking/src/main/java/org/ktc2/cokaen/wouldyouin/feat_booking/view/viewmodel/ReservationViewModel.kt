@@ -1,4 +1,4 @@
-package org.ktc2.cokaen.wouldyouin.feat_booking.view.ViewModel
+package org.ktc2.cokaen.wouldyouin.feat_booking.view.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.LiveData
