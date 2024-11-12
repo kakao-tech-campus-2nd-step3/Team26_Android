@@ -1,5 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.feat_profile.view.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,9 +18,9 @@ class ProfileViewModel @Inject constructor(
     private val _memberProfile = MutableLiveData<MemberResponse?>()
     val memberProfile: LiveData<MemberResponse?> get() = _memberProfile
 
-    fun fetchMemberProfile(memberId: Long) {
+    fun fetchMemberProfile(memberId: Long, context: Context) {
         viewModelScope.launch {
-            val response = repository.getMemberProfile(memberId)
+            val response = repository.getMemberProfile(memberId, context = context)
             _memberProfile.value = response?.data
         }
     }
