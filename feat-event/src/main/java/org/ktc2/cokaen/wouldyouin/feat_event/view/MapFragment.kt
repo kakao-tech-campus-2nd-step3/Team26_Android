@@ -32,6 +32,7 @@ import org.ktc2.cokaen.wouldyouin.feat_event.R
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.FragmentMapBinding
 import android.Manifest
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -39,6 +40,7 @@ import com.kakao.vectormap.label.Label
 import com.kakao.vectormap.label.LodLabel
 import com.kakao.vectormap.label.LodLabelLayer
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
+import kotlin.math.pow
 
 class MapFragment : Fragment() {
 
@@ -117,6 +119,27 @@ class MapFragment : Fragment() {
                     mapInitialized = true
                     getCurrentLocationAndStartMap()
                     addMarkersToMap()
+                    /*
+                    // 화면의 시작과 끝 좌표를 임시로 구하는 함수 호출
+                    // 위치 권한 확인
+                    if (checkLocationPermission()) {
+                        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                            if (location != null) {
+                                val latitude = location.latitude
+                                val longitude = location.longitude
+                                val zoomLevel = 15 // 필요에 따라 조정
+
+                                // 화면의 시작과 끝 좌표 계산
+                                calculateVisibleRegion(latitude, longitude, zoomLevel)
+                                Log.d("MapBounds", "Latitude: $latitude, Longitude: $longitude")
+                            }
+                        }.addOnFailureListener {
+                            Toast.makeText(requireContext(), "위치 정보를 가져오는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                        requestLocationPermission()
+                    }*/
                 }
             }
         })
@@ -280,6 +303,25 @@ class MapFragment : Fragment() {
         mapView.pause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
+
+    /*
+    private fun calculateVisibleRegion(centerLat: Double, centerLng: Double, zoomLevel: Int) {
+        // 줌 레벨과 지도의 픽셀 크기(대략 256픽셀 기준)를 통해 거리 범위를 계산합니다.
+        // 여기서는 임의의 줌 레벨 비율을 사용하여 단순화된 계산을 적용합니다.
+        val scale = 2.0.pow(zoomLevel.toDouble())
+        val halfMapWidthInDegrees = (180 / scale)
+
+        // 경도 범위 계산
+        val topLat = centerLat + halfMapWidthInDegrees
+        val bottomLat = centerLat - halfMapWidthInDegrees
+        val leftLng = centerLng - halfMapWidthInDegrees
+        val rightLng = centerLng + halfMapWidthInDegrees
+
+        // 로그로 출력하여 좌상단과 우하단 확인
+        Log.d("MapBounds", "Top Left - Latitude: $topLat, Longitude: $leftLng")
+        Log.d("MapBounds", "Bottom Right - Latitude: $bottomLat, Longitude: $rightLng")
+    }*/
+
 }
 
 //기존 코드(혹시 몰라서 남겨 놓음)

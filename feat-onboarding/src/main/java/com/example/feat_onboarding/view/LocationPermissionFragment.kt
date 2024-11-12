@@ -1,6 +1,7 @@
 package com.example.feat_onboarding.view
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -27,6 +28,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlin.math.pow
 
 @AndroidEntryPoint
 class LocationPermissionFragment : Fragment() {
@@ -80,12 +82,19 @@ class LocationPermissionFragment : Fragment() {
                     val latitude = location.latitude
                     val longitude = location.longitude
                     Log.d("LocationPermissionFragment", "Latitude: $latitude, Longitude: $longitude")
+
+                    // 화면 시작과 끝 좌표 계산
+                    val topLeftAndBottomRight = calculateVisibleRegion(latitude, longitude, 15)
+
+                    // 계산된 좌표를 SharedPreferences에 저장
+                    saveLocationData(latitude, longitude, topLeftAndBottomRight.first.first, topLeftAndBottomRight.first.second, topLeftAndBottomRight.second.first, topLeftAndBottomRight.second.second)
                 } else {
                     Toast.makeText(context, "현재 위치를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
                 }
             }.addOnFailureListener {
                 Toast.makeText(context, "위치 정보를 가져오는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
             }
+
         }
     }
 
@@ -187,5 +196,31 @@ class LocationPermissionFragment : Fragment() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         return binding.root
+    }
+
+    // calculateVisibleRegion 함수 수정
+    private fun calculateVisibleRegion(centerLat: Double, centerLng: Double, zoomLevel: Int): Pair<Pair<Double, Double>, Pair<Double, Double>> {
+        val scale = 2.0.pow(zoomLevel.toDouble())
+        val halfMapWidthInDegrees = (180 / scale)
+
+        val topLeftLat = centerLat + halfMapWidthInDegrees
+        val topLeftLng = centerLng - halfMapWidthInDegrees
+        val bottomRightLat = centerLat - halfMapWidthInDegrees
+        val bottomRightLng = centerLng + halfMapWidthInDegrees
+
+        return Pair(Pair(topLeftLat, topLeftLng), Pair(bottomRightLat, bottomRightLng))
+    }
+
+    private fun saveLocationData(centerLat: Double, centerLng: Double, topLeftLat: Double, topLeftLng: Double, bottomRightLat: Double, bottomRightLng: Double) {
+        val sharedPreferences = requireActivity().getSharedPreferences("LocationData", Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putString("centerLat", centerLat.toString())
+            putString("centerLng", centerLng.toString())
+            putString("topLeftLat", topLeftLat.toString())
+            putString("topLeftLng", topLeftLng.toString())
+            putString("bottomRightLat", bottomRightLat.toString())
+            putString("bottomRightLng", bottomRightLng.toString())
+            apply() // 또는 commit()
+        }
     }
 }

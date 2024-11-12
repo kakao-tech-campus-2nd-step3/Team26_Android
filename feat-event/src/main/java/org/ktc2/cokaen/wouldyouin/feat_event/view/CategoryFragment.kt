@@ -1,6 +1,8 @@
 package org.ktc2.cokaen.wouldyouin.feat_event.view
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -73,6 +75,7 @@ class CategoryFragment : Fragment() {
             }
         })
 
+        /*
         // 샘플 위치 값을 사용하여 이벤트 목록 가져오기
         val startLatitude = 35.1684  // 시작 지점의 위도
         val startLongitude = 126.8996  // 시작 지점의 경도
@@ -80,6 +83,20 @@ class CategoryFragment : Fragment() {
         val endLongitude = 126.9196  // 끝 지점의 경도
         val latitude = 35.1784  // 사용자의 현재 위치 위도
         val longitude = 126.9096  // 사용자의 현재 위치 경도
+         */
+
+        val sharedPreferences = requireActivity().getSharedPreferences("LocationData", Context.MODE_PRIVATE)
+
+        val latitude = sharedPreferences.getString("centerLat", "0.0")!!.toDouble()
+        val longitude = sharedPreferences.getString("centerLng", "0.0")!!.toDouble()
+        val startLatitude = sharedPreferences.getString("topLeftLat", "0.0")!!.toDouble()
+        val startLongitude = sharedPreferences.getString("topLeftLng", "0.0")!!.toDouble()
+        val endLatitude = sharedPreferences.getString("bottomRightLat", "0.0")!!.toDouble()
+        val endLongitude = sharedPreferences.getString("bottomRightLng", "0.0")!!.toDouble()
+
+        Log.d("LocationData", "Center Latitude: $latitude, Center Longitude: $longitude")
+        Log.d("LocationData", "Top Left Latitude: $startLatitude, Top Left Longitude: $startLongitude")
+        Log.d("LocationData", "Bottom Right Latitude: $endLatitude, Bottom Right Longitude: $endLongitude")
 
         // 이벤트 목록 가져오기 (GET 방식)
         eventViewModel.fetchEventList(
