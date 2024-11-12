@@ -26,6 +26,7 @@ data class EventResponse(
 )
 
 data class EventHostResponse(
+    val hostId: Long,
     val nickname: String,
     val email: String,
     val phone: String,
