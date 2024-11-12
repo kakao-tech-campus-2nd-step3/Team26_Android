@@ -44,6 +44,7 @@ class ProfileActivity : AppCompatActivity() {
                 setupHashtagRecyclerView(it.hashtag)
 
                 //프로필 이미지
+                binding.imageUrl = it.profileUrl
                 //관객 리뷰(리사이클러뷰)
             }
         }

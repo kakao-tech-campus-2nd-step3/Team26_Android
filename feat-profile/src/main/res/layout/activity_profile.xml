@@ -44,7 +44,7 @@
                     android:layout_marginBottom="9dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:src="@{imageUrl}"
+                    imageUrl="@{imageUrl}"
                     />
 
                 <TextView
