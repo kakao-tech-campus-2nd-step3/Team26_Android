@@ -29,6 +29,7 @@ import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.data.model.LocalCurationCard
 import org.ktc2.cokaen.wouldyouin.data.model.MemberIdentifier
 import org.ktc2.cokaen.wouldyouin.data.model.MemberType
+import org.ktc2.cokaen.wouldyouin.data.model.SearchEventData
 import org.ktc2.cokaen.wouldyouin.data.repository.CurationLocalRepository
 import org.ktc2.cokaen.wouldyouin.feat_curation.repository.CurationRepository
 import java.io.ByteArrayOutputStream
@@ -47,6 +48,9 @@ class CreateCurationViewModel @Inject constructor(
 
     private var originalBlocks: List<Block>? = null
     private val deletedImages = mutableListOf<ImageResponse>()
+
+    private val _eventDataList = MutableLiveData<List<SearchEventData>>()
+    val eventDataList: LiveData<List<SearchEventData>> get() = _eventDataList
 
     // 네비게이션
     private val _navigationEvent = MutableLiveData<NavigationEvent>()
@@ -154,6 +158,19 @@ class CreateCurationViewModel @Inject constructor(
     fun updateSelectedRegion(region: String) {
         _selectedRegion.value = region
     }
+
+    // 이벤트 리스트 초기화
+    fun setEventList(events: List<SearchEventData>) {
+        _eventDataList.value = events.toMutableList()
+    }
+
+    // 이벤트 삭제
+    fun deleteEvent(position: Int) {
+        val currentList = _eventDataList.value?.toMutableList() ?: mutableListOf()
+        currentList.removeAt(position)
+        _eventDataList.value = currentList
+    }
+
 
     // 블록 추가
     fun addNewBlock() {
@@ -265,6 +282,7 @@ class CreateCurationViewModel @Inject constructor(
                     )
                 } ?: listOf()
 
+                val eventIds = _eventDataList.value?.map { it.eventId } ?: listOf()
                 val requestBody = CurationCreateRequestWrapper(
                     curationCreateRequest = CurationCreateRequest(
                         title = _title.value ?: "",
@@ -272,11 +290,7 @@ class CreateCurationViewModel @Inject constructor(
                         curationCards = curationCards,
                         area = _selectedRegion.value ?: "전체",
                         hashTag = hashTags,
-                        eventIds = listOf()
-                    ),
-                    curator = MemberIdentifier(
-                        id = curatorId,
-                        type = MemberType.curator.toString()
+                        eventIds = eventIds
                     )
                 )
 
@@ -562,6 +576,12 @@ class CreateCurationViewModel @Inject constructor(
         } else {
             createCurationWithApi(curatorId)
         }
+    }
+
+    fun saveSearchEventData(eventId: Long, eventName: String?, hostName: String?, imageUrl: String?) {
+        val newEvent = SearchEventData(eventId, eventName, hostName, imageUrl)
+        val currentList = _eventDataList.value ?: emptyList()
+        _eventDataList.value = currentList + newEvent
     }
 }
 sealed class NavigationEvent {

@@ -8,8 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -28,20 +26,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.entities.CurationEntity
 import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.feat_curation.R
@@ -52,8 +40,6 @@ import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.ActivityCreateCurati
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CurationSearchViewModel
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.NavigationEvent
-import java.io.File
-import java.io.FileOutputStream
 
 @AndroidEntryPoint
 class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.DeleteClickListener, CreateCurationBlockAdapter.OnImageClickListener {
@@ -170,7 +156,6 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
 
         val searchInput = binding.inputSearchMap
 
-// 1. 키보드 액션 리스너
         searchInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val query = searchInput.text.toString().trim()
@@ -182,7 +167,6 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
             }
         }
 
-// 2. 텍스트 변경 리스너 (X 표시 또는 돋보기 아이콘 변경)
         searchInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -198,7 +182,6 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
             override fun afterTextChanged(s: Editable?) {}
         })
 
-// 3. X 버튼 클릭 처리를 위한 Touch 리스너
         searchInput.setOnTouchListener { view, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 val drawableEnd = searchInput.compoundDrawables[2]
@@ -226,6 +209,22 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
         checkCurationCardBody()
         checkHashtags()
         setupButtons()
+
+        supportFragmentManager.setFragmentResultListener("event_selection", this) { _, bundle ->
+            val eventId = bundle.getLong("event_id")
+            val eventName = bundle.getString("event_name")
+            val hostName = bundle.getString("host_name")
+            val imageUrl = bundle.getString("image_url")
+
+            // 뷰모델에 데이터 저장
+            viewModel.saveSearchEventData(eventId, eventName, hostName, imageUrl)
+        }
+
+        viewModel.eventDataList.observe(this, Observer { eventList ->
+            // eventList는 List<EventData> 형태입니다.
+            // UI에 반영하거나, RecyclerView에 데이터를 설정하는 등의 작업을 수행합니다.
+            Log.d("EventList", "Number of events: ${eventList.size}")
+        })
     }
 
     private fun setupButtons() {
