@@ -6,6 +6,14 @@
         <variable
             name="eventdetail"
             type="org.ktc2.cokaen.wouldyouin.feat_event.view.EventDetailActivity" />
+
+        <variable
+            name="posterImageUrl"
+            type="String" />
+        
+        <variable
+            name="organizerImageUrl"
+            type="String" />
     </data>
 
     <ScrollView
@@ -29,12 +37,12 @@
                     android:id="@+id/posterImage"
                     android:layout_width="0dp"
                     android:layout_height="300dp"
-                    android:src="@drawable/poster"
                     android:scaleType="centerCrop"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    imageUrl="@{posterImageUrl}"/>
 
                 <ImageButton
                     android:id="@+id/leftArrow"
@@ -165,16 +173,6 @@
                 android:textSize="16sp"
                 android:textColor="@android:color/black"
                 android:layout_marginBottom="8dp"/>
-
-            <!--
-            <ImageView
-                android:id="@+id/mapImage"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:src="@drawable/sample_map"
-                android:scaleType="centerCrop"
-                android:layout_marginBottom="16dp"/>
-                -->
             
             <com.kakao.vectormap.MapView
                 android:id="@+id/map_view"
@@ -199,10 +197,12 @@
                 android:layout_marginBottom="16dp">
 
                 <ImageView
+                    android:id="@+id/organizerImage"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:src="@drawable/logo"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    imageUrl="@{organizerImageUrl}"/>
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -258,7 +258,6 @@
                 android:textColor="@android:color/black"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- 문의 정보 -->
             <TextView
                 android:id="@+id/contactInfoTitle"
                 android:layout_width="wrap_content"

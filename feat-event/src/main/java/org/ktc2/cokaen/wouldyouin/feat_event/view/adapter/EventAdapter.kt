@@ -14,6 +14,7 @@ class EventAdapter(private var events: List<EventResponse>) : RecyclerView.Adapt
 
     inner class EventViewHolder(private val binding: CategoryItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(event: EventResponse) {
+            binding.imageUrl = event.images[0]
             binding.eventTitle.text = event.title
             binding.eventDate.text = event.startTime
             binding.eventLocation.text = event.location.detailAddress
