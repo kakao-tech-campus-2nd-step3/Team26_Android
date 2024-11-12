@@ -22,7 +22,8 @@ data class EventResponse(
     val totalSeat: Int,
     val leftSeat: Int,
     val category: Category,
-    val expired: Boolean
+    val expired: Boolean,
+    val images: List<String>
 )
 
 data class EventHostResponse(

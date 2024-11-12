@@ -259,9 +259,10 @@ class MapFragment : Fragment() {
         binding.placeName.text = event.title
         binding.placeDescription.text = event.content
         //해쉬태그(안되면 생략..)
-        //binding.placeTags =
-        binding.placeAddress.text = event.location.toString()
+        binding.placeTags.text = event.host.hashtags.joinToString(" ")
+        binding.placeAddress.text = event.location.detailAddress
         binding.placeDatetime.text = event.startTime
+        binding.imageUrl = event.host.profileImageUrl
     }
 
     override fun onResume() {

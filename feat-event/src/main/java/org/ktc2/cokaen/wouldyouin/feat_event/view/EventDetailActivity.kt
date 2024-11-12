@@ -64,6 +64,9 @@ class EventDetailActivity : AppCompatActivity() {
                 binding.eventDescriptionTitle.text = event.data?.content
                 binding.contactPhone.text = event.data?.host?.phone
                 binding.contactEmail.text = event.data?.host?.email
+
+                binding.posterImageUrl = event.data?.images?.firstOrNull()
+                binding.organizerImageUrl = event.data?.host?.profileImageUrl
             }
         }
 
