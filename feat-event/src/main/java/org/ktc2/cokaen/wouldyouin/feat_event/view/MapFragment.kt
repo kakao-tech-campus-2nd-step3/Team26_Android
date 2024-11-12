@@ -55,13 +55,6 @@ class MapFragment : Fragment() {
     private lateinit var eventList: Array<EventResponse> // 전달된 이벤트 목록을 저장
     private var selectedEvent: EventResponse? = null // 현재 선택된 이벤트 정보
 
-    /*
-    private val locations = listOf(
-        Location(name = "행사 장소 1", latitude = 35.1784, longitude = 126.9096),
-        Location(name = "행사 장소 2", latitude = 35.1790, longitude = 126.9096),
-        Location(name = "행사 장소 3", latitude = 35.1784, longitude = 126.9100)
-    )*/
-
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
     }
@@ -119,27 +112,6 @@ class MapFragment : Fragment() {
                     mapInitialized = true
                     getCurrentLocationAndStartMap()
                     addMarkersToMap()
-                    /*
-                    // 화면의 시작과 끝 좌표를 임시로 구하는 함수 호출
-                    // 위치 권한 확인
-                    if (checkLocationPermission()) {
-                        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                            if (location != null) {
-                                val latitude = location.latitude
-                                val longitude = location.longitude
-                                val zoomLevel = 15 // 필요에 따라 조정
-
-                                // 화면의 시작과 끝 좌표 계산
-                                calculateVisibleRegion(latitude, longitude, zoomLevel)
-                                Log.d("MapBounds", "Latitude: $latitude, Longitude: $longitude")
-                            }
-                        }.addOnFailureListener {
-                            Toast.makeText(requireContext(), "위치 정보를 가져오는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        Toast.makeText(requireContext(), "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
-                        requestLocationPermission()
-                    }*/
                 }
             }
         })
@@ -277,6 +249,8 @@ class MapFragment : Fragment() {
     private fun updateMapWithCurrentLocation(latitude: Double, longitude: Double) {
         kakaoMap?.moveCamera(CameraUpdateFactory.newCenterPosition(LatLng.from(latitude, longitude), 15))
         centerLabel?.moveTo(LatLng.from(latitude, longitude))
+        // 현재 위도, 경도 로그 출력
+        Log.d("MapFragment", "Current Location - Latitude: $latitude, Longitude: $longitude")
     }
 
     //선택한 이벤트 정보로 카드뷰의 내용을 업데이트하는 함수
@@ -303,24 +277,6 @@ class MapFragment : Fragment() {
         mapView.pause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
-
-    /*
-    private fun calculateVisibleRegion(centerLat: Double, centerLng: Double, zoomLevel: Int) {
-        // 줌 레벨과 지도의 픽셀 크기(대략 256픽셀 기준)를 통해 거리 범위를 계산합니다.
-        // 여기서는 임의의 줌 레벨 비율을 사용하여 단순화된 계산을 적용합니다.
-        val scale = 2.0.pow(zoomLevel.toDouble())
-        val halfMapWidthInDegrees = (180 / scale)
-
-        // 경도 범위 계산
-        val topLat = centerLat + halfMapWidthInDegrees
-        val bottomLat = centerLat - halfMapWidthInDegrees
-        val leftLng = centerLng - halfMapWidthInDegrees
-        val rightLng = centerLng + halfMapWidthInDegrees
-
-        // 로그로 출력하여 좌상단과 우하단 확인
-        Log.d("MapBounds", "Top Left - Latitude: $topLat, Longitude: $leftLng")
-        Log.d("MapBounds", "Bottom Right - Latitude: $bottomLat, Longitude: $rightLng")
-    }*/
 
 }
 
