@@ -3,7 +3,9 @@ package org.ktc2.cokaen.wouldyouin.feat_profile.view
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import org.ktc2.cokaen.wouldyouin.feat_profile.databinding.ActivityProfileBinding
+import org.ktc2.cokaen.wouldyouin.feat_profile.view.adapter.HashtagAdapter
 import org.ktc2.cokaen.wouldyouin.feat_profile.view.viewmodel.ProfileViewModel
 
 class ProfileActivity : AppCompatActivity() {
@@ -32,11 +34,22 @@ class ProfileActivity : AppCompatActivity() {
                 binding.intro.text = it.intro
                 binding.phone.text = it.phoneNumber
 
+                // 해시태그 리사이클러뷰
+                setupHashtagRecyclerView(it.hashtag)
+
                 //프로필 이미지
-                //해쉬태그(리사이클러뷰)
                 //진행한 행사(리사이클러뷰)
                 //관객 리뷰(리사이클러뷰)
             }
+        }
+    }
+
+    // 해시태그 리사이클러뷰 설정 메소드
+    private fun setupHashtagRecyclerView(hashtags: List<String>) {
+        val hashtagAdapter = HashtagAdapter(hashtags)
+        binding.hashtag.apply {
+            layoutManager = LinearLayoutManager(this@ProfileActivity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = hashtagAdapter
         }
     }
 }
