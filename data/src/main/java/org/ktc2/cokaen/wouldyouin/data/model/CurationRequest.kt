@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.data.model
 
 import com.google.gson.annotations.SerializedName
+import java.util.UUID
 
 // 추후 수정 필요
 data class CurationEditRequestWrapper(
@@ -29,6 +30,7 @@ data class CurationEditRequest(
 )
 
 data class Block(
+    val id: UUID = UUID.randomUUID(),
     val title: String,
     val images: List<ImageResponse>,
     val body: String

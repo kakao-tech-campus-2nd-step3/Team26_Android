@@ -25,12 +25,10 @@ class CreateCurationBlockAdapter(
 
     private object BlockDiffCallback : DiffUtil.ItemCallback<Block>() {
         override fun areItemsTheSame(oldItem: Block, newItem: Block): Boolean {
-            // 같은 위치의 블록인지만 확인
-            return oldItem === newItem
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: Block, newItem: Block): Boolean {
-            // 실제 내용 비교
             return oldItem == newItem
         }
     }
@@ -89,7 +87,7 @@ class CreateCurationBlockAdapter(
                 override fun afterTextChanged(s: Editable?) {
                     titleUpdateJob?.cancel()
                     titleUpdateJob = CoroutineScope(Dispatchers.Main).launch {
-                        delay(500) // 500ms 디바운스
+                        delay(1000)
                         this@CreateCurationBlockAdapter.viewModel?.updateBlockTitle(position, s.toString())
                     }
                 }
@@ -101,7 +99,7 @@ class CreateCurationBlockAdapter(
                 override fun afterTextChanged(s: Editable?) {
                     contentUpdateJob?.cancel()
                     contentUpdateJob = CoroutineScope(Dispatchers.Main).launch {
-                        delay(1000) // 500ms 디바운스
+                        delay(1000)
                         this@CreateCurationBlockAdapter.viewModel?.updateBlockBody(position, s.toString())
                     }
                 }
