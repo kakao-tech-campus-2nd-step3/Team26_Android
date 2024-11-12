@@ -21,7 +21,6 @@ interface CurationAPIRetrofitService {
 
     @PUT("/api/curations/{curationId}")
     suspend fun updateCuration(
-        @Path("curationId") curationId: Long,
         @Body request: CurationEditRequestWrapper
     ): Response<ApiResponseBodyCurationResponse>
 

@@ -48,7 +48,6 @@ class CurationCardAdapter(
             binding.curation = curation
             binding.position = position
 
-
             val firstImageUrl = curation.curationCards.firstOrNull()?.imageUrls?.get(0)
             binding.imageUrl = firstImageUrl  // 이미지 URL을 binding에 설정
 

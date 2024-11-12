@@ -1,14 +1,8 @@
 package org.ktc2.cokaen.wouldyouin.data.model
 import com.google.gson.annotations.SerializedName
 
-data class MemberRequest(
-    @SerializedName("identifier") val identifier: MemberIdentifier,
+data class MemberRequestWrapper(
     @SerializedName("editRequest") val editRequest: MemberEditRequest
-)
-
-data class MemberIdentifier(
-    @SerializedName("id") val id: Long,
-    @SerializedName("type") val type: String
 )
 
 data class MemberEditRequest(

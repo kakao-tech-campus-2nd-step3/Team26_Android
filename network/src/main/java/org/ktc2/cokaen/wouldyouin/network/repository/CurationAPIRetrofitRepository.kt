@@ -55,8 +55,7 @@ open class CurationAPIRetrofitRepository @Inject constructor(
 
     suspend fun updateCuration(request: CurationEditRequestWrapper): CurationResponse {
         try {
-            val curationId = request.curator.id
-            val response = curationRetrofitService.updateCuration(curationId, request)
+            val response = curationRetrofitService.updateCuration(request)
             return when {
                 response.isSuccessful -> {
                     response.body()?.let { body ->

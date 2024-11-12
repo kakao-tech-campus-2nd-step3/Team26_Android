@@ -27,8 +27,6 @@ import org.ktc2.cokaen.wouldyouin.data.model.CurationEditRequest
 import org.ktc2.cokaen.wouldyouin.data.model.CurationEditRequestWrapper
 import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.data.model.LocalCurationCard
-import org.ktc2.cokaen.wouldyouin.data.model.MemberIdentifier
-import org.ktc2.cokaen.wouldyouin.data.model.MemberType
 import org.ktc2.cokaen.wouldyouin.data.model.SearchEventData
 import org.ktc2.cokaen.wouldyouin.data.repository.CurationLocalRepository
 import org.ktc2.cokaen.wouldyouin.feat_curation.repository.CurationRepository
@@ -42,6 +40,7 @@ class CreateCurationViewModel @Inject constructor(
     private val curationRepository: CurationRepository,
     private val curationLocalRepository: CurationLocalRepository
 ) : ViewModel() {
+    private val MAX_BLOCKS = 10
     private val context = application.applicationContext
     var isEditMode = false
     private var originalCuration: CurationEntity? = null
@@ -50,7 +49,7 @@ class CreateCurationViewModel @Inject constructor(
     private val deletedImages = mutableListOf<ImageResponse>()
 
     private val _eventDataList = MutableLiveData<List<SearchEventData>>()
-    val eventDataList: LiveData<List<SearchEventData>> get() = _eventDataList
+    val eventDataList: LiveData<List<SearchEventData>> = _eventDataList
 
     // 네비게이션
     private val _navigationEvent = MutableLiveData<NavigationEvent>()
@@ -79,15 +78,8 @@ class CreateCurationViewModel @Inject constructor(
     private val _selectedRegion = MutableLiveData<String>()
     val selectedRegion: LiveData<String> = _selectedRegion
 
-    private val _blocksChangedEvent = MutableLiveData<Int>()
-    val blocksChangedEvent: LiveData<Int> = _blocksChangedEvent
-
     private val _hasUnsavedChanges = MutableLiveData(false)
     val hasUnsavedChanges: LiveData<Boolean> = _hasUnsavedChanges
-
-    fun notifyBlocksChanged() {
-        _blocksChangedEvent.postValue(-1)
-    }
 
     private val _isFragmentVisible = MutableLiveData(false)
     val isFragmentVisible: LiveData<Boolean> get() = _isFragmentVisible
@@ -119,22 +111,24 @@ class CreateCurationViewModel @Inject constructor(
     }
 
     // ViewModel 수정
+    // 블록 타이틀 업데이트
     fun updateBlockTitle(position: Int, newTitle: String) {
         val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
         if (currentBlocks.getOrNull(position)?.title != newTitle) {
             currentBlocks.getOrNull(position)?.let { block ->
                 currentBlocks[position] = block.copy(title = newTitle)
-                _curationBlocks.postValue(currentBlocks)  // setValue 대신 postValue 사용
+                _curationBlocks.value = currentBlocks
             }
         }
     }
 
+    // 블록 내용 업데이트
     fun updateBlockBody(position: Int, newBody: String) {
         val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
         if (currentBlocks.getOrNull(position)?.body != newBody) {
             currentBlocks.getOrNull(position)?.let { block ->
                 currentBlocks[position] = block.copy(body = newBody)
-                _curationBlocks.postValue(currentBlocks)  // setValue 대신 postValue 사용
+                _curationBlocks.value = currentBlocks
             }
         }
     }
@@ -159,31 +153,62 @@ class CreateCurationViewModel @Inject constructor(
         _selectedRegion.value = region
     }
 
-    // 이벤트 리스트 초기화
-    fun setEventList(events: List<SearchEventData>) {
-        _eventDataList.value = events.toMutableList()
-    }
-
-    // 이벤트 삭제
-    fun deleteEvent(position: Int) {
-        val currentList = _eventDataList.value?.toMutableList() ?: mutableListOf()
-        currentList.removeAt(position)
-        _eventDataList.value = currentList
-    }
-
-
-    // 블록 추가
+    // ViewModel
     fun addNewBlock() {
-        val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
-        currentBlocks.add(
-            Block(
+        Log.d("BlockAdd", "Adding new block")
+        val currentBlocks = _curationBlocks.value?.toMutableList() ?: mutableListOf()
+        Log.d("BlockAdd", "Current blocks size: ${currentBlocks.size}")
+
+        if (currentBlocks.size < MAX_BLOCKS) {
+            // 새 블록 추가
+            val newBlock = Block(
                 title = "",
                 images = listOf(),
                 body = ""
             )
-        )
-        _curationBlocks.value = currentBlocks
-        notifyBlocksChanged()
+            currentBlocks.add(newBlock)
+
+            Log.d("BlockAdd", "New block added. New size: ${currentBlocks.size}")
+            // 새 리스트로 설정
+            _curationBlocks.postValue(currentBlocks)
+            updateAddBlockButtonState(currentBlocks.size < MAX_BLOCKS)
+        }
+    }
+
+    // 블록 삭제
+    fun removeBlock(blockPosition: Int) {
+        viewModelScope.launch {
+            val currentBlocks = _curationBlocks.value?.toMutableList() ?: return@launch
+            if (blockPosition < currentBlocks.size) {
+                val deletedBlock = currentBlocks.removeAt(blockPosition)
+
+                // 삭제된 블록의 모든 이미지 삭제
+                deletedBlock.images.forEach { imageResponse ->
+                    try {
+                        curationRepository.deleteImage(imageResponse.id)
+                    } catch (e: Exception) {
+                        Log.e("RemoveBlock", "Failed to delete image: ${imageResponse.id}", e)
+                    }
+                }
+
+                _curationBlocks.value = currentBlocks
+                updateAddBlockButtonState(currentBlocks.size < MAX_BLOCKS)
+            }
+        }
+    }
+
+    private fun observeBlocksSize() {
+        curationBlocks.observeForever { blocks ->
+            updateAddBlockButtonState(blocks.size < MAX_BLOCKS)
+        }
+    }
+
+    fun deleteEvent(position: Int) {
+        val currentList = _eventDataList.value?.toMutableList() ?: return
+        if (position in currentList.indices) {
+            currentList.removeAt(position)
+            _eventDataList.value = currentList  // 새 리스트 설정
+        }
     }
 
     fun onImageClick(position: Int) {
@@ -227,7 +252,6 @@ class CreateCurationViewModel @Inject constructor(
                     )
                     _curationBlocks.value = currentBlocks
                     Log.d("ImageUpload", "업데이트된 이미지 리스트: ${currentBlocks[position].images}")
-                    notifyBlocksChanged()
                 }
             } catch (e: Exception) {
                 Log.e("ImageUpload", "Upload failed", e)
@@ -267,7 +291,7 @@ class CreateCurationViewModel @Inject constructor(
         return cleanBitmap
     }
 
-    fun createCurationWithApi(curatorId: Long) {
+    fun createCurationWithApi() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
@@ -326,16 +350,20 @@ class CreateCurationViewModel @Inject constructor(
             _isLoading.value = true
             try {
                 val success = curationRepository.deleteImage(image.id)
-
                 if (success) {
                     // 현재 블록의 이미지 목록에서 해당 이미지만 제거
                     val currentBlocks = _curationBlocks.value?.toMutableList() ?: return@launch
                     if (blockPosition < currentBlocks.size) {
                         val currentBlock = currentBlocks[blockPosition]
+                        val updatedImages = currentBlock.images.filterNot { it.id == image.id }
                         currentBlocks[blockPosition] = currentBlock.copy(
-                            images = currentBlock.images.filterNot { it.id == image.id }
+                            images = updatedImages
                         )
                         _curationBlocks.value = currentBlocks
+
+                        // 이미지 버튼 상태 업데이트 추가
+                        val MAX_IMAGES = 5
+                        updateAddImageButtonState(blockPosition, updatedImages.size < MAX_IMAGES)
                     }
                 } else {
                     ToastUtils.showShortToast(context, "이미지 삭제에 실패했습니다")
@@ -346,33 +374,6 @@ class CreateCurationViewModel @Inject constructor(
                 _isLoading.value = false
             }
         }
-    }
-
-    // 블록 삭제
-    fun removeBlock(blockPosition: Int) {
-        viewModelScope.launch {
-            val currentBlocks = _curationBlocks.value?.toMutableList() ?: return@launch
-            if (blockPosition < currentBlocks.size) {
-                val deletedBlock = currentBlocks.removeAt(blockPosition)
-
-                // 삭제된 블록의 모든 이미지 삭제
-                deletedBlock.images.forEach { imageResponse ->
-                    try {
-                        curationRepository.deleteImage(imageResponse.id)
-                    } catch (e: Exception) {
-                        Log.e("RemoveBlock", "Failed to delete image: ${imageResponse.id}", e)
-                        // 개별 이미지 삭제 실패를 전체 프로세스 실패로 처리하지 않음
-                    }
-                }
-
-                _curationBlocks.value = currentBlocks
-                notifyBlockRemoved(blockPosition)
-            }
-        }
-    }
-
-    private fun notifyBlockRemoved(position: Int) {
-        _blocksChangedEvent.postValue(position)
     }
 
     // 큐레이션 생성
@@ -477,7 +478,7 @@ class CreateCurationViewModel @Inject constructor(
         ).joinToString(",")
     }
 
-    private fun saveEdit(curatorId: Long, originalCuration: CurationEntity) {
+    private fun saveEdit(originalCuration: CurationEntity) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
@@ -510,8 +511,7 @@ class CreateCurationViewModel @Inject constructor(
                         area = _selectedRegion.value ?: "전체",
                         hashTag = hashTags,
                         eventIds = listOf()
-                    ),
-                    curator = MemberIdentifier(id = curatorId, type = "curator")
+                    )
                 )
 
                 // API 호출
@@ -570,11 +570,11 @@ class CreateCurationViewModel @Inject constructor(
         }
     }
 
-    fun saveCuration(curatorId: Long) {
+    fun saveCuration() {
         if (isEditMode) {
-            originalCuration?.let { saveEdit(curatorId, it) }
+            originalCuration?.let { saveEdit(it) }
         } else {
-            createCurationWithApi(curatorId)
+            createCurationWithApi()
         }
     }
 
@@ -583,6 +583,26 @@ class CreateCurationViewModel @Inject constructor(
         val currentList = _eventDataList.value ?: emptyList()
         _eventDataList.value = currentList + newEvent
     }
+
+    private val _imageButtonStates = MutableLiveData<Map<Int, Boolean>>(mapOf())
+    val imageButtonStates: LiveData<Map<Int, Boolean>> = _imageButtonStates
+
+    private val _isAddBlockButtonEnabled = MutableLiveData(true)
+    val isAddBlockButtonEnabled: LiveData<Boolean> = _isAddBlockButtonEnabled
+
+    // 이미지 추가 버튼 상태 업데이트
+    // 상태 업데이트 메서드
+    fun updateAddImageButtonState(blockPosition: Int, isEnabled: Boolean) {
+        val currentStates = _imageButtonStates.value?.toMutableMap() ?: mutableMapOf()
+        currentStates[blockPosition] = isEnabled
+        _imageButtonStates.value = currentStates
+    }
+
+    // 블록 추가 버튼 상태 업데이트
+    private fun updateAddBlockButtonState(isEnabled: Boolean) {
+        _isAddBlockButtonEnabled.postValue(isEnabled)  // setValue 대신 postValue 사용
+    }
+
 }
 sealed class NavigationEvent {
     object Back : NavigationEvent()

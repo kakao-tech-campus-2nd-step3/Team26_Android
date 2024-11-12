@@ -2,6 +2,8 @@ package org.ktc2.cokaen.wouldyouin.feat_curation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.ktc2.cokaen.wouldyouin.data.model.SearchEventData
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.SelectedEventItemBinding
@@ -9,41 +11,51 @@ import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewMode
 
 class SelectedEventsAdapter(
     private val viewModel: CreateCurationViewModel
-) : RecyclerView.Adapter<SelectedEventsAdapter.EventViewHolder>() {
+) : ListAdapter<SearchEventData, SelectedEventsAdapter.EventViewHolder>(EventDiffCallback) {
 
-    private var eventList: List<SearchEventData> = emptyList() // 초기 데이터는 빈 리스트
+    // DiffUtil.ItemCallback 구현
+    companion object {
+        private object EventDiffCallback : DiffUtil.ItemCallback<SearchEventData>() {
+            override fun areItemsTheSame(oldItem: SearchEventData, newItem: SearchEventData): Boolean {
+                return oldItem === newItem
+            }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
-        val binding =
-            SelectedEventItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return EventViewHolder(binding)
-    }
-
-    // 데이터를 갱신하는 메소드
-    fun setData(events: List<SearchEventData>) {
-        eventList = events
-        notifyDataSetChanged() // 데이터가 변경될 때마다 UI 갱신
-    }
-
-    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        val event = eventList[position]
-        holder.bind(event)
-
-        // 삭제 버튼 클릭 시, position 전달하여 삭제 처리
-        holder.binding.deleteButton.setOnClickListener {
-            viewModel.deleteEvent(position) // 삭제는 ViewModel에서 처리
-            notifyItemRemoved(position) // UI에서 항목 제거
+            override fun areContentsTheSame(oldItem: SearchEventData, newItem: SearchEventData): Boolean {
+                return oldItem == newItem
+            }
         }
     }
 
-    override fun getItemCount(): Int = eventList.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
+        return EventViewHolder(
+            SelectedEventItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
+    }
+
+    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
+        val event = getItem(position)
+        holder.bind(event)
+
+        // 삭제 버튼 클릭 처리
+        holder.binding.deleteButton.setOnClickListener {
+            viewModel.deleteEvent(position)
+            // notifyItemRemoved는 필요 없음 - ViewModel에서 새 리스트를 제공할 것이기 때문
+        }
+    }
 
     inner class EventViewHolder(val binding: SelectedEventItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(event: SearchEventData) {
-            binding.eventTitle.text = event.eventName
-            binding.hostName.text = event.hostName
-            binding.imageUrl = event.imageUrl
+            binding.apply {
+                eventTitle.text = event.eventName
+                hostName.text = event.hostName
+                imageUrl = event.imageUrl
+                executePendingBindings()
+            }
         }
     }
 }

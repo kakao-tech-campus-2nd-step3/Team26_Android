@@ -5,10 +5,7 @@ import com.google.gson.annotations.SerializedName
 // 추후 수정 필요
 data class CurationEditRequestWrapper(
     @SerializedName("curationEditRequest")
-    val curationEditRequest: CurationEditRequest,
-
-    @SerializedName("curator")
-    val curator: MemberIdentifier
+    val curationEditRequest: CurationEditRequest
 )
 
 data class CurationEditRequest(
