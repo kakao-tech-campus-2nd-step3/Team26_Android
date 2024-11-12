@@ -298,7 +298,7 @@ class CreateCurationViewModel @Inject constructor(
         return cleanBitmap
     }
 
-    fun createCurationWithApi(curatorId: Long) {
+    fun createCurationWithApi() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
