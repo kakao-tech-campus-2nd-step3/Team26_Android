@@ -32,6 +32,7 @@ import org.ktc2.cokaen.wouldyouin.feat_event.R
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.FragmentMapBinding
 import android.Manifest
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -39,6 +40,7 @@ import com.kakao.vectormap.label.Label
 import com.kakao.vectormap.label.LodLabel
 import com.kakao.vectormap.label.LodLabelLayer
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
+import kotlin.math.pow
 
 class MapFragment : Fragment() {
 
@@ -52,13 +54,6 @@ class MapFragment : Fragment() {
     private var centerLabel: Label? = null
     private lateinit var eventList: Array<EventResponse> // 전달된 이벤트 목록을 저장
     private var selectedEvent: EventResponse? = null // 현재 선택된 이벤트 정보
-
-    /*
-    private val locations = listOf(
-        Location(name = "행사 장소 1", latitude = 35.1784, longitude = 126.9096),
-        Location(name = "행사 장소 2", latitude = 35.1790, longitude = 126.9096),
-        Location(name = "행사 장소 3", latitude = 35.1784, longitude = 126.9100)
-    )*/
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -254,6 +249,8 @@ class MapFragment : Fragment() {
     private fun updateMapWithCurrentLocation(latitude: Double, longitude: Double) {
         kakaoMap?.moveCamera(CameraUpdateFactory.newCenterPosition(LatLng.from(latitude, longitude), 15))
         centerLabel?.moveTo(LatLng.from(latitude, longitude))
+        // 현재 위도, 경도 로그 출력
+        Log.d("MapFragment", "Current Location - Latitude: $latitude, Longitude: $longitude")
     }
 
     //선택한 이벤트 정보로 카드뷰의 내용을 업데이트하는 함수
@@ -262,9 +259,10 @@ class MapFragment : Fragment() {
         binding.placeName.text = event.title
         binding.placeDescription.text = event.content
         //해쉬태그(안되면 생략..)
-        //binding.placeTags =
-        binding.placeAddress.text = event.location.toString()
+        binding.placeTags.text = event.host.hashtags.joinToString(" ")
+        binding.placeAddress.text = event.location.detailAddress
         binding.placeDatetime.text = event.startTime
+        binding.imageUrl = event.host.profileImageUrl
     }
 
     override fun onResume() {
@@ -280,6 +278,7 @@ class MapFragment : Fragment() {
         mapView.pause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
+
 }
 
 //기존 코드(혹시 몰라서 남겨 놓음)

@@ -22,10 +22,12 @@ data class EventResponse(
     val totalSeat: Int,
     val leftSeat: Int,
     val category: Category,
-    val expired: Boolean
+    val expired: Boolean,
+    val images: List<String>
 )
 
 data class EventHostResponse(
+    val hostId: Long,
     val nickname: String,
     val email: String,
     val phone: String,
@@ -36,7 +38,8 @@ data class EventHostResponse(
 )
 
 enum class Category {
-    MUSIC, ART, SPORTS, EDUCATION, TECHNOLOGY, LITERATURE, FILM, OTHER // 필요시 추가
+    //MUSIC, ART, SPORTS, EDUCATION, TECHNOLOGY, LITERATURE, FILM, OTHER // 필요시 추가
+    전체, 밴드, 연극, 뮤지컬, 원데이클래스, 전시회, 공예, 축제
 }
 
 //

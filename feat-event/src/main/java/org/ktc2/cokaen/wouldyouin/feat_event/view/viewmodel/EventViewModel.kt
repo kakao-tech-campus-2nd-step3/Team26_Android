@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -47,10 +48,31 @@ class EventViewModel @Inject constructor(
         context: Context
     ) {
         viewModelScope.launch {
+            Log.d("EventFetch", "Fetching events for category: $category")
+            val result = repository.getEventList(
+                startLatitude = startLatitude,
+                startLongitude = startLongitude,
+                endLatitude = endLatitude,
+                endLongitude = endLongitude,
+                latitude = latitude,
+                longitude = longitude,
+                title = title,
+                category = category,
+                area = area,
+                page = page,
+                size = size,
+                lastId = lastId,
+                context = context
+            )
+            _eventList.value = result
+            Log.d("EventFetch", "Fetched events: ${result?.data?.events}")
+        }
+        /*
+        viewModelScope.launch {
             _eventList.value = repository.getEventList(
                 startLatitude, startLongitude, endLatitude, endLongitude, latitude, longitude, title, category, area, page, size, lastId, context
             )
-        }
+        }*/
     }
 
     //단일 행사 상세 조회

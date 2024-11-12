@@ -15,6 +15,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import org.ktc2.cokaen.wouldyouin.data.model.Category
 import org.ktc2.cokaen.wouldyouin.feat_event.R
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.FragmentSearchBinding
 import org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel.SearchViewModel
@@ -79,22 +80,34 @@ class SearchFragment : Fragment() {
 
 
         binding.imageViewBand.setOnClickListener {
-            findNavController().navigate(R.id.action_searchFragment_to_categoryFragment)
+            //findNavController().navigate(R.id.action_searchFragment_to_categoryFragment)
+            navigateToCategory(Category.밴드.name)
         }
 
         binding.imageViewPlayMusical.setOnClickListener {
-            findNavController().navigate(R.id.action_searchFragment_to_categoryFragment)
+            //findNavController().navigate(R.id.action_searchFragment_to_categoryFragment)
+            navigateToCategory(Category.연극.name)
         }
 
         binding.imageViewOnedayclass.setOnClickListener {
-            findNavController().navigate(R.id.action_searchFragment_to_categoryFragment)
+            //findNavController().navigate(R.id.action_searchFragment_to_categoryFragment)
+            navigateToCategory(Category.원데이클래스.name)
         }
 
         binding.imageViewExhibition.setOnClickListener {
-            findNavController().navigate(R.id.action_searchFragment_to_categoryFragment)
+            //findNavController().navigate(R.id.action_searchFragment_to_categoryFragment)
+            navigateToCategory(Category.전시회.name)
         }
 
         return binding.root
+    }
+
+    private fun navigateToCategory(category: String) {
+        val bundle = Bundle().apply {
+            putString("category", category)
+        }
+        Log.d("CategorySelection", "Navigating to category: $category")
+        findNavController().navigate(R.id.action_searchFragment_to_categoryFragment, bundle)
     }
 
     private fun performSearch(query: String) {

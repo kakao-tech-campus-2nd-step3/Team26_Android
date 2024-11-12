@@ -57,6 +57,16 @@ class EventDetailActivity : AppCompatActivity() {
                 //행사 위치 정보 설정
                 eventLatitude = event.data?.location?.latitude
                 eventLongitude = event.data?.location?.longitude
+
+                //주최자 정보 설정
+                binding.organizerName.text = event.data?.host?.nickname
+                binding.organizerInfo.text = event.data?.host?.intro
+                binding.eventDescriptionTitle.text = event.data?.content
+                binding.contactPhone.text = event.data?.host?.phone
+                binding.contactEmail.text = event.data?.host?.email
+
+                binding.posterImageUrl = event.data?.images?.firstOrNull()
+                binding.organizerImageUrl = event.data?.host?.profileImageUrl
             }
         }
 
@@ -88,7 +98,10 @@ class EventDetailActivity : AppCompatActivity() {
         }
 
         binding.viewProfile.setOnClickListener {
-            startMemberProfileActivity()
+            val hostId = eventViewModel.eventDetails.value?.data?.host?.hostId
+            if (hostId != null) {
+                startMemberProfileActivity(hostId)
+            }
         }
 
         // 지도 카드(MapFragment)에서 전달받은 데이터 사용 시
@@ -149,7 +162,7 @@ class EventDetailActivity : AppCompatActivity() {
         )
     }
 
-    private fun startMemberProfileActivity() {
+    private fun startMemberProfileActivity(hostId: Long) {
         navigationUtil.navigate(
             NavigationCommand(
                 destination = NavigationDestination.Activity(DeepLinkDestinations.MEMBER_PROFILE_ACTIVITY),
@@ -157,7 +170,7 @@ class EventDetailActivity : AppCompatActivity() {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK,
                     clearTop = true
                 ),
-                data = mapOf() // 여기에 필요한 데이터(id) 넘겨주시면 됩니다!!
+                data = mapOf("hostId" to hostId.toString()) // 여기에 필요한 데이터(id) 넘겨주시면 됩니다!!
             )
         )
     }
