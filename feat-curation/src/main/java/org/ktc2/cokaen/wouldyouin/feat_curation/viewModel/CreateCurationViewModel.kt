@@ -154,6 +154,13 @@ class CreateCurationViewModel @Inject constructor(
     }
 
     // ViewModel
+    // 이벤트 리스트 초기화
+    fun setEventList(events: List<SearchEventData>) {
+        _eventDataList.value = events.toMutableList()
+    }
+
+
+    // 블록 추가
     fun addNewBlock() {
         Log.d("BlockAdd", "Adding new block")
         val currentBlocks = _curationBlocks.value?.toMutableList() ?: mutableListOf()
@@ -291,7 +298,7 @@ class CreateCurationViewModel @Inject constructor(
         return cleanBitmap
     }
 
-    fun createCurationWithApi() {
+    fun createCurationWithApi(curatorId: Long) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
