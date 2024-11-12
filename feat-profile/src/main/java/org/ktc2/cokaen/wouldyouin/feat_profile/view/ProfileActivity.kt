@@ -4,14 +4,19 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
+import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
+import org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel.EventViewModel
 import org.ktc2.cokaen.wouldyouin.feat_profile.databinding.ActivityProfileBinding
 import org.ktc2.cokaen.wouldyouin.feat_profile.view.adapter.HashtagAdapter
+import org.ktc2.cokaen.wouldyouin.feat_profile.view.adapter.PostAdapter
 import org.ktc2.cokaen.wouldyouin.feat_profile.view.viewmodel.ProfileViewModel
 
+@AndroidEntryPoint
 class ProfileActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityProfileBinding
     private val profileViewModel: ProfileViewModel by viewModels()
+    private val eventViewModel: EventViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +28,7 @@ class ProfileActivity : AppCompatActivity() {
         val hostId = intent.getStringExtra("hostId")?.toLongOrNull()
         if (hostId != null) {
             profileViewModel.fetchMemberProfile(hostId, this)
+            eventViewModel.fetchEventsByHost(hostId, context = this)
         }
 
         // ViewModel의 데이터를 관찰하여 UI 업데이트
@@ -38,8 +44,14 @@ class ProfileActivity : AppCompatActivity() {
                 setupHashtagRecyclerView(it.hashtag)
 
                 //프로필 이미지
-                //진행한 행사(리사이클러뷰)
                 //관객 리뷰(리사이클러뷰)
+            }
+        }
+
+        //진행한 행사 리사이클러뷰
+        eventViewModel.eventsByHost.observe(this) { response ->
+            response?.data?.events?.let { events ->
+                setupPostRecyclerView(events)
             }
         }
     }
@@ -50,6 +62,15 @@ class ProfileActivity : AppCompatActivity() {
         binding.hashtag.apply {
             layoutManager = LinearLayoutManager(this@ProfileActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = hashtagAdapter
+        }
+    }
+
+    //진행한 행사 리사이클러뷰 설정 메소드
+    private fun setupPostRecyclerView(events: List<EventResponse>) {
+        val postAdapter = PostAdapter(events)
+        binding.post.apply {
+            layoutManager = LinearLayoutManager(this@ProfileActivity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = postAdapter
         }
     }
 }

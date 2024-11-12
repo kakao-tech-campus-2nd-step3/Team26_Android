@@ -170,6 +170,7 @@
                             tools:text="진행한 행사"/>
 
                         <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/post"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
@@ -184,6 +185,7 @@
                             tools:text="관객 리뷰"/>
 
                         <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/review"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
