@@ -66,7 +66,7 @@ object NetworkModule {
             .build()
         return Retrofit.Builder()
             .client(client)
-            .baseUrl("http://52.78.71.136")
+            .baseUrl("https://wouldyouin.store")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
