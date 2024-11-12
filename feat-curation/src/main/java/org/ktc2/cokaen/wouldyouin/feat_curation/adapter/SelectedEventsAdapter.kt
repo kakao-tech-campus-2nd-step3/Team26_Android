@@ -8,9 +8,10 @@ import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.SelectedEventItemBin
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel
 
 class SelectedEventsAdapter(
-    private var eventList: List<SearchEventData>,
     private val viewModel: CreateCurationViewModel
 ) : RecyclerView.Adapter<SelectedEventsAdapter.EventViewHolder>() {
+
+    private var eventList: List<SearchEventData> = emptyList() // 초기 데이터는 빈 리스트
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val binding =
@@ -18,20 +19,20 @@ class SelectedEventsAdapter(
         return EventViewHolder(binding)
     }
 
+    // 데이터를 갱신하는 메소드
     fun setData(events: List<SearchEventData>) {
-        eventList = events.toMutableList()
-        notifyDataSetChanged()
+        eventList = events
+        notifyDataSetChanged() // 데이터가 변경될 때마다 UI 갱신
     }
-
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val event = eventList[position]
         holder.bind(event)
 
+        // 삭제 버튼 클릭 시, position 전달하여 삭제 처리
         holder.binding.deleteButton.setOnClickListener {
-            // 삭제할 아이템의 position 전달 (삭제는 Activity에서 처리)
-            viewModel.deleteEvent(position)
-            notifyItemRemoved(position) // UI에서 해당 항목을 제거
+            viewModel.deleteEvent(position) // 삭제는 ViewModel에서 처리
+            notifyItemRemoved(position) // UI에서 항목 제거
         }
     }
 

@@ -50,6 +50,7 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
     private lateinit var adapter: CreateCurationBlockAdapter
     private lateinit var imagesAdapter: CreateBlockImagesAdapter
     private lateinit var selectedEventsAdapter: SelectedEventsAdapter
+    private lateinit var eventsAdapter: SelectedEventsAdapter
     private var isEditMode = false
 
     private val curatorID: Long = 1
@@ -143,6 +144,7 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
         })
 
         setupRecyclerView()
+        setUpSelectedEventsView()
         setupNavigation()
 
         onBackPressedDispatcher.addCallback(
@@ -226,6 +228,17 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
             Log.d("EventList", "Number of events: ${eventList.size}")
         })
     }
+
+    private fun setUpSelectedEventsView() {
+        eventsAdapter = SelectedEventsAdapter(viewModel)
+        binding.rvSelectedEvents.adapter = eventsAdapter
+
+        viewModel.eventDataList.observe(this, Observer { events ->
+            eventsAdapter.setData(events)
+        })
+    }
+
+
 
     private fun setupButtons() {
         binding.btnRegister.setOnClickListener {

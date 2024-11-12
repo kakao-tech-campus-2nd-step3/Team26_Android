@@ -231,7 +231,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="8dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/search_item"/>
+                    tools:listitem="@layout/selected_event_item"/>
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
