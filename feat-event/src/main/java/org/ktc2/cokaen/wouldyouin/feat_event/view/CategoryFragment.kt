@@ -1,6 +1,8 @@
 package org.ktc2.cokaen.wouldyouin.feat_event.view
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
+import org.ktc2.cokaen.wouldyouin.data.model.Category
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
 import org.ktc2.cokaen.wouldyouin.feat_event.R
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.FragmentCategoryBinding
@@ -33,6 +36,10 @@ class CategoryFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_category, container, false)
         binding.category = this
 
+        // 전달받은 카테고리 값 수신
+        val category = arguments?.getString("category") ?: Category.전체.name
+        binding.array.text = category // UI에서 카테고리명 표시
+
         // RecyclerView 초기화
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         eventAdapter = EventAdapter(emptyList())
@@ -53,14 +60,22 @@ class CategoryFragment : Fragment() {
                 binding.recyclerView.adapter = eventAdapter
             }
         })*/
+        /*
         eventViewModel.eventList.observe(viewLifecycleOwner, Observer { eventListResponse ->
             eventListResponse?.data?.events?.let { events ->
                 eventList = events // MapFragment에 전달할 데이터를 저장
                 eventAdapter = EventAdapter(events)
                 binding.recyclerView.adapter = eventAdapter
             }
+        })*/
+        eventViewModel.eventList.observe(viewLifecycleOwner, Observer { eventListResponse ->
+            eventListResponse?.data?.events?.let { events ->
+                eventList = events
+                eventAdapter.submitList(events)
+            }
         })
 
+        /*
         // 샘플 위치 값을 사용하여 이벤트 목록 가져오기
         val startLatitude = 35.1684  // 시작 지점의 위도
         val startLongitude = 126.8996  // 시작 지점의 경도
@@ -68,6 +83,20 @@ class CategoryFragment : Fragment() {
         val endLongitude = 126.9196  // 끝 지점의 경도
         val latitude = 35.1784  // 사용자의 현재 위치 위도
         val longitude = 126.9096  // 사용자의 현재 위치 경도
+         */
+
+        val sharedPreferences = requireActivity().getSharedPreferences("LocationData", Context.MODE_PRIVATE)
+
+        val latitude = sharedPreferences.getString("centerLat", "0.0")!!.toDouble()
+        val longitude = sharedPreferences.getString("centerLng", "0.0")!!.toDouble()
+        val startLatitude = sharedPreferences.getString("topLeftLat", "0.0")!!.toDouble()
+        val startLongitude = sharedPreferences.getString("topLeftLng", "0.0")!!.toDouble()
+        val endLatitude = sharedPreferences.getString("bottomRightLat", "0.0")!!.toDouble()
+        val endLongitude = sharedPreferences.getString("bottomRightLng", "0.0")!!.toDouble()
+
+        Log.d("LocationData", "Center Latitude: $latitude, Center Longitude: $longitude")
+        Log.d("LocationData", "Top Left Latitude: $startLatitude, Top Left Longitude: $startLongitude")
+        Log.d("LocationData", "Bottom Right Latitude: $endLatitude, Bottom Right Longitude: $endLongitude")
 
         // 이벤트 목록 가져오기 (GET 방식)
         eventViewModel.fetchEventList(
@@ -77,6 +106,7 @@ class CategoryFragment : Fragment() {
             endLongitude = endLongitude,
             latitude = latitude,
             longitude = longitude,
+            category = category,
             context = requireContext()
         )
 

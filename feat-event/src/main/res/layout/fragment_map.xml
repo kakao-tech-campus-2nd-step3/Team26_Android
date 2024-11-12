@@ -8,6 +8,10 @@
         <variable
             name="map"
             type="org.ktc2.cokaen.wouldyouin.feat_event.view.MapFragment" />
+
+        <variable
+            name="imageUrl"
+            type="String" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -94,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/logo" />
+                    imageUrl="@{imageUrl}" />
 
             </LinearLayout>
 
