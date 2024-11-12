@@ -3,7 +3,6 @@ package org.ktc2.cokaen.wouldyouin.feat_curation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.ktc2.cokaen.wouldyouin.data.model.CurationRespond
 import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
 import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.CurationItemBinding

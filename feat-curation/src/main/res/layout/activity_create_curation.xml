@@ -204,8 +204,47 @@
                     android:onClick="@{() -> viewModel.addNewBlock()}"
                     android:src="@drawable/plus_circle"/>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="이벤트 선택"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/inputSearchMap"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:hint="행사 제목을 입력하세요."
+                    android:background="#f1f1f1"
+                    android:padding="16dp"
+                    android:drawableRight="@drawable/magnifyingglass"
+                    android:gravity="center_vertical"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvSelectedEvents"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/search_item"/>
+
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
+
+        <!-- NavHostFragment 추가 -->
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/search_nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            android:visibility="@{viewModel.isFragmentVisible ? View.VISIBLE : View.GONE}"
+            app:navGraph="@navigation/curation_search_nav_graph" />
 
         <ProgressBar
             android:layout_width="wrap_content"

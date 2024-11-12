@@ -9,10 +9,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
-import org.ktc2.cokaen.wouldyouin.data.model.Block
 import org.ktc2.cokaen.wouldyouin.data.model.CurationCardResponse
-import org.ktc2.cokaen.wouldyouin.data.model.CurationRespond
 import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
+import org.ktc2.cokaen.wouldyouin.feat_curation.repository.CurationRepository
 import javax.inject.Inject
 
 @HiltViewModel

@@ -13,9 +13,10 @@ class CreateBlockImagesAdapter(
 ) : RecyclerView.Adapter<CreateBlockImagesAdapter.ImageViewHolder>() {  // ImageDiffCallback 제거
 
     private var images: List<ImageResponse> = emptyList()  // String -> ImageResponse
+    private val MAX_IMAGES = 5  // 최대 이미지 개수를 5로 설정
 
-    fun setImages(newImages: List<ImageResponse>) {  // String -> ImageResponse
-        images = newImages
+    fun setImages(newImages: List<ImageResponse>) {
+        images = newImages.take(MAX_IMAGES)  // 최대 5개까지만 선택
         notifyDataSetChanged()
     }
 
@@ -34,7 +35,7 @@ class CreateBlockImagesAdapter(
         holder.bind(images[position], position)
     }
 
-    override fun getItemCount() = images.size
+    override fun getItemCount() = minOf(images.size, MAX_IMAGES)
 
     inner class ImageViewHolder(
         private val binding: BlockImageItemBinding

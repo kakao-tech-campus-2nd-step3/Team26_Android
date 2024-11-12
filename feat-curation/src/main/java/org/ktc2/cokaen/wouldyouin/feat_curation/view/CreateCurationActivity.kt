@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.feat_curation.view
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
@@ -17,6 +18,8 @@ import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.MotionEvent
+import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -25,22 +28,29 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.entities.CurationEntity
 import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.feat_curation.R
 import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CreateBlockImagesAdapter
 import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CreateCurationBlockAdapter
+import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.SelectedEventsAdapter
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.ActivityCreateCurationBinding
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel
+import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CurationSearchViewModel
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.NavigationEvent
 import java.io.File
 import java.io.FileOutputStream
@@ -48,10 +58,12 @@ import java.io.FileOutputStream
 @AndroidEntryPoint
 class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.DeleteClickListener, CreateCurationBlockAdapter.OnImageClickListener {
     val viewModel: CreateCurationViewModel by viewModels()
+    val searchViewModel: CurationSearchViewModel by viewModels()
     private lateinit var binding: ActivityCreateCurationBinding
     private var currentPosition: Int = -1
     private lateinit var adapter: CreateCurationBlockAdapter
     private lateinit var imagesAdapter: CreateBlockImagesAdapter
+    private lateinit var selectedEventsAdapter: SelectedEventsAdapter
     private var isEditMode = false
 
     private val curatorID: Long = 1
@@ -64,6 +76,7 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
         viewModel.handleImageDelete(blockPosition, image)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -155,6 +168,56 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
             }
         )
 
+        val searchInput = binding.inputSearchMap
+
+// 1. 키보드 액션 리스너
+        searchInput.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val query = searchInput.text.toString().trim()
+                performSearch(query)
+                Log.d("Done!", "Called?")
+                true
+            } else {
+                false
+            }
+        }
+
+// 2. 텍스트 변경 리스너 (X 표시 또는 돋보기 아이콘 변경)
+        searchInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val drawableEnd = if (s.isNullOrEmpty()) {
+                    ContextCompat.getDrawable(this@CreateCurationActivity, R.drawable.magnifyingglass)
+                } else {
+                    ContextCompat.getDrawable(this@CreateCurationActivity, R.drawable.xmark)
+                }
+                searchInput.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableEnd, null)
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+// 3. X 버튼 클릭 처리를 위한 Touch 리스너
+        searchInput.setOnTouchListener { view, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                val drawableEnd = searchInput.compoundDrawables[2]
+                if (drawableEnd != null) {
+                    // EditText의 오른쪽 영역이 클릭되었는지 확인
+                    val drawableWidth = drawableEnd.bounds.width()
+                    val touchArea = event.x >= (view.width - drawableWidth - view.paddingEnd)
+
+                    if (touchArea) {
+                        if (searchInput.text.isNotEmpty()) {
+                            searchInput.text.clear()
+                        }
+                        return@setOnTouchListener true
+                    }
+                }
+            }
+            false
+        }
+
         // 입력 검사
         setupRegionSpinner()
         checkCurationTitle()
@@ -195,14 +258,22 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
     private fun checkAndRequestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // Android 13 이상에서는 READ_MEDIA_IMAGES 권한만 요청
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_MEDIA_IMAGES
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 requestPermissions(arrayOf(Manifest.permission.READ_MEDIA_IMAGES), REQ_GALLERY)
             } else {
                 selectGallery()
             }
         } else {
             // Android 12 이하에서는 READ_EXTERNAL_STORAGE 권한을 요청
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQ_GALLERY)
             } else {
                 selectGallery()
@@ -335,7 +406,11 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
     }
 
     private fun checkCurationCardImages() {
-        // 각 이미지 url 원소 담은 배열 길이가 5 초과되면 예외
+        // 각 이미지 url 원소 담은 배열 길이가 5 초과되면 안됨
+    }
+
+    private fun checkCurationCardLength() {
+        // 큐레이션 카드 개수 10 초과되면 안됨
     }
 
     private val imageResult = registerForActivityResult(
@@ -413,7 +488,21 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
         return result!!
     }
 
+    private fun performSearch(query: String) {
+        if (query.isNotEmpty()) {
+            val fragment = CurationSearchResultFragment().apply {
+                arguments = Bundle().apply {
+                    putString("search_query", query)
+                }
+            }
+            fragment.show(supportFragmentManager, "search_result")
+        } else {
+            Toast.makeText(this, "검색어를 입력하세요.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     companion object {
         const val REQ_GALLERY = 1
+        private const val EVENT_SEARCH_REQUEST_CODE = 1001
     }
 }

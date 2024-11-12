@@ -4,8 +4,6 @@ import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.graphics.Color
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -15,32 +13,27 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.entities.CurationEntity
 import org.ktc2.cokaen.wouldyouin.data.model.Block
-import org.ktc2.cokaen.wouldyouin.data.model.CreateCurationRequestBody
 import org.ktc2.cokaen.wouldyouin.data.model.CurationCardRequest
 import org.ktc2.cokaen.wouldyouin.data.model.CurationCreateRequest
 import org.ktc2.cokaen.wouldyouin.data.model.CurationCreateRequestWrapper
 import org.ktc2.cokaen.wouldyouin.data.model.CurationEditRequest
 import org.ktc2.cokaen.wouldyouin.data.model.CurationEditRequestWrapper
-import org.ktc2.cokaen.wouldyouin.data.model.CurationRequest
-import org.ktc2.cokaen.wouldyouin.data.model.CuratorRequest
 import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.data.model.LocalCurationCard
 import org.ktc2.cokaen.wouldyouin.data.model.MemberIdentifier
 import org.ktc2.cokaen.wouldyouin.data.model.MemberType
 import org.ktc2.cokaen.wouldyouin.data.repository.CurationLocalRepository
+import org.ktc2.cokaen.wouldyouin.feat_curation.repository.CurationRepository
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 import javax.inject.Inject
+
 
 @HiltViewModel
 class CreateCurationViewModel @Inject constructor(
@@ -90,6 +83,17 @@ class CreateCurationViewModel @Inject constructor(
 
     fun notifyBlocksChanged() {
         _blocksChangedEvent.postValue(-1)
+    }
+
+    private val _isFragmentVisible = MutableLiveData(false)
+    val isFragmentVisible: LiveData<Boolean> get() = _isFragmentVisible
+
+    fun showFragment() {
+        _isFragmentVisible.value = true
+    }
+
+    fun hideFragment() {
+        _isFragmentVisible.value = false
     }
 
     // 큐레이션 블록 데이터
@@ -358,35 +362,34 @@ class CreateCurationViewModel @Inject constructor(
     }
 
     // 큐레이션 생성
-    fun createCuration(): CurationRequest {
-        // 수정
-        return CurationRequest(
+    fun createCuration(): CurationCreateRequest {
+        // curationCards는 _curationBlocks를 사용하여 변환
+        val curationCards = _curationBlocks.value?.map { block ->
+            CurationCardRequest(
+                subtitle = block.title ?: "",  // 각 블록의 subtitle을 가져옴
+                content = block.body ?: "",    // 각 블록의 content를 가져옴
+                imageIds = block.images?.map { it.id } ?: listOf(),  // 블록에 포함된 이미지 ID 목록
+                imageSizeValid = block.images?.all { it.size > 0 } ?: true  // 이미지 크기가 유효한지 여부
+            )
+        } ?: listOf()
+
+        // eventIds는 예시로 빈 리스트로 처리했으므로, 필요 시 추가 로직을 적용할 수 있음
+        val eventIds = listOf<Long>()
+
+        return CurationCreateRequest(
             title = _title.value ?: "",
             content = _content.value ?: "",
+            curationCards = curationCards,
             area = _selectedRegion.value ?: "",
-            hashtags = _hashtags.value ?: "",
-            blocks = _curationBlocks.value ?: listOf(),
-            eventList = listOf() // 추가
+            hashTag = listOf(_hashtags.value ?: ""),
+            eventIds = eventIds,
+            curationCardsSizeValid = curationCards.isNotEmpty()
         )
     }
 
     // 지역 업데이트
     fun updateRegion(region: String) {
         _selectedRegion.value = region
-    }
-
-    // 블록 내 이미지 삭제
-    fun removeBlockImage(blockPosition: Int, imagePosition: Int) {
-        val currentBlocks = _curationBlocks.value.orEmpty().toMutableList()
-        currentBlocks.getOrNull(blockPosition)?.let { block ->
-            val newImages = block.images.toMutableList().apply {
-                if (imagePosition in indices) {
-                    removeAt(imagePosition)
-                }
-            }
-            currentBlocks[blockPosition] = block.copy(images = newImages)
-            _curationBlocks.value = currentBlocks
-        }
     }
 
     fun onBackPressed() {
@@ -561,7 +564,6 @@ class CreateCurationViewModel @Inject constructor(
         }
     }
 }
-
 sealed class NavigationEvent {
     object Back : NavigationEvent()
     object ShowExitConfirmation : NavigationEvent()

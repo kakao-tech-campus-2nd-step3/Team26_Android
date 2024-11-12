@@ -31,27 +31,6 @@ data class CurationEditRequest(
     val eventIds: List<Long>
 )
 
-
-data class CurationRequest(
-    val title: String,
-    val content: String,
-    val area: String,
-    val hashtags: String,
-    val blocks: List<Block>,
-    val eventList: List<String>
-)
-
-data class CurationRespond(
-    val curationId: String,
-    val generatedAt: String,
-    val title: String,
-    val content: String,
-    val area: String,
-    val hashtags: String,
-    val blocks: List<Block>,
-    val eventList: List<String>
-)
-
 data class Block(
     val title: String,
     val images: List<ImageResponse>,

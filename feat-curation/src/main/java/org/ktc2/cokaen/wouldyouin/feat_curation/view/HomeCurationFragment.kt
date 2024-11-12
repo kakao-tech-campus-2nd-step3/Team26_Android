@@ -20,7 +20,6 @@ import org.ktc2.cokaen.wouldyouin.core_navigation.DeepLinkDestinations
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
-import org.ktc2.cokaen.wouldyouin.data.model.CurationRespond
 import org.ktc2.cokaen.wouldyouin.feat_curation.R
 import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CurationCardAdapter
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.FragmentHomeCurationBinding
