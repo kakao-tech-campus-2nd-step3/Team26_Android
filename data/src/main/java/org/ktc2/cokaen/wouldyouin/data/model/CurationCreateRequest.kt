@@ -6,9 +6,6 @@ import com.google.gson.annotations.SerializedName
 data class CurationCreateRequestWrapper(
     @SerializedName("curationCreateRequest")
     val curationCreateRequest: CurationCreateRequest,
-
-    @SerializedName("curator")
-    val curator: MemberIdentifier
 )
 
 data class CurationCreateRequest(

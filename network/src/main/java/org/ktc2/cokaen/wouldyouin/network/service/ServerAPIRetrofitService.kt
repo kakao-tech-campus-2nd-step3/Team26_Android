@@ -26,5 +26,5 @@ interface ServerAPIRetrofitService {
     suspend fun deleteImage(
         @Path("id") id: Long,
         @Query("type") type: String
-    ): Response<ApiResponseBodyVoid>
+    ): Response<ResponseBody>
 }

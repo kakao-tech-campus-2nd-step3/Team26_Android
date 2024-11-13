@@ -3,7 +3,6 @@ import com.google.gson.annotations.SerializedName
 
 // 큐레이터 정보 수정 요청 DTO
 data class CuratorEditRequestWrapper(
-    val identifier: MemberIdentifier,
     val request: CuratorEditRequest
 )
 

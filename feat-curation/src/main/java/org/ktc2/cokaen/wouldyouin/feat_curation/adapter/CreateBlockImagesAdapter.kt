@@ -2,6 +2,8 @@ package org.ktc2.cokaen.wouldyouin.feat_curation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.BlockImageItemBinding
@@ -10,31 +12,35 @@ import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewMode
 class CreateBlockImagesAdapter(
     private val viewModel: CreateCurationViewModel,
     private val blockPosition: Int
-) : RecyclerView.Adapter<CreateBlockImagesAdapter.ImageViewHolder>() {  // ImageDiffCallback 제거
+) : ListAdapter<ImageResponse, CreateBlockImagesAdapter.ImageViewHolder>(ImageDiffCallback) {
 
-    private var images: List<ImageResponse> = emptyList()  // String -> ImageResponse
+    companion object {
+        private object ImageDiffCallback : DiffUtil.ItemCallback<ImageResponse>() {
+            override fun areItemsTheSame(oldItem: ImageResponse, newItem: ImageResponse): Boolean {
+                return oldItem === newItem
+            }
 
-    fun setImages(newImages: List<ImageResponse>) {  // String -> ImageResponse
-        images = newImages
-        notifyDataSetChanged()
+            override fun areContentsTheSame(oldItem: ImageResponse, newItem: ImageResponse): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 
-    interface OnImageClickListener {
-        fun onImageDeleteClick(blockPosition: Int, image: ImageResponse)
+    // setImages 함수는 ListAdapter의 submitList를 사용
+    fun setImages(newImages: List<ImageResponse>) {
+        submitList(newImages)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        val binding = org.ktc2.cokaen.wouldyouin.feat_curation.databinding.BlockImageItemBinding.inflate(
+        val binding = BlockImageItemBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
         return ImageViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        holder.bind(images[position], position)
+        holder.bind(getItem(position), position)
     }
-
-    override fun getItemCount() = images.size
 
     inner class ImageViewHolder(
         private val binding: BlockImageItemBinding

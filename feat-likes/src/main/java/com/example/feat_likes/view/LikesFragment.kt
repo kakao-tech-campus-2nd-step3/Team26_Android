@@ -34,7 +34,7 @@ class LikesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("test", "likes")
 
-        setupToolbar()
+//        setupToolbar()
         setupViewPager()
     }
 
