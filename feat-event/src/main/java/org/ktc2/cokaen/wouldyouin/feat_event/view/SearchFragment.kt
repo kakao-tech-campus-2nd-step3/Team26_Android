@@ -25,7 +25,7 @@ import org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel.SearchViewModel
 class SearchFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
-    private val viewModel: SearchViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +34,16 @@ class SearchFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false)
         binding.search = this
         Log.d("test", "search")
+
+        // ViewModel의 eventList 관찰
+        searchViewModel.eventList.observe(viewLifecycleOwner) { eventResponse ->
+            val eventList = eventResponse?.data?.events ?: emptyList()
+            if (eventList.isNotEmpty()) {
+                findNavController().navigate(R.id.action_searchFragment_to_searchResultFragment)
+            } else {
+                Toast.makeText(requireContext(), "검색 결과가 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         val searchInput = binding.inputSearchMap
         searchInput.setOnEditorActionListener { _, actionId, event ->
@@ -128,7 +138,7 @@ class SearchFragment : Fragment() {
             Log.d("LocationData", "Bottom Right Latitude: $endLatitude, Bottom Right Longitude: $endLongitude")
 
             //viewModel.searchEvents(
-            viewModel.fetchEventList(
+            searchViewModel.fetchEventList(
                 title = query,
                 startLatitude = startLatitude,
                 startLongitude = startLongitude,
@@ -138,7 +148,7 @@ class SearchFragment : Fragment() {
                 longitude = longitude,
                 context = requireContext()
             )
-            findNavController().navigate(R.id.action_searchFragment_to_searchResultFragment)
+            //findNavController().navigate(R.id.action_searchFragment_to_searchResultFragment)
             //Toast.makeText(requireContext(), "검색어: $query", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), "검색어를 입력하세요.", Toast.LENGTH_SHORT).show()

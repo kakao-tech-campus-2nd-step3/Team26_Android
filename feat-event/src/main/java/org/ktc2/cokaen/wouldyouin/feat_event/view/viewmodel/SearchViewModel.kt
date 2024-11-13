@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyEventSliceResponse
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
 import org.ktc2.cokaen.wouldyouin.network.repository.EventAPIRetrofitRepository
 import javax.inject.Inject
@@ -15,9 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(private val repository: EventAPIRetrofitRepository) : ViewModel() {
 
-    private val _eventList = MutableLiveData<List<EventResponse>>()
-    val eventList: LiveData<List<EventResponse>> get() = _eventList
-    //전체 응답이 필요하다면 EventViewModel을 참고하여 변경할 것
+    private val _eventList = MutableLiveData<ApiResponseBodyEventSliceResponse?>()
+    val eventList: LiveData<ApiResponseBodyEventSliceResponse?> get() = _eventList
 
     fun fetchEventList(
         title: String,
@@ -27,6 +27,11 @@ class SearchViewModel @Inject constructor(private val repository: EventAPIRetrof
         endLongitude: Double,
         latitude: Double,
         longitude: Double,
+        category: String? = null,
+        area: String? = null,
+        page: Int = 0,
+        size: Int = 10,
+        lastId: Long? = null,
         context: Context
     ) {
         viewModelScope.launch {
@@ -52,11 +57,15 @@ class SearchViewModel @Inject constructor(private val repository: EventAPIRetrof
                     endLongitude = endLongitude,
                     latitude = latitude,
                     longitude = longitude,
+                    category = category,
+                    area = area,
+                    page = page,
+                    size = size,
+                    lastId = lastId,
                     context = context
                 )
                 Log.d("SearchViewModel", "Search result: $result") // 검색 결과 로그 추가
-                _eventList.value = result?.data?.events ?: emptyList()
-                //전체 응답이 필요하다면 EventViewModel을 참고하여 변경할 것
+                _eventList.value = result
             } catch (e: Exception) {
                 Log.e("SearchViewModel", "Search failed: ${e.message}", e) // 오류 발생 시 로그 추가
             }

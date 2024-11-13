@@ -20,8 +20,8 @@ import org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel.SearchViewModel
 class SearchResultFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchResultBinding
-    //private lateinit var eventAdapter: EventAdapter
-    private val viewModel: SearchViewModel by viewModels()
+    private lateinit var eventAdapter: EventAdapter
+    private val searchViewModel: SearchViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,14 +30,15 @@ class SearchResultFragment : Fragment() {
         binding = FragmentSearchResultBinding.inflate(inflater, container, false)
 
         // EventAdapter 초기화 및 설정
-        val eventAdapter = EventAdapter(emptyList())
+        eventAdapter = EventAdapter(emptyList())
         binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = eventAdapter
         }
 
         // ViewModel의 eventList를 관찰하여 UI 업데이트
-        viewModel.eventList.observe(viewLifecycleOwner) { eventList ->
+        searchViewModel.eventList.observe(viewLifecycleOwner) { eventResponse ->
+            val eventList = eventResponse?.data?.events ?: emptyList()
             eventAdapter.submitList(eventList)
         }
 

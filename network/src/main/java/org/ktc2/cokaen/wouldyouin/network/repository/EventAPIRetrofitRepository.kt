@@ -26,8 +26,8 @@ class EventAPIRetrofitRepository @Inject constructor(
         title: String? = null,
         category: String? = null,
         area: String? = null,
-        page: Int? = null,
-        size: Int? = null,
+        page: Int = 0,
+        size: Int = 10,
         lastId: Long? = null,
         context: Context
     ): ApiResponseBodyEventSliceResponse? {
@@ -119,8 +119,8 @@ class EventAPIRetrofitRepository @Inject constructor(
     //주최자별 행사 조회
     suspend fun getEventsByHost(
         hostId: Long,
-        page: Int? = null,
-        size: Int? = null,
+        page: Int = 0,
+        size: Int = 10,
         lastId: Long? = null,
         context: Context
     ): ApiResponseBodyEventSliceResponse? {
