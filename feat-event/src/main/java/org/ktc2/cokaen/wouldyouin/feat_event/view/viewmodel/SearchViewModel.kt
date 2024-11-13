@@ -17,6 +17,7 @@ class SearchViewModel @Inject constructor(private val repository: EventAPIRetrof
 
     private val _eventList = MutableLiveData<List<EventResponse>>()
     val eventList: LiveData<List<EventResponse>> get() = _eventList
+    //전체 응답이 필요하다면 EventViewModel을 참고하여 변경할 것
 
     fun fetchEventList(
         title: String,
@@ -55,6 +56,7 @@ class SearchViewModel @Inject constructor(private val repository: EventAPIRetrof
                 )
                 Log.d("SearchViewModel", "Search result: $result") // 검색 결과 로그 추가
                 _eventList.value = result?.data?.events ?: emptyList()
+                //전체 응답이 필요하다면 EventViewModel을 참고하여 변경할 것
             } catch (e: Exception) {
                 Log.e("SearchViewModel", "Search failed: ${e.message}", e) // 오류 발생 시 로그 추가
             }
