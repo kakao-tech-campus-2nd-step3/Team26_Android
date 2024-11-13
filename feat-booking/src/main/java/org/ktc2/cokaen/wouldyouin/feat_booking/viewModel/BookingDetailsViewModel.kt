@@ -46,4 +46,22 @@ class BookingDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteReservation(reservationId: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val success = reservationRepository.deleteReservation(reservationId)
+                if (success) {
+                    ToastUtils.showShortToast(context, "예매가 취소되었습니다.")
+                } else {
+                    ToastUtils.showShortToast(context, "예매 취소에 실패했습니다. 다시 시도해 주세요")
+                }
+            } catch (e: Exception) {
+                ToastUtils.showShortToast(context, e.message ?: "예매 취소에 실패했습니다. 다시 시도해 주세요")
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
 }

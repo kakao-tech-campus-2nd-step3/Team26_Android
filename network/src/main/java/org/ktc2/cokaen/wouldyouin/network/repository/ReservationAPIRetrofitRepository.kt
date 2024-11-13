@@ -85,6 +85,22 @@ open class ReservationAPIRetrofitRepository @Inject constructor(
         }
     }
 
+    suspend fun deleteReservation(reservationId: Long): Boolean {
+        return try {
+            val response = retrofitService.deleteReservation(reservationId)
+            if (response.isSuccessful) {
+                true
+            } else {
+                throw Exception("예매 취소에 실패했습니다. 오류 코드: ${response.code()}")
+            }
+        } catch (e: Exception) {
+            when (e) {
+                is IOException -> throw Exception("네트워크 연결을 확인해주세요")
+                is HttpException -> throw Exception("서버 통신 중 오류가 발생했습니다")
+                else -> throw e
+            }
+        }
+    }
 
 }
 

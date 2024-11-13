@@ -18,6 +18,8 @@ class BookingDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBookingDetailsBinding
     private val viewModel: BookingDetailsViewModel by viewModels()
 
+    var reservationId: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBookingDetailsBinding.inflate(layoutInflater)
@@ -26,14 +28,23 @@ class BookingDetailsActivity : AppCompatActivity() {
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+
+        binding.cancelButton.setOnClickListener {
+            try {
+                reservationId?.toLong()?.let { it1 -> viewModel.deleteReservation(it1) }
+            } catch (_: Exception) {
+                Toast.makeText(this, "잘못된 접근입니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
+            }
+
+        }
     }
 
     private fun loadCurationDetail() {
-        val curationId = intent.data?.getQueryParameter("curationId")
-        curationId?.let { id ->
+        reservationId = intent.data?.getQueryParameter("reservationID")
+        reservationId?.let { id ->
             viewModel.loadReservationDetail(id.toLong())
         } ?: run {
-            Toast.makeText(this, "큐레이션을 찾을 수 없습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "예매 내역을 찾을 수 없습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
             finish()
         }
     }

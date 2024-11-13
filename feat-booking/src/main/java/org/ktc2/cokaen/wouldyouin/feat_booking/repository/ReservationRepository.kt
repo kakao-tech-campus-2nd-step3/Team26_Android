@@ -24,4 +24,8 @@ class ReservationRepository @Inject constructor(
     suspend fun getReservation(reservationId : Long): ReservationResponse {
         return reservationRepository.getReservationDetails(reservationId)
     }
+
+    suspend fun deleteReservation(reservationId: Long): Boolean {
+        return  reservationRepository.deleteReservation(reservationId)
+    }
 }
