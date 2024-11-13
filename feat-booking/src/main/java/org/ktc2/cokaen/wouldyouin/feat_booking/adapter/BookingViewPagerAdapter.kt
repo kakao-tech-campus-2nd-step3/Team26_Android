@@ -2,12 +2,23 @@ package org.ktc2.cokaen.wouldyouin.feat_booking.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationResponse
 import org.ktc2.cokaen.wouldyouin.feat_booking.databinding.BookingCardItemBinding
 
-class BookingViewPagerAdapter(private val items: List<ReservationResponse>) :
-    RecyclerView.Adapter<BookingViewPagerAdapter.ViewPagerViewHolder>() {
+class BookingViewPagerAdapter : ListAdapter<ReservationResponse, BookingViewPagerAdapter.ViewPagerViewHolder>(DiffCallback) {
+
+    object DiffCallback : DiffUtil.ItemCallback<ReservationResponse>() {
+        override fun areItemsTheSame(oldItem: ReservationResponse, newItem: ReservationResponse): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: ReservationResponse, newItem: ReservationResponse): Boolean {
+            return oldItem == newItem
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewPagerViewHolder {
         val binding = BookingCardItemBinding.inflate(
@@ -23,10 +34,8 @@ class BookingViewPagerAdapter(private val items: List<ReservationResponse>) :
     }
 
     override fun onBindViewHolder(holder: ViewPagerViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(getItem(position))
     }
-
-    override fun getItemCount() = items.size
 
     class ViewPagerViewHolder(private val binding: BookingCardItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -37,7 +46,7 @@ class BookingViewPagerAdapter(private val items: List<ReservationResponse>) :
                 eventName.text = item.event.title
                 eventLocation.text = item.event.location.detailAddress
                 imageUrl = item.event.imageUrl
-                ticketCount.text = item.quantity.toString() + ", ₩" + item.price
+                ticketCount.text = "${item.quantity}, ₩${item.price}"
                 reservationId.text = item.id.toString()
             }
         }

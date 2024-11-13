@@ -12,6 +12,7 @@ import org.ktc2.cokaen.wouldyouin.network.service.EventAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.KakaoAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.ServerAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.MemberAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.service.ReservationAPIRetrofitService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named
@@ -98,6 +99,12 @@ object NetworkModule {
     @Singleton
     fun provideMemberAPIRetrofitService(@Named("Server") retrofit: Retrofit): MemberAPIRetrofitService {
         return retrofit.create(MemberAPIRetrofitService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideReservationAPIRetrofitService(@Named("Server") retrofit: Retrofit): ReservationAPIRetrofitService {
+        return retrofit.create(ReservationAPIRetrofitService::class.java)
     }
 }
 
