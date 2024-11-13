@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/curationSearchResultFragment"
+    android:id="@+id/curation_search_nav_graph">
+
+    <fragment
+        android:id="@+id/curationSearchResultFragment"
+        android:name="org.ktc2.cokaen.wouldyouin.feat_curation.view.CurationSearchResultFragment"
+        tools:layout="@layout/fragment_curation_search_event_result">
+        <argument
+            android:name="search_query"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
+</navigation>

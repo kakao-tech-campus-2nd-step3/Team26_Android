@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.feat_curation.view
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -10,11 +11,9 @@ import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CurationHashtagAdapter
 import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.DetailCurationBlockAdapter
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.ActivityCurationDetailBinding
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CurationDetailViewModel
-import java.nio.file.Paths.get
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class CurationDetailActivity @Inject constructor() : AppCompatActivity() {
+class CurationDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCurationDetailBinding
     private val viewModel: CurationDetailViewModel by viewModels()
@@ -25,33 +24,37 @@ class CurationDetailActivity @Inject constructor() : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        var curationId: String? = null
+        setupUI()
+        observeViewModel()
+        loadCurationDetail()
+    }
 
-        intent.data?.let { uri ->
-            curationId = uri.getQueryParameter("curationId")
-        }
+    private fun setupUI() {
+        binding.rvCurationBlocks.adapter = DetailCurationBlockAdapter()
+        binding.rvHashtags.adapter = CurationHashtagAdapter()
+    }
 
-        val curationBlockAdapter = DetailCurationBlockAdapter()
-        binding.rvCurationBlocks.adapter = curationBlockAdapter
-
-        val hashtagAdapter = CurationHashtagAdapter()
-        binding.rvHashtags.adapter = hashtagAdapter
-
+    private fun observeViewModel() {
         viewModel.curation.observe(this) { curation ->
             binding.invalidateAll()
         }
 
         viewModel.curationBlocks.observe(this) { blocks ->
-            curationBlockAdapter.submitList(blocks)
+            (binding.rvCurationBlocks.adapter as DetailCurationBlockAdapter).submitList(blocks)
         }
 
         viewModel.hashtags.observe(this) { hashtagsString ->
-                hashtagAdapter.submitList(hashtagsString)
+            (binding.rvHashtags.adapter as CurationHashtagAdapter).submitList(hashtagsString)
         }
+    }
 
-
-        if (curationId != null) {
-            viewModel.loadCurationDetail(curationId!!)
+    private fun loadCurationDetail() {
+        val curationId = intent.data?.getQueryParameter("curationId")
+        curationId?.let { id ->
+            viewModel.loadCurationDetail(id.toLong())
+        } ?: run {
+            Toast.makeText(this, "큐레이션을 찾을 수 없습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 }

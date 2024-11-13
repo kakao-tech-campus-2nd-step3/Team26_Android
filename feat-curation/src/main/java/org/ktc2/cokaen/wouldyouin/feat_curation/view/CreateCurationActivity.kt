@@ -1,14 +1,13 @@
 package org.ktc2.cokaen.wouldyouin.feat_curation.view
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,6 +16,8 @@ import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.MotionEvent
+import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -26,125 +27,197 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.ktc2.cokaen.wouldyouin.data.entities.CurationEntity
-import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.feat_curation.R
 import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CreateBlockImagesAdapter
 import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CreateCurationBlockAdapter
+import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.SelectedEventsAdapter
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.ActivityCreateCurationBinding
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel
+import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CurationSearchViewModel
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.NavigationEvent
-import java.io.File
-import java.io.FileOutputStream
 
 @AndroidEntryPoint
-class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.DeleteClickListener, CreateCurationBlockAdapter.OnImageClickListener {
-    val viewModel: CreateCurationViewModel by viewModels()
+class CreateCurationActivity : AppCompatActivity() {
+    private val viewModel: CreateCurationViewModel by viewModels()
+    private val searchViewModel: CurationSearchViewModel by viewModels()
     private lateinit var binding: ActivityCreateCurationBinding
     private var currentPosition: Int = -1
-    private lateinit var adapter: CreateCurationBlockAdapter
-    private lateinit var imagesAdapter: CreateBlockImagesAdapter
     private var isEditMode = false
-
     private val curatorID: Long = 1
+    private lateinit var imagesAdapter: CreateBlockImagesAdapter
+    private lateinit var selectedEventsAdapter: SelectedEventsAdapter
+    private lateinit var eventsAdapter: SelectedEventsAdapter
 
-    override fun onDeleteClick(position: Int) {
-        viewModel.removeBlock(position)
-    }
-
-    override fun onImageDeleteClick(blockPosition: Int, image: ImageResponse) {
-        viewModel.handleImageDelete(blockPosition, image)
+    // 어댑터는 하나의 인스턴스만 유지
+    private val adapter by lazy {
+        CreateCurationBlockAdapter(
+            viewModel = viewModel,
+            deleteClickListener = { position ->
+                viewModel.removeBlock(position)
+            }
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        setupInitialState()
+        setupViews()
+        setupObservers()
+        setupListeners()
+        setupResultListeners()
+    }
+
+    private fun setupResultListeners() {
+        supportFragmentManager.setFragmentResultListener("event_selection", this) { _, bundle ->
+            val eventId = bundle.getLong("event_id")
+            val eventName = bundle.getString("event_name")
+            val hostName = bundle.getString("host_name")
+            val imageUrl = bundle.getString("image_url")
+
+            // 뷰모델에 데이터 저장
+            viewModel.saveSearchEventData(eventId, eventName, hostName, imageUrl)
+        }
+    }
+
+    private fun setupInitialState() {
         @Suppress("DEPRECATION")
         val curationToEdit: CurationEntity? = intent.getParcelableExtra("curation")
-
         isEditMode = curationToEdit != null
         viewModel.initialize(curationToEdit)
+    }
 
-
+    private fun setupViews() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_curation)
-        binding.lifecycleOwner = this
-        binding.viewModel = viewModel
-        binding.toolbarTitle.text = if (isEditMode) "큐레이션 수정" else "큐레이션 작성"
-
-        adapter = CreateCurationBlockAdapter(viewModel, this).apply {
-            viewModel.curationBlocks.observe(this@CreateCurationActivity) { blocks ->
-                setBlocks(blocks)
-            }
-
-            viewModel.blocksChangedEvent.observe(this@CreateCurationActivity) { position ->
-                if (position >= 0) {  // position이 유효할 때만
-                    notifyItemRemoved(position)
-                    notifyItemRangeChanged(position, itemCount)
-                }
-            }
+        binding.apply {
+            lifecycleOwner = this@CreateCurationActivity
+            viewModel = this@CreateCurationActivity.viewModel
+            toolbarTitle.text = if (isEditMode) "큐레이션 수정" else "큐레이션 작성"
         }
-
-        binding.rvCurationBlocks.adapter = adapter
-
-        binding.rvCurationBlocks.recycledViewPool.setMaxRecycledViews(0, 0)
-
-        viewModel.imagePickerEvent.observe(this) { position ->
-            currentPosition = position
-            checkAndRequestPermission()
-        }
-
-        binding.addCurationBlockButton.setOnClickListener {
-            viewModel.addNewBlock()
-        }
-
-        viewModel.curationBlocks.observe(this) { blocks ->
-            adapter.setBlocks(blocks)
-        }
-
-        viewModel.blocksChangedEvent.observe(this) { position ->
-            if (position >= 0) {
-                adapter.notifyItemRemoved(position)
-                adapter.notifyItemRangeChanged(position, adapter.itemCount)
-            }
-        }
-
-        binding.btnRegister.isEnabled = viewModel.isFormValid.value ?: false
-
-        binding.etTitle.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                viewModel.updateTitle(s.toString())
-            }
-        })
-
-        binding.etContent.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                viewModel.updateContent(s.toString())
-            }
-        })
-
-        binding.etHashtag.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                viewModel.updateHashtags(s.toString())
-            }
-        })
 
         setupRecyclerView()
+        setUpSelectedEventsView()
         setupNavigation()
+        setupRegionSpinner()
+        setupSearchInput()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupSearchInput() {
+        binding.inputSearchMap.apply {
+            // IME Action 리스너 설정
+            setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    val query = text.toString().trim()
+                    performSearch(query)
+                    true
+                } else {
+                    false
+                }
+            }
+
+            // TextWatcher 설정
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val drawableEnd = if (s.isNullOrEmpty()) {
+                        ContextCompat.getDrawable(this@CreateCurationActivity, R.drawable.magnifyingglass)
+                    } else {
+                        ContextCompat.getDrawable(this@CreateCurationActivity, R.drawable.xmark)
+                    }
+                    setCompoundDrawablesWithIntrinsicBounds(null, null, drawableEnd, null)
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            })
+
+            // X 버튼 (clear) 터치 리스너
+            setOnTouchListener { view, event ->
+                if (event.action == MotionEvent.ACTION_UP) {
+                    val drawableEnd = compoundDrawables[2]
+                    if (drawableEnd != null) {
+                        val drawableWidth = drawableEnd.bounds.width()
+                        val touchArea = event.x >= (view.width - drawableWidth - view.paddingEnd)
+
+                        if (touchArea) {
+                            if (text.isNotEmpty()) {
+                                text.clear()
+                            }
+                            return@setOnTouchListener true
+                        }
+                    }
+                }
+                false
+            }
+        }
+    }
+
+    private fun setUpSelectedEventsView() {
+        val selectedEventsAdapter = SelectedEventsAdapter(viewModel)
+
+        binding.rvSelectedEvents.apply {
+            adapter = selectedEventsAdapter
+            layoutManager = LinearLayoutManager(this@CreateCurationActivity)
+            setHasFixedSize(true)
+        }
+
+        // 이벤트 데이터 변경 관찰
+        viewModel.eventDataList.observe(this) { events ->
+            selectedEventsAdapter.submitList(events)
+        }
+    }
+
+    private fun setupRecyclerView() {
+        binding.rvCurationBlocks.apply {
+            adapter = this@CreateCurationActivity.adapter
+        }
+    }
+
+    private fun setupObservers() {
+        viewModel.apply {
+            // 이미지 피커 이벤트
+            imagePickerEvent.observe(this@CreateCurationActivity) { position ->
+                currentPosition = position
+                checkAndRequestPermission()
+            }
+
+            // 블록 추가 버튼 상태
+            isAddBlockButtonEnabled.observe(this@CreateCurationActivity) { isEnabled ->
+                binding.addCurationBlockButton.isEnabled = isEnabled
+            }
+
+            // 이벤트 데이터
+            viewModel.eventDataList.observe(this@CreateCurationActivity) { events ->
+                selectedEventsAdapter.submitList(events)
+            }
+        }
+        viewModel.curationBlocks.observe(this) { blocks ->
+            Log.d("UI_Update", "Received blocks size: ${blocks.size}")
+            // 새 리스트로 전달
+            adapter.submitList(blocks.toList())
+        }
+    }
+
+    private fun setupListeners() {
+        // 폼 입력 리스너들
+        setupTextWatchers()
+        setupButtons()
+
+        binding.addCurationBlockButton.setOnClickListener {
+            if (viewModel.isAddBlockButtonEnabled.value == true) {
+                Log.d("ButtonClick", "Add block button clicked")
+                viewModel.addNewBlock()
+            } else {
+                Toast.makeText(this, "큐레이션 개수를 초과했습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         onBackPressedDispatcher.addCallback(
             this,
@@ -154,55 +227,55 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
                 }
             }
         )
-
-        // 입력 검사
-        setupRegionSpinner()
-        checkCurationTitle()
-        checkCurationBody()
-        checkCurationCardTitle()
-        checkCurationCardBody()
-        checkHashtags()
-        setupButtons()
     }
 
     private fun setupButtons() {
-        binding.btnRegister.setOnClickListener {
-            val curatorId = getCurrentUserId()
-            viewModel.saveCuration(curatorId)
-        }
-    }
+        binding.btnRegister.apply {
+            // 초기 상태 설정
+            isEnabled = viewModel.isFormValid.value ?: false
 
-    private fun getCurrentUserId(): Long {
-        val userId: Long = 1;
-        return userId
-    }
-
-
-    private fun setupRecyclerView() {
-        binding.rvCurationBlocks.apply {
-            setHasFixedSize(true)
-            itemAnimator = null  // 애니메이션으로 인한 문제 방지
-            adapter = this@CreateCurationActivity.adapter  // 이미 onCreate에서 생성한 adapter 사용
-        }
-
-        viewModel.curationBlocks.observe(this) { blocks ->
-            binding.rvCurationBlocks.post {
-                adapter.setBlocks(blocks)
+            // 클릭 리스너 설정
+            setOnClickListener {
+                viewModel.saveCuration()
             }
+        }
+    }
+
+    private fun setupTextWatchers() {
+        binding.apply {
+            etTitle.addTextChangedListener(SimpleTextWatcher { viewModel?.updateTitle(it) })
+            etContent.addTextChangedListener(SimpleTextWatcher { viewModel?.updateContent(it) })
+            etHashtag.addTextChangedListener(SimpleTextWatcher { viewModel?.updateHashtags(it) })
+        }
+    }
+
+    private class SimpleTextWatcher(private val onTextChanged: (String) -> Unit) : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(s: Editable?) {
+            s?.toString()?.let(onTextChanged)
         }
     }
 
     private fun checkAndRequestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // Android 13 이상에서는 READ_MEDIA_IMAGES 권한만 요청
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_MEDIA_IMAGES
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 requestPermissions(arrayOf(Manifest.permission.READ_MEDIA_IMAGES), REQ_GALLERY)
             } else {
                 selectGallery()
             }
         } else {
             // Android 12 이하에서는 READ_EXTERNAL_STORAGE 권한을 요청
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQ_GALLERY)
             } else {
                 selectGallery()
@@ -228,17 +301,6 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
                 showPermissionRequiredDialog(permissions.toList())
             }
         }
-    }
-
-    private fun showPermissionRationaleDialog(permissions: List<String>) {
-        AlertDialog.Builder(this)
-            .setTitle("권한 필요")
-            .setMessage("이미지를 선택하기 위해서는 저장소 접근 권한이 필요합니다.")
-            .setPositiveButton("권한 요청") { _, _ ->
-                ActivityCompat.requestPermissions(this, permissions.toTypedArray(), REQ_GALLERY)
-            }
-            .setNegativeButton("취소", null)
-            .show()
     }
 
     private fun showPermissionRequiredDialog(permissions: List<String>) {
@@ -287,6 +349,7 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
                     // 현재 화면 종료
                     finish()
                 }
+                else -> {}
             }
         }
     }
@@ -307,9 +370,9 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
             override fun afterTextChanged(s: Editable?) {
                 val input = s.toString()
                 if (hashtagPattern.matches(input)) {
-                    binding.textInputLayoutHashtag.error = null
+                    binding.etHashtag.error = null
                 } else {
-                    binding.textInputLayoutHashtag.error = "해시태그 형식이 올바르지 않습니다."
+                    binding.etHashtag.error = "해시태그 형식이 올바르지 않습니다."
                 }
             }
 
@@ -319,12 +382,38 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
     }
 
     private fun checkCurationTitle() {
-        // 빈칸, "" 안됨
+        binding.etTitle.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val title = s.toString().trim()
+                if (title.isEmpty()) {
+                    binding.etTitle.error = "제목을 입력해주세요."
+                } else {
+                    binding.etTitle.error = null
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
 
+
     private fun checkCurationBody() {
-        // 20자 이상, 1000자 이내
+        binding.etContent.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val body = s.toString().trim()
+                if (body.length in 20..1000) {
+                    binding.etContent.error = null
+                } else {
+                    binding.etContent.error = "본문은 20자 이상, 1000자 이내여야 합니다."
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
+
 
     private fun checkCurationCardTitle() {
         // 빈칸, "" 안됨
@@ -335,7 +424,11 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
     }
 
     private fun checkCurationCardImages() {
-        // 각 이미지 url 원소 담은 배열 길이가 5 초과되면 예외
+        // 각 이미지 url 원소 담은 배열 길이가 5 초과되면 안됨
+    }
+
+    private fun checkCurationCardLength() {
+        // 큐레이션 카드 개수 10 초과되면 안됨
     }
 
     private val imageResult = registerForActivityResult(
@@ -413,7 +506,21 @@ class CreateCurationActivity : AppCompatActivity(), CreateCurationBlockAdapter.D
         return result!!
     }
 
+    private fun performSearch(query: String) {
+        if (query.isNotEmpty()) {
+            val fragment = CurationSearchResultFragment().apply {
+                arguments = Bundle().apply {
+                    putString("search_query", query)
+                }
+            }
+            fragment.show(supportFragmentManager, "search_result")
+        } else {
+            Toast.makeText(this, "검색어를 입력하세요.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     companion object {
         const val REQ_GALLERY = 1
+        private const val EVENT_SEARCH_REQUEST_CODE = 1001
     }
 }

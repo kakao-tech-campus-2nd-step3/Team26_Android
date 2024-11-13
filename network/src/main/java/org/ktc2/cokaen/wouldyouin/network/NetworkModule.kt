@@ -7,6 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.ktc2.cokaen.wouldyouin.network.service.CurationAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.EventAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.KakaoAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.ServerAPIRetrofitService
@@ -65,7 +66,7 @@ object NetworkModule {
             .build()
         return Retrofit.Builder()
             .client(client)
-            .baseUrl("http://52.78.71.136")
+            .baseUrl("https://wouldyouin.store")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

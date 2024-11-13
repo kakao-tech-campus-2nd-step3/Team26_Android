@@ -68,6 +68,7 @@
 
                         <!-- 이미지 추가 버튼 -->
                         <ImageView
+                            android:id="@+id/rvAddImage"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:layout_marginStart="8dp"
@@ -79,6 +80,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="horizontal"
+                            android:nestedScrollingEnabled="false"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                             tools:listitem="@layout/block_image_item"
                             android:layout_marginHorizontal="8dp"/>

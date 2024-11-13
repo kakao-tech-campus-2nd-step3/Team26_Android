@@ -1,5 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.WouldYouIn" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- MaterialComponents 테마를 상속받아 색상 커스터마이징 -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- 색상 변경 -->
+        <item name="colorPrimary">#131524</item>
+        <item name="colorPrimaryDark">#000000</item>
+        <item name="colorAccent">#FF4081</item> <!-- 원하는 Accent 색상 -->
+    </style>
 </resources>
