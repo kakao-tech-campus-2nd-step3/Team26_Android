@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.data.model
 
 import com.google.gson.annotations.SerializedName
+import java.time.LocalDateTime
 
 data class ApiResponseBodyKakaoPayResponse(
     @SerializedName("success")
@@ -36,5 +37,5 @@ data class KakaoPayResponse(
     val iosAppScheme: String,
 
     @SerializedName("created_at")
-    val createdAt: String // date-time 형식
+    val createdAt: LocalDateTime
 )
