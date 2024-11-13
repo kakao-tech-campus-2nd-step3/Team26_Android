@@ -1,0 +1,25 @@
+package org.ktc2.cokaen.wouldyouin.data.model
+
+import java.time.LocalDateTime
+
+data class AdvertisementResponse(
+    val id: Long,
+    val title: String,
+    val imageUrl: String,
+    val startTime: LocalDateTime,
+    val endTime: LocalDateTime
+)
+
+data class ApiResponseBodyListAdvertisementResponse(
+    val success: Boolean,
+    val data: AdvertisementResponse,
+    val code: String,
+    val message: String
+)
+
+data class ApiResponseBodyAdvertisementResponse(
+    val success: Boolean,
+    val data: AdvertisementResponse,
+    val code: String,
+    val message: String
+)
