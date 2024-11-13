@@ -8,9 +8,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
 import org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel.EventViewModel
 import org.ktc2.cokaen.wouldyouin.feat_profile.databinding.ActivityProfileBinding
-import org.ktc2.cokaen.wouldyouin.feat_profile.view.adapter.HashtagAdapter
-import org.ktc2.cokaen.wouldyouin.feat_profile.view.adapter.PostAdapter
-import org.ktc2.cokaen.wouldyouin.feat_profile.view.viewmodel.ProfileViewModel
+import org.ktc2.cokaen.wouldyouin.feat_profile.adapter.HashtagAdapter
+import org.ktc2.cokaen.wouldyouin.feat_profile.adapter.PostAdapter
+import org.ktc2.cokaen.wouldyouin.feat_profile.viewModel.ProfileViewModel
 
 @AndroidEntryPoint
 class HostProfileActivity : AppCompatActivity() {

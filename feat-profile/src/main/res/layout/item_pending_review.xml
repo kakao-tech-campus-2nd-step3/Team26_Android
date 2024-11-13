@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="review"
+            type="org.ktc2.cokaen.wouldyouin.feat_profile.viewModel.PendingReview" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginVertical="4dp"
+        app:cardElevation="2dp"
+        app:cardCornerRadius="8dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/eventImageView"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:scaleType="centerCrop"
+                imageUrl="@{review.eventImageUrl}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:src="@tools:sample/backgrounds/scenic" />
+
+            <TextView
+                android:id="@+id/eventNameTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:textSize="16sp"
+                android:textColor="?attr/colorOnSurface"
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end"
+                app:layout_constraintStart_toEndOf="@id/eventImageView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="2024 신년 음악회" />
+
+            <TextView
+                android:id="@+id/eventDateTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:textSize="14sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintStart_toEndOf="@id/eventImageView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/eventNameTextView"
+                tools:text="2024.01.01" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/writeReviewButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="리뷰 작성"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/eventDateTextView"
+                style="@style/Widget.Material3.Button.OutlinedButton" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>

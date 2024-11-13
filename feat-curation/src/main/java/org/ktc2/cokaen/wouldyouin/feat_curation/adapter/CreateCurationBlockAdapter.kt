@@ -62,13 +62,7 @@ class CreateCurationBlockAdapter(
 
         private var titleTextWatcher: TextWatcher? = null
         private var contentTextWatcher: TextWatcher? = null
-        private var titleUpdateJob: Job? = null
-        private var contentUpdateJob: Job? = null
         private var updateJob: Job? = null
-
-        private var lastKnownTitleCursorPosition = 0
-        private var lastKnownContentCursorPosition = 0
-
 
         fun bind(block: Block, position: Int) {
             removeTextWatchers()
@@ -77,30 +71,78 @@ class CreateCurationBlockAdapter(
                 this.viewModel = this@CreateCurationBlockAdapter.viewModel
                 this.position = position
 
+                // 기존 텍스트 설정
                 etBlockTitle.setText(block.title)
                 etBlockContent.setText(block.body)
 
-                setupTextWatchers(position)
-                setupFocusListeners(position)
+                // 이미지 어댑터 설정 및 검증
+                setupImagesAdapter(position, block)
+
+                // 유효성 검사 설정
+                setupValidation(position)
 
                 executePendingBindings()
             }
         }
 
-        private fun setupTextWatchers(position: Int) {
-            titleTextWatcher = createTextWatcher(binding.etBlockTitle, position, true)
-            contentTextWatcher = createTextWatcher(binding.etBlockContent, position, false)
-
-            binding.etBlockTitle.addTextChangedListener(titleTextWatcher)
-            binding.etBlockContent.addTextChangedListener(contentTextWatcher)
+        private fun setupImagesAdapter(position: Int, block: Block) {
+            val imagesAdapter = CreateBlockImagesAdapter(viewModel, position).apply {
+                // 이미지 추가 전 검증
+                registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                    override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                        super.onItemRangeInserted(positionStart, itemCount)
+                        val totalImages = currentList.size
+                        if (totalImages > 5) {
+                            viewModel.showError("이미지는 5개까지만 추가할 수 있습니다.")
+                            // 초과된 이미지 제거
+                            viewModel.handleImageDelete(position, currentList.last())
+                        }
+                    }
+                })
+            }
+            binding.rvImages.adapter = imagesAdapter
+            imagesAdapter.submitList(block.images)
         }
 
-        private fun createTextWatcher(editText: EditText, position: Int, isTitle: Boolean): TextWatcher {
+        private fun setupValidation(position: Int) {
+            // 제목 유효성 검사
+            binding.etBlockTitle.addValidationWatcher { title ->
+                if (title.isBlank()) {
+                    binding.etBlockTitle.error = "제목은 필수입니다"
+                    false
+                } else {
+                    binding.etBlockTitle.error = null
+                    viewModel.updateBlockTitle(position, title)
+                    true
+                }
+            }
+
+            // 본문 유효성 검사
+            binding.etBlockContent.addValidationWatcher { content ->
+                when {
+                    content.length < 20 -> {
+                        binding.etBlockContent.error = "본문은 20자 이상이어야 합니다"
+                        false
+                    }
+                    content.length > 1000 -> {
+                        binding.etBlockContent.error = "본문은 1000자 이하여야 합니다"
+                        false
+                    }
+                    else -> {
+                        binding.etBlockContent.error = null
+                        viewModel.updateBlockBody(position, content)
+                        true
+                    }
+                }
+            }
+        }
+
+        private fun EditText.addValidationWatcher(validate: (String) -> Boolean): TextWatcher {
             return object : TextWatcher {
                 private var cursorPosition = 0
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    cursorPosition = editText.selectionStart
+                    cursorPosition = selectionStart
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -109,35 +151,23 @@ class CreateCurationBlockAdapter(
                     val currentText = s.toString()
                     updateJob?.cancel()
                     updateJob = CoroutineScope(Dispatchers.Main).launch {
-                        delay(1000) // 디바운싱을 위한 지연
-                        if (isTitle) {
-                            viewModel.updateBlockTitle(position, currentText)
-                        } else {
-                            viewModel.updateBlockBody(position, currentText)
-                        }
+                        delay(500) // 디바운싱
+                        validate(currentText)
                         // 커서 위치 복원
-                        editText.setSelection(cursorPosition.coerceAtMost(currentText.length))
+                        setSelection(cursorPosition.coerceAtMost(currentText.length))
                     }
                 }
-            }
+            }.also { addTextChangedListener(it) }
         }
 
-        private fun setupFocusListeners(position: Int) {
-            binding.etBlockTitle.setOnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    this@CreateCurationBlockAdapter.viewModel?.updateBlockTitle(position, binding.etBlockTitle.text.toString())
-                    binding.etBlockTitle.setSelection(lastKnownTitleCursorPosition)
-                } else {
-                    lastKnownTitleCursorPosition = binding.etBlockTitle.selectionStart
-                }
-            }
-            binding.etBlockContent.setOnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    this@CreateCurationBlockAdapter.viewModel?.updateBlockBody(position, binding.etBlockContent.text.toString())
-                    binding.etBlockTitle.setSelection(lastKnownContentCursorPosition)
-                } else {
-                    lastKnownContentCursorPosition = binding.etBlockContent.selectionStart
-                }
+        fun unbind() {
+            removeTextWatchers()
+            updateJob?.cancel()
+            binding.apply {
+                etBlockTitle.onFocusChangeListener = null
+                etBlockContent.onFocusChangeListener = null
+                // 이미지 리사이클러뷰 정리
+                rvImages.adapter = null
             }
         }
 
@@ -146,14 +176,6 @@ class CreateCurationBlockAdapter(
             contentTextWatcher?.let { binding.etBlockContent.removeTextChangedListener(it) }
             titleTextWatcher = null
             contentTextWatcher = null
-            titleUpdateJob?.cancel()
-            contentUpdateJob?.cancel()
-        }
-
-        fun unbind() {
-            removeTextWatchers()
-            binding.etBlockTitle.onFocusChangeListener = null
-            binding.etBlockContent.onFocusChangeListener = null
         }
     }
 }

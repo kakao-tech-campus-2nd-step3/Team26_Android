@@ -1,15 +1,21 @@
 package org.ktc2.cokaen.wouldyouin.feat_curation.viewModel
 
 import android.app.Application
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.widget.EditText
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -296,6 +302,39 @@ class CreateCurationViewModel @Inject constructor(
         val canvas = Canvas(cleanBitmap)
         canvas.drawBitmap(bitmap, 0f, 0f, null)
         return cleanBitmap
+    }
+
+    // 추가할 부분
+    fun validateAndSave(context: Context): Boolean {
+        val validationResult = CurationValidator.validateCuration(
+            title = title.value ?: "",
+            content = content.value ?: "",
+            blocks = curationBlocks.value ?: emptyList()
+        )
+
+        return when (validationResult) {
+            is ValidationResult.Success -> {
+                saveCuration()
+                true
+            }
+            is ValidationResult.Error -> {
+                Toast.makeText(context, validationResult.message, Toast.LENGTH_SHORT).show()
+                false
+            }
+        }
+    }
+
+     fun TextInputEditText.addValidationWatcher(validateFn: (String) -> ValidationResult) {
+        addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                when (val result = validateFn(s?.toString() ?: "")) {
+                    is ValidationResult.Error -> error = result.message
+                    ValidationResult.Success -> error = null
+                }
+            }
+        })
     }
 
     fun createCurationWithApi() {
@@ -608,6 +647,10 @@ class CreateCurationViewModel @Inject constructor(
     // 블록 추가 버튼 상태 업데이트
     private fun updateAddBlockButtonState(isEnabled: Boolean) {
         _isAddBlockButtonEnabled.postValue(isEnabled)  // setValue 대신 postValue 사용
+    }
+
+    fun showError(s: String) {
+        ToastUtils.showShortToast(context, s)
     }
 
 }

@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
@@ -35,7 +36,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
+import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.entities.CurationEntity
 import org.ktc2.cokaen.wouldyouin.feat_curation.R
 import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CreateBlockImagesAdapter
@@ -45,6 +48,7 @@ import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.ActivityCreateCurati
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CurationSearchViewModel
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.NavigationEvent
+import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.ValidationResult
 
 @AndroidEntryPoint
 class CreateCurationActivity : AppCompatActivity() {
@@ -214,7 +218,7 @@ class CreateCurationActivity : AppCompatActivity() {
         // 폼 입력 리스너들
         setupTextWatchers()
         setupButtons()
-
+        checkHashtags()
         binding.addCurationBlockButton.setOnClickListener {
             if (viewModel.isAddBlockButtonEnabled.value == true) {
                 Log.d("ButtonClick", "Add block button clicked")
@@ -232,6 +236,34 @@ class CreateCurationActivity : AppCompatActivity() {
                 }
             }
         )
+
+        // 제목 검증
+        binding.etTitle.addValidationWatcher { title ->
+            if (title.isBlank()) {
+                ValidationResult.Error("제목은 필수입니다")
+            } else {
+                ValidationResult.Success
+            }
+        }
+
+        // 본문 검증
+        binding.etContent.addValidationWatcher { content ->
+            when {
+                content.length < 20 ->
+                    ValidationResult.Error("본문은 20자 이상이어야 합니다")
+                content.length > 1000 ->
+                    ValidationResult.Error("본문은 1000자 이하여야 합니다")
+                else -> ValidationResult.Success
+            }
+        }
+
+        // 저장 버튼 클릭시 전체 검증
+        binding.btnRegister.setOnClickListener {
+            if (viewModel.validateAndSave(this)) {
+                ToastUtils.showShortToast(this, "업로드 되었습니다.")
+                finish()
+            }
+        }
     }
 
     private fun setupButtons() {
@@ -522,6 +554,33 @@ class CreateCurationActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "검색어를 입력하세요.", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun EditText.addValidationWatcher(validateFn: (String) -> ValidationResult) {
+        addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                when (val result = validateFn(s?.toString() ?: "")) {
+                    is ValidationResult.Error -> error = result.message
+                    ValidationResult.Success -> error = null
+                }
+            }
+        })
+    }
+
+    // TextInputEditText용 확장 함수도 추가
+    private fun TextInputEditText.addValidationWatcher(validateFn: (String) -> ValidationResult) {
+        addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                when (val result = validateFn(s?.toString() ?: "")) {
+                    is ValidationResult.Error -> error = result.message
+                    ValidationResult.Success -> error = null
+                }
+            }
+        })
     }
 
     companion object {
