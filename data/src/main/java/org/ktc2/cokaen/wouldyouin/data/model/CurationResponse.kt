@@ -19,7 +19,8 @@ data class CurationResponse(
     val hashTag: List<String>,
     val eventsInfo: List<CurationEventResponse>,
     val modifiedDate: LocalDateTime,
-    val createdTime: LocalDateTime
+    val createdTime: LocalDateTime,
+    val thumbnailUrl: String
 )
 
 data class CurationCuratorResponse(
@@ -39,7 +40,7 @@ data class CurationCardResponse(
 )
 
 data class CurationEventResponse(
-    val id: Long,
+    val eventId: Long,
     val title: String,
     val location: Location,
     val startTime: LocalDateTime,
