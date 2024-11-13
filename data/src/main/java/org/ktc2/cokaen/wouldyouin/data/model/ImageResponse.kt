@@ -28,5 +28,8 @@ data class ImageResponse(
     val createdDate: LocalDateTime,
 
     @SerializedName("size")
-    val size: Long
+    val size: Long,
+
+    @SerializedName("extension")
+    val extension: String
 )
