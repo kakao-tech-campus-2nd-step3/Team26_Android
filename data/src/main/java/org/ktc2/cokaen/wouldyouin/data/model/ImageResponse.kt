@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.data.model
 
 import com.google.gson.annotations.SerializedName
+import java.time.LocalDateTime
 
 data class ApiResponseBodyListImageResponse(
     @SerializedName("success")
@@ -24,7 +25,7 @@ data class ImageResponse(
     var url: String,
 
     @SerializedName("createdDate")
-    val createdDate: List<Int>,
+    val createdDate: LocalDateTime,
 
     @SerializedName("size")
     val size: Long
