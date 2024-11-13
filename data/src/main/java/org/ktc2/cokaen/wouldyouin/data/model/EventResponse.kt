@@ -24,7 +24,8 @@ data class EventResponse(
     val leftSeat: Int,
     val category: Category,
     val expired: Boolean,
-    val images: List<String>
+    val images: List<String>,
+    val thumbnailUrl: String
 )
 
 data class EventHostResponse(

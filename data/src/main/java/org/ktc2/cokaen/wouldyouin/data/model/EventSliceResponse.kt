@@ -11,5 +11,5 @@ data class ApiResponseBodyEventSliceResponse(
 
 data class EventSliceResponse(
     @SerializedName("events") val events: List<EventResponse>,
-    @SerializedName("slice") val slice: SliceInfo
+    @SerializedName("sliceInfo") val sliceInfo: SliceInfo
 )
