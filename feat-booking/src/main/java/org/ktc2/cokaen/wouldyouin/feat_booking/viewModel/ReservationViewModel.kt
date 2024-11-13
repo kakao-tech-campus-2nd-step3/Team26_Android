@@ -69,24 +69,24 @@ class ReservationViewModel @Inject constructor(
         }
     }
 
-    // 특정 예약의 상세 정보를 가져오는 메서드
-    fun fetchReservationDetails(reservationId: String, context: Context) {
-        viewModelScope.launch {
-            _reservationDetails.value = repository.getReservationDetails(reservationId, context)
-        }
-    }
-
-    // 새로운 예약을 생성하는 메서드
-    fun createReservation(reservationRequest: ReservationRequest, context: Context) {
-        viewModelScope.launch {
-            _operationSuccess.value = repository.createReservation(reservationRequest, context) != null
-        }
-    }
-
-    // 예약을 취소하는 메서드
-    fun cancelReservation(reservationId: String, context: Context) {
-        viewModelScope.launch {
-            _operationSuccess.value = repository.cancelReservation(reservationId, context)
-        }
-    }
+//    // 특정 예약의 상세 정보를 가져오는 메서드
+//    fun fetchReservationDetails(reservationId: String, context: Context) {
+//        viewModelScope.launch {
+//            _reservationDetails.value = repository.getReservationDetails(reservationId, context)
+//        }
+//    }
+//
+//    // 새로운 예약을 생성하는 메서드
+//    fun createReservation(reservationRequest: ReservationRequest, context: Context) {
+//        viewModelScope.launch {
+//            _operationSuccess.value = repository.createReservation(reservationRequest, context) != null
+//        }
+//    }
+//
+//    // 예약을 취소하는 메서드
+//    fun cancelReservation(reservationId: String, context: Context) {
+//        viewModelScope.launch {
+//            _operationSuccess.value = repository.cancelReservation(reservationId, context)
+//        }
+//    }
 }

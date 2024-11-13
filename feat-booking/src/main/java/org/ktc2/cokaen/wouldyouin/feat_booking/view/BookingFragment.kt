@@ -55,6 +55,46 @@ class BookingFragment : Fragment() {
         super.onDestroyView()
     }
 
+    private fun setupViewPager() {
+        binding.viewPager.apply {
+            adapter = bookingAdapter
+
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    // 마지막 페이지에서 2페이지 전에 도달하면 다음 데이터 로드
+                    if (position >= bookingAdapter.currentList.size - 2) {
+                        viewModel.loadBookings()
+                    }
+                }
+            })
+        }
+
+        binding.dotsIndicator.setViewPager2(binding.viewPager)
+    }
+
+    private fun observeBookings() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.processedBookings.collect { bookings ->
+                    if (bookings.isEmpty()) {
+                        binding.viewPager.visibility = View.GONE
+                        binding.dotsIndicator.visibility = View.GONE
+                        binding.emptyView.visibility = View.VISIBLE
+                    } else {
+                        binding.viewPager.visibility = View.VISIBLE
+                        binding.dotsIndicator.visibility = View.VISIBLE
+                        binding.emptyView.visibility = View.GONE
+                        bookingAdapter.submitList(bookings) {
+                            binding.dotsIndicator.setViewPager2(binding.viewPager)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 //    private fun setupViewPager() {
 //        val mockReservations = listOf(
 //            ReservationResponse(
@@ -137,43 +177,3 @@ class BookingFragment : Fragment() {
 //            }
 //        })
 //    }
-
-    private fun setupViewPager() {
-        binding.viewPager.apply {
-            adapter = bookingAdapter
-
-            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    // 마지막 페이지에서 2페이지 전에 도달하면 다음 데이터 로드
-                    if (position >= bookingAdapter.currentList.size - 2) {
-                        viewModel.loadBookings()
-                    }
-                }
-            })
-        }
-
-        binding.dotsIndicator.setViewPager2(binding.viewPager)
-    }
-
-    private fun observeBookings() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.processedBookings.collect { bookings ->
-                    if (bookings.isEmpty()) {
-                        binding.viewPager.visibility = View.GONE
-                        binding.dotsIndicator.visibility = View.GONE
-                        binding.emptyView.visibility = View.VISIBLE
-                    } else {
-                        binding.viewPager.visibility = View.VISIBLE
-                        binding.dotsIndicator.visibility = View.VISIBLE
-                        binding.emptyView.visibility = View.GONE
-                        bookingAdapter.submitList(bookings) {
-                            binding.dotsIndicator.setViewPager2(binding.viewPager)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}

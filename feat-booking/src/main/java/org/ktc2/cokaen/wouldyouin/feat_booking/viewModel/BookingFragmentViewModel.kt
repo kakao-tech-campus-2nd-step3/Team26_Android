@@ -44,6 +44,8 @@ class BookingFragmentViewModel @Inject constructor(
     val processedBookings: StateFlow<List<ReservationResponse>> = _processedBookings.asStateFlow()
 
     init {
+        loadBookings()
+
         viewModelScope.launch {
             bookings.collect { reservationList ->
                 val processed = reservationList

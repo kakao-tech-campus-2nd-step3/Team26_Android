@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="viewModel"
+            type="org.ktc2.cokaen.wouldyouin.feat_booking.viewModel.BookingDetailsViewModel" />
     </data>
     
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -49,6 +52,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="22sp"
+            android:text="@{viewModel.reservation.event.title}"
             app:layout_constraintTop_toTopOf="@id/post_image"
             app:layout_constraintStart_toEndOf="@id/post_image"
             android:layout_marginStart="15dp"
@@ -56,21 +60,11 @@
             tools:text="event name" />
 
         <TextView
-            android:id="@+id/event_organizer_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/event_name"
-            app:layout_constraintStart_toStartOf="@id/event_name"
-            tools:text="organizer name" />
-
-        <TextView
             android:id="@+id/event_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@id/event_organizer_name"
+            app:layout_constraintTop_toBottomOf="@id/event_name"
             app:layout_constraintStart_toStartOf="@id/event_name"
             android:layout_marginTop="5dp"
             tools:text="event location" />
@@ -79,6 +73,7 @@
             android:id="@+id/event_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{viewModel.reservation.event.date}"
             android:textSize="14sp"
             app:layout_constraintTop_toBottomOf="@id/event_location"
             app:layout_constraintStart_toStartOf="@id/event_name"
@@ -114,6 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
+                    android:text="@{viewModel.reservation.reservationDate}"
                     android:layout_marginStart="16dp"
                     tools:text="2024.02.13" />
 
@@ -145,6 +141,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:layout_marginStart="16dp"
+                    android:text="@{viewModel.reservation.price}"
                     tools:text="4,000" />
             </LinearLayout>
 
@@ -202,6 +199,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
+                    android:text="@{viewModel.reservation.member.nickname}"
                     android:layout_marginStart="16dp"
                     tools:text="예매자" />
             </LinearLayout>
@@ -231,6 +229,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
+                    android:text="@{viewModel.reservation.quantity}"
                     android:layout_marginStart="16dp"
                     tools:text="2" />
             </LinearLayout>
