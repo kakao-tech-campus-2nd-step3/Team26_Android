@@ -54,6 +54,7 @@ dependencies {
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
 
     // UI Components
     implementation(libs.androidx.recyclerview)

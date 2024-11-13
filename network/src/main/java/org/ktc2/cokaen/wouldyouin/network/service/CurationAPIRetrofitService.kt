@@ -21,7 +21,6 @@ interface CurationAPIRetrofitService {
 
     @PUT("/api/curations/{curationId}")
     suspend fun updateCuration(
-        @Path("curationId") curationId: Long,
         @Body request: CurationEditRequestWrapper
     ): Response<ApiResponseBodyCurationResponse>
 
@@ -32,4 +31,9 @@ interface CurationAPIRetrofitService {
         @Query("size") size: Int = 10,
         @Query("lastId") lastId: Long = Long.MAX_VALUE
     ): Response<ApiResponseBodyCurationSliceResponse>
+
+    @GET("/api/curations/{curationId}")
+    suspend fun getCurationDetail(
+        @Path("curationId") curationId: Long
+    ): Response<ApiResponseBodyCurationResponse>
 }

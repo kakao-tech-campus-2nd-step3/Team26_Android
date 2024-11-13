@@ -4,41 +4,33 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.ViewGroup
-import androidx.core.widget.addTextChangedListener
-import androidx.core.widget.doOnTextChanged
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.data.model.Block
-import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.ItemCurationBlockBinding
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel
 
 class CreateCurationBlockAdapter(
     private val viewModel: CreateCurationViewModel,
-    private val deleteClickListener: DeleteClickListener,
-) : RecyclerView.Adapter<CreateCurationBlockAdapter.CurationBlockViewHolder>() {
+    private val deleteClickListener: (Int) -> Unit,
+) : ListAdapter<Block, CreateCurationBlockAdapter.CurationBlockViewHolder>(BlockDiffCallback) {
 
-    private var blocks: List<Block> = listOf()
+    private object BlockDiffCallback : DiffUtil.ItemCallback<Block>() {
+        override fun areItemsTheSame(oldItem: Block, newItem: Block): Boolean {
+            return oldItem.id == newItem.id
+        }
 
-    interface DeleteClickListener {
-        fun onDeleteClick(position: Int)
-    }
-
-    interface OnImageClickListener {
-        fun onImageDeleteClick(blockPosition: Int, image: ImageResponse)
-    }
-
-    private var imageClickListener: OnImageClickListener? = null
-
-    fun setOnImageClickListener(listener: OnImageClickListener) {
-        imageClickListener = listener
-    }
-
-    fun setBlocks(newBlocks: List<Block>) {
-        blocks = newBlocks.toList()
-        notifyDataSetChanged()
+        override fun areContentsTheSame(oldItem: Block, newItem: Block): Boolean {
+            return oldItem == newItem
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurationBlockViewHolder {
@@ -52,7 +44,10 @@ class CreateCurationBlockAdapter(
     }
 
     override fun onBindViewHolder(holder: CurationBlockViewHolder, position: Int) {
-        holder.bind(position)
+        // 로그 추가
+        val block = getItem(position)
+        Log.d("Adapter_Bind", "Binding position $position with block: $block")
+        holder.bind(block, position)
     }
 
     override fun onViewRecycled(holder: CurationBlockViewHolder) {
@@ -60,57 +55,58 @@ class CreateCurationBlockAdapter(
         holder.unbind()
     }
 
-    override fun getItemCount(): Int = blocks.size
-
     inner class CurationBlockViewHolder(
         private val binding: ItemCurationBlockBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private var imageAdapter: CreateBlockImagesAdapter? = null
-
         private var titleTextWatcher: TextWatcher? = null
         private var contentTextWatcher: TextWatcher? = null
+        private var titleUpdateJob: Job? = null
+        private var contentUpdateJob: Job? = null
 
-        fun bind(position: Int) {
-            val block = blocks[position]
-            binding.viewModel = viewModel
-            binding.position = position
+        fun bind(block: Block, position: Int) {
+            removeTextWatchers()
 
-            // 이미지 어댑터에 이미지를 설정
-            imageAdapter = CreateBlockImagesAdapter(viewModel, position)
-            imageAdapter?.setImages(block.images)  // block.images로 이미지를 설정
+            binding.apply {
+                this.viewModel = this@CreateCurationBlockAdapter.viewModel
+                this.position = position
 
-            // 이미지가 표시될 RecyclerView 설정
-            binding.rvImages.layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
-            binding.rvImages.adapter = imageAdapter
+                etBlockTitle.setText(block.title)
+                etBlockContent.setText(block.body)
 
-            // 삭제 버튼 클릭 리스너
-            binding.removeCurationBlocks.setOnClickListener {
-                deleteClickListener.onDeleteClick(bindingAdapterPosition)
+                setupTextWatchers(position)
+
+                executePendingBindings()
             }
+        }
 
-            // 기본 텍스트 설정
-            binding.etBlockTitle.setText(viewModel.getBlockTitle(position))
-            binding.etBlockContent.setText(viewModel.getBlockBody(position))
-
-            // 포커스 잃을 때 저장
-            binding.etBlockTitle.setOnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    binding.etBlockTitle.post {
-                        viewModel.updateBlockTitle(position, binding.etBlockTitle.text.toString())
+        private fun setupTextWatchers(position: Int) {
+            titleTextWatcher = object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    titleUpdateJob?.cancel()
+                    titleUpdateJob = CoroutineScope(Dispatchers.Main).launch {
+                        delay(1000)
+                        this@CreateCurationBlockAdapter.viewModel?.updateBlockTitle(position, s.toString())
                     }
                 }
             }
 
-            binding.etBlockContent.setOnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    binding.etBlockContent.post {
-                        viewModel.updateBlockBody(position, binding.etBlockContent.text.toString())
+            contentTextWatcher = object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    contentUpdateJob?.cancel()
+                    contentUpdateJob = CoroutineScope(Dispatchers.Main).launch {
+                        delay(1000)
+                        this@CreateCurationBlockAdapter.viewModel?.updateBlockBody(position, s.toString())
                     }
                 }
             }
 
-            binding.executePendingBindings()
+            binding.etBlockTitle.addTextChangedListener(titleTextWatcher)
+            binding.etBlockContent.addTextChangedListener(contentTextWatcher)
         }
 
         private fun removeTextWatchers() {
@@ -118,10 +114,14 @@ class CreateCurationBlockAdapter(
             contentTextWatcher?.let { binding.etBlockContent.removeTextChangedListener(it) }
             titleTextWatcher = null
             contentTextWatcher = null
+            titleUpdateJob?.cancel()
+            contentUpdateJob?.cancel()
         }
 
         fun unbind() {
             removeTextWatchers()
+            binding.etBlockTitle.onFocusChangeListener = null
+            binding.etBlockContent.onFocusChangeListener = null
         }
     }
 }
