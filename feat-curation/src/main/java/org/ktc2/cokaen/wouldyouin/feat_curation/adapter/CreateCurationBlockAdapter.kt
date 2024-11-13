@@ -5,6 +5,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -63,6 +64,11 @@ class CreateCurationBlockAdapter(
         private var contentTextWatcher: TextWatcher? = null
         private var titleUpdateJob: Job? = null
         private var contentUpdateJob: Job? = null
+        private var updateJob: Job? = null
+
+        private var lastKnownTitleCursorPosition = 0
+        private var lastKnownContentCursorPosition = 0
+
 
         fun bind(block: Block, position: Int) {
             removeTextWatchers()
@@ -75,38 +81,64 @@ class CreateCurationBlockAdapter(
                 etBlockContent.setText(block.body)
 
                 setupTextWatchers(position)
+                setupFocusListeners(position)
 
                 executePendingBindings()
             }
         }
 
         private fun setupTextWatchers(position: Int) {
-            titleTextWatcher = object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable?) {
-                    titleUpdateJob?.cancel()
-                    titleUpdateJob = CoroutineScope(Dispatchers.Main).launch {
-                        delay(1000)
-                        this@CreateCurationBlockAdapter.viewModel?.updateBlockTitle(position, s.toString())
-                    }
-                }
-            }
-
-            contentTextWatcher = object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable?) {
-                    contentUpdateJob?.cancel()
-                    contentUpdateJob = CoroutineScope(Dispatchers.Main).launch {
-                        delay(1000)
-                        this@CreateCurationBlockAdapter.viewModel?.updateBlockBody(position, s.toString())
-                    }
-                }
-            }
+            titleTextWatcher = createTextWatcher(binding.etBlockTitle, position, true)
+            contentTextWatcher = createTextWatcher(binding.etBlockContent, position, false)
 
             binding.etBlockTitle.addTextChangedListener(titleTextWatcher)
             binding.etBlockContent.addTextChangedListener(contentTextWatcher)
+        }
+
+        private fun createTextWatcher(editText: EditText, position: Int, isTitle: Boolean): TextWatcher {
+            return object : TextWatcher {
+                private var cursorPosition = 0
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    cursorPosition = editText.selectionStart
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    val currentText = s.toString()
+                    updateJob?.cancel()
+                    updateJob = CoroutineScope(Dispatchers.Main).launch {
+                        delay(1000) // 디바운싱을 위한 지연
+                        if (isTitle) {
+                            viewModel.updateBlockTitle(position, currentText)
+                        } else {
+                            viewModel.updateBlockBody(position, currentText)
+                        }
+                        // 커서 위치 복원
+                        editText.setSelection(cursorPosition.coerceAtMost(currentText.length))
+                    }
+                }
+            }
+        }
+
+        private fun setupFocusListeners(position: Int) {
+            binding.etBlockTitle.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    this@CreateCurationBlockAdapter.viewModel?.updateBlockTitle(position, binding.etBlockTitle.text.toString())
+                    binding.etBlockTitle.setSelection(lastKnownTitleCursorPosition)
+                } else {
+                    lastKnownTitleCursorPosition = binding.etBlockTitle.selectionStart
+                }
+            }
+            binding.etBlockContent.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    this@CreateCurationBlockAdapter.viewModel?.updateBlockBody(position, binding.etBlockContent.text.toString())
+                    binding.etBlockTitle.setSelection(lastKnownContentCursorPosition)
+                } else {
+                    lastKnownContentCursorPosition = binding.etBlockContent.selectionStart
+                }
+            }
         }
 
         private fun removeTextWatchers() {

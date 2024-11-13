@@ -76,7 +76,7 @@ class CurationSearchResultFragment : DialogFragment() {
             putLong("event_id", event.id)           // 이벤트 ID
             putString("event_name", event.title)    // 이벤트 제목
             putString("host_name", event.host.nickname)  // 호스트 이름
-            putString("image_url", event.imageUrls[0])  // 이미지 URL
+            putString("image_url", event.images[0])  // 이미지 URL
         }
 
         requireActivity().supportFragmentManager.setFragmentResult("event_selection", result)
