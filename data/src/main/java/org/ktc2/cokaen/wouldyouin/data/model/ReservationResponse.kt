@@ -46,8 +46,8 @@ data class ReservationResponse(
 )
 
 data class ReservationMemberResponse(
-    @SerializedName("id")
-    val id: Long,
+    @SerializedName("memberId")
+    val memberId: Long,
 
     @SerializedName("email")
     val email: String,
@@ -63,8 +63,8 @@ data class ReservationMemberResponse(
 )
 
 data class ReservationEventResponse(
-    @SerializedName("id")
-    val id: Long,
+    @SerializedName("eventId")
+    val eventId: Long,
 
     @SerializedName("startTime") //TODO 백엔드측 전달
     val startTime: LocalDateTime,
@@ -79,6 +79,6 @@ data class ReservationEventResponse(
     val location: Location,
 
     @SerializedName("thumbnailUrl")
-    val imageUrl: String
+    val thumbnailUrl: String
 )
 
