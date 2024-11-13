@@ -261,7 +261,7 @@ class MapFragment : Fragment() {
         //해쉬태그(안되면 생략..)
         binding.placeTags.text = event.host.hashtags.joinToString(" ")
         binding.placeAddress.text = event.location.detailAddress
-        binding.placeDatetime.text = event.startTime
+        binding.placeDatetime.text = event.startTime.toString()
         binding.imageUrl = event.host.profileImageUrl
     }
 

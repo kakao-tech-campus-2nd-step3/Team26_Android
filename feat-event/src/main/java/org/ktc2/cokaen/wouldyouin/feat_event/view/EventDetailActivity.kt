@@ -47,7 +47,7 @@ class EventDetailActivity : AppCompatActivity() {
         eventViewModel.eventDetails.observe(this) { eventResponse ->
             eventResponse?.let { event ->
                 binding.eventName.text = event.data?.title
-                binding.eventTime.text = event.data?.startTime
+                binding.eventTime.text = event.data?.startTime.toString()
                 binding.eventDuration.text = "약 ${event.data?.endTime} - ${event.data?.startTime}분"
                 binding.eventLocation.text = event.data?.location?.detailAddress
                 binding.eventFee.text = "입장료 ₩${event.data?.price}"
