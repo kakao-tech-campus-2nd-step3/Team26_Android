@@ -15,6 +15,10 @@ class BookingViewPagerAdapter(private val items: List<ReservationResponse>) :
             parent,
             false
         )
+        binding.root.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
         return ViewPagerViewHolder(binding)
     }
 
@@ -33,7 +37,8 @@ class BookingViewPagerAdapter(private val items: List<ReservationResponse>) :
                 eventName.text = item.event.title
                 eventLocation.text = item.event.location.detailAddress
                 imageUrl = item.event.imageUrl
-                reservationId.text = item.id.toString() //TODO
+                ticketCount.text = item.quantity.toString() + ", ₩" + item.price
+                reservationId.text = item.id.toString()
             }
         }
     }
