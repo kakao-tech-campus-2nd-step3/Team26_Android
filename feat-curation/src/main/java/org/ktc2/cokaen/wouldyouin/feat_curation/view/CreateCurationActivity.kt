@@ -29,6 +29,11 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.TextInputEditText
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.entities.CurationEntity
@@ -166,7 +171,7 @@ class CreateCurationActivity : AppCompatActivity() {
     private fun setupListeners() {
         setupTextWatchers()
         setupButtons()
-        checkHashtags()
+
         binding.addCurationBlockButton.setOnClickListener {
             if (viewModel.isAddBlockButtonEnabled.value == true) {
                 Log.d("ButtonClick", "Add block button clicked")
