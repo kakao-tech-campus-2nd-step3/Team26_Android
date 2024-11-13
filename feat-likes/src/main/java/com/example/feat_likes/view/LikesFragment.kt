@@ -5,14 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.feat_likes.viewModel.LikesViewModel
 import com.google.android.material.tabs.TabLayoutMediator
-import org.ktc2.cokaen.wouldyouin.feat_likes.R
 import org.ktc2.cokaen.wouldyouin.feat_likes.databinding.FragmentLikesBinding
 
 class LikesFragment : Fragment() {
@@ -60,7 +57,7 @@ class LikesFragment : Fragment() {
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
-                0 -> OrganizerLikesFragment()
+                0 -> HostLikesFragment()
                 1 -> CuratorLikesFragment()
                 else -> throw IllegalArgumentException("Invalid position $position")
             }
