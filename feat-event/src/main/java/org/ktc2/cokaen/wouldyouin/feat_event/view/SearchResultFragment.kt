@@ -32,7 +32,7 @@ class SearchResultFragment : Fragment() {
         // EventAdapter 초기화 및 설정
         eventAdapter = EventAdapter(emptyList())
         binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             adapter = eventAdapter
         }
 
