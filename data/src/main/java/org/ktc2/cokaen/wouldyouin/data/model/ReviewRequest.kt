@@ -2,8 +2,8 @@ package org.ktc2.cokaen.wouldyouin.data.model
 import com.google.gson.annotations.SerializedName
 
 data class ReviewCreateRequest(
-    @SerializedName("memberId")
-    val memberId: Long,
+    @SerializedName("eventId")
+    val eventId: Long,
 
     @SerializedName("score")
     val score: Int,
