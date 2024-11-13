@@ -5,11 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.feat_likes.viewModel.LikesViewModel" />
-
-        <variable
-            name="member"
-            type="org.ktc2.cokaen.wouldyouin.data.model.MemberResponse" />
+            type="com.example.feat_likes.viewModel.HostLikesViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,21 +14,12 @@
         android:layout_height="match_parent"
         tools:context=".view.CuratorLikesFragment">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:titleTextColor="@android:color/white"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/liked_members_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintTop_toTopOf="parent"
             tools:listitem="@layout/liked_organizer_item"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

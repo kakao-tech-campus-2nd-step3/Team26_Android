@@ -34,22 +34,9 @@ class LikesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("test", "likes")
 
-//        setupToolbar()
         setupViewPager()
     }
 
-    private fun setupToolbar() {
-        (activity as? AppCompatActivity)?.setSupportActionBar(binding.toolbar)
-        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayShowTitleEnabled(false)
-
-        binding.notificationButton.setOnClickListener {
-            navigateToNotifications()
-        }
-    }
-
-    private fun navigateToNotifications() {
-        findNavController().navigate(R.id.notificationsFragment)
-    }
     private fun setupViewPager() {
         val pagerAdapter = LikesPagerAdapter(this)
         binding.viewPager.adapter = pagerAdapter

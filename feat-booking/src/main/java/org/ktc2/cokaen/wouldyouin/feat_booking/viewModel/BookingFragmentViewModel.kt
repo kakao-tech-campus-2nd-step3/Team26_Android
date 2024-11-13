@@ -104,9 +104,9 @@ class BookingFragmentViewModel @Inject constructor(
     }
 
     fun refresh() {
-        currentPage = 0  // 1이 아닌 0으로 초기화
+        currentPage = 0
         isLastPage = false
-        lastId = Long.MAX_VALUE  // null 대신 초기값으로
+        lastId = Long.MAX_VALUE
         viewModelScope.launch {
             _bookings.emit(emptyList())
             loadBookings()
