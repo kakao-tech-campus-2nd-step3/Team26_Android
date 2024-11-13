@@ -1,5 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.feat_event.view
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -112,15 +113,29 @@ class SearchFragment : Fragment() {
 
     private fun performSearch(query: String) {
         if (query.isNotEmpty()) {
-            viewModel.searchEvents(
-                //수정 필요
-                query = query,
-                startLatitude = 37.5665,      // 예시값
-                startLongitude = 126.9780,
-                endLatitude = 37.5765,
-                endLongitude = 126.9880,
-                latitude = 37.5665,
-                longitude = 126.9780,
+            // SharedPreferences에서 위치 데이터 가져오기
+            val sharedPreferences = requireActivity().getSharedPreferences("LocationData", Context.MODE_PRIVATE)
+
+            val latitude = sharedPreferences.getString("centerLat", "0.0")!!.toDouble()
+            val longitude = sharedPreferences.getString("centerLng", "0.0")!!.toDouble()
+            val startLatitude = sharedPreferences.getString("topLeftLat", "0.0")!!.toDouble()
+            val startLongitude = sharedPreferences.getString("topLeftLng", "0.0")!!.toDouble()
+            val endLatitude = sharedPreferences.getString("bottomRightLat", "0.0")!!.toDouble()
+            val endLongitude = sharedPreferences.getString("bottomRightLng", "0.0")!!.toDouble()
+
+            Log.d("LocationData", "Center Latitude: $latitude, Center Longitude: $longitude")
+            Log.d("LocationData", "Top Left Latitude: $startLatitude, Top Left Longitude: $startLongitude")
+            Log.d("LocationData", "Bottom Right Latitude: $endLatitude, Bottom Right Longitude: $endLongitude")
+
+            //viewModel.searchEvents(
+            viewModel.fetchEventList(
+                title = query,
+                startLatitude = startLatitude,
+                startLongitude = startLongitude,
+                endLatitude = endLatitude,
+                endLongitude = endLongitude,
+                latitude = latitude,
+                longitude = longitude,
                 context = requireContext()
             )
             findNavController().navigate(R.id.action_searchFragment_to_searchResultFragment)

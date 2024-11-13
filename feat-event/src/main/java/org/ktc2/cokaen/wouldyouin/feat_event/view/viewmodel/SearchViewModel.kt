@@ -18,8 +18,8 @@ class SearchViewModel @Inject constructor(private val repository: EventAPIRetrof
     private val _eventList = MutableLiveData<List<EventResponse>>()
     val eventList: LiveData<List<EventResponse>> get() = _eventList
 
-    fun searchEvents(
-        query: String,
+    fun fetchEventList(
+        title: String,
         startLatitude: Double,
         startLongitude: Double,
         endLatitude: Double,
@@ -41,10 +41,10 @@ class SearchViewModel @Inject constructor(private val repository: EventAPIRetrof
                 context = context
             )
             _eventList.value = result ?: emptyList()*/
-            Log.d("SearchViewModel", "Starting search with query: $query") // 로그 추가
+            Log.d("SearchViewModel", "Starting search with title: $title") // 로그 추가
             try {
-                val result = repository.searchEvents(
-                    query = query,
+                val result = repository.getEventList(
+                    title = title,
                     startLatitude = startLatitude,
                     startLongitude = startLongitude,
                     endLatitude = endLatitude,
@@ -54,7 +54,7 @@ class SearchViewModel @Inject constructor(private val repository: EventAPIRetrof
                     context = context
                 )
                 Log.d("SearchViewModel", "Search result: $result") // 검색 결과 로그 추가
-                _eventList.value = result ?: emptyList()
+                _eventList.value = result?.data?.events ?: emptyList()
             } catch (e: Exception) {
                 Log.e("SearchViewModel", "Search failed: ${e.message}", e) // 오류 발생 시 로그 추가
             }

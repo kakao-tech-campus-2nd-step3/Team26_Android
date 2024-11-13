@@ -58,6 +58,7 @@ class EventAPIRetrofitRepository @Inject constructor(
         }
     }
 
+    /*
     suspend fun searchEvents(
         query: String,
         startLatitude: Double,
@@ -92,7 +93,7 @@ class EventAPIRetrofitRepository @Inject constructor(
             ToastUtils.showShortToast(context, "오류 발생: ${e.message}")
             null
         }
-    }
+    }*/
 
     // 단일 행사 상세 조회
     suspend fun getEventDetails(eventId: Long, context: Context): ApiResponseBodyEventResponse? {
