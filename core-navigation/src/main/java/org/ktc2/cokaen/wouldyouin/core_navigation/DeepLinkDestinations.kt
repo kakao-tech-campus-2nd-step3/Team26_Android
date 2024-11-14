@@ -23,5 +23,7 @@ object DeepLinkDestinations {
     val HOST_PROFILE_ACTIVITY = R.string.host_profile_deeplink_url
     val CURATOR_PROFILE_ACTIVITY = R.string.curator_profile_deeplink_url
 
+    val MY_EVENT_REVIEW_ACTIVITY = R.string.member_review_deeplink_url
+
     val PAYMENT_CHECK_ACTIVITY = R.string.payment_check_deeplink_url
 }

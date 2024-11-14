@@ -11,12 +11,12 @@ import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.model.CurationCardResponse
 import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
-import org.ktc2.cokaen.wouldyouin.feat_curation.repository.CurationRepository
+import org.ktc2.cokaen.wouldyouin.network.repository.CurationAPIRetrofitRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class CurationDetailViewModel @Inject constructor(
-    private val curationRepository: CurationRepository,
+    private val curationRepository: CurationAPIRetrofitRepository,
     application: Application
 ) : ViewModel() {
     private val context = application.applicationContext

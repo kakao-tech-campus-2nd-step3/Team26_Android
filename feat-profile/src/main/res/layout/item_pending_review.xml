@@ -6,7 +6,7 @@
     <data>
         <variable
             name="review"
-            type="org.ktc2.cokaen.wouldyouin.feat_profile.viewModel.PendingReview" />
+            type="org.ktc2.cokaen.wouldyouin.data.model.ReviewEventResponse" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -25,9 +25,9 @@
             <ImageView
                 android:id="@+id/eventImageView"
                 android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:scaleType="centerCrop"
-                imageUrl="@{review.eventImageUrl}"
+                android:layout_height="96dp"
+                android:scaleType="fitXY"
+                imageUrl="@{review.thumbnailUrl}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -39,7 +39,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:textSize="16sp"
-                android:textColor="?attr/colorOnSurface"
                 android:textStyle="bold"
                 android:maxLines="2"
                 android:ellipsize="end"
@@ -55,7 +54,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="4dp"
                 android:textSize="14sp"
-                android:textColor="?attr/colorOnSurfaceVariant"
                 app:layout_constraintStart_toEndOf="@id/eventImageView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/eventNameTextView"
@@ -66,13 +64,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="리뷰 작성"
+                android:text="리뷰 작성하기"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/eventDateTextView"
                 style="@style/Widget.Material3.Button.OutlinedButton" />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>

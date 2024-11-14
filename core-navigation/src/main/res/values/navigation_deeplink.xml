@@ -23,6 +23,7 @@
     <string name="profile_deeplink_url">wouldyouin://profile</string>
     <string name="host_profile_deeplink_url">wouldyouin://profile/host</string>
     <string name="curator_profile_deeplink_url">wouldyouin://profile/curator</string>
+    <string name="member_review_deeplink_url">wouldyouin://profile/review</string>
 
     <!-- Onboarding -->
     <string name="location_permission_deeplink_url">wouldyouin://location_permission</string>

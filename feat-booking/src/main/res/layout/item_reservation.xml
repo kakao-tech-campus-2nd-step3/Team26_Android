@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="reservation"
+            type="org.ktc2.cokaen.wouldyouin.data.model.ReservationResponse" />
+        <variable
+            name="imageUrl"
+            type="String" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:background="@drawable/rounded_background"
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:id="@+id/eventImage"
+            android:layout_width="80dp"
+            android:layout_height="120dp"
+            android:contentDescription="Poster"
+            android:layout_marginEnd="8dp"
+            imageUrl="@{imageUrl}" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/eventTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{reservation.event.title}"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"
+                tools:text="Title"
+                android:textSize="18sp"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/eventDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{reservation.event.location.detailAddress}"
+                tools:text="광주 문화전당로 보헤미안 소극장"
+                android:layout_marginTop="5dp"
+                android:textSize="14sp"
+                android:textColor="#666666" />
+
+            <TextView
+                android:id="@+id/eventStartTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{reservation.event.startTime.toString()}"
+                android:layout_marginTop="5dp"
+                android:maxLines="1"
+                tools:text="공연날짜"
+
+                android:textSize="12sp"
+                android:textColor="#999999" />
+
+            <TextView
+                android:id="@+id/reservationDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@{reservation.reservationDate.toString()}"
+                android:textSize="14sp"
+                tools:text="예매날짜"
+                android:textColor="#666666" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

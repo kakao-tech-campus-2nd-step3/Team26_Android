@@ -66,7 +66,7 @@ data class ReservationEventResponse(
     @SerializedName("eventId")
     val eventId: Long,
 
-    @SerializedName("startTime") //TODO 백엔드측 전달
+    @SerializedName("startTime")
     val startTime: LocalDateTime,
 
     @SerializedName("title")

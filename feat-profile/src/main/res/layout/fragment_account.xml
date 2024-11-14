@@ -77,9 +77,9 @@
                 android:id="@+id/myReview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="내 리뷰"
+                android:text="리뷰 작성하기"
                 android:backgroundTint="@android:color/darker_gray"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/rounded_background_button" />
@@ -88,9 +88,9 @@
                 android:id="@+id/payHistory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="결제 내역"
+                android:text="예매내역"
                 android:backgroundTint="@android:color/darker_gray"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/rounded_background_button" />
 
@@ -98,21 +98,12 @@
                 android:id="@+id/ask"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="문의 하기"
+                android:text="문의하기"
                 android:backgroundTint="@android:color/darker_gray"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/rounded_background_button" />
 
-            <Button
-                android:id="@+id/apply"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="큐레이터/주최자 지원"
-                android:backgroundTint="@android:color/darker_gray"
-                android:textColor="@android:color/black"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/rounded_background_button" />
         </LinearLayout>
 
     </LinearLayout>

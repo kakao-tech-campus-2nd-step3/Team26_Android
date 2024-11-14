@@ -11,7 +11,6 @@ import org.ktc2.cokaen.wouldyouin.data.model.ReviewCreateRequest
 import org.ktc2.cokaen.wouldyouin.feat_profile.databinding.DialogReviewBinding
 import org.ktc2.cokaen.wouldyouin.feat_profile.viewModel.EventReviewViewModel
 
-// ReviewDialog.kt
 @AndroidEntryPoint
 class ReviewDialog : DialogFragment() {
     private var _binding: DialogReviewBinding? = null
@@ -24,17 +23,15 @@ class ReviewDialog : DialogFragment() {
 
         return AlertDialog.Builder(requireContext())
             .setView(binding.root)
-            .setTitle("리뷰 작성")
-            .setPositiveButton("등록", null) // null로 설정하고 아래에서 따로 처리
+            .setPositiveButton("등록", null) // 나중에 설정
             .setNegativeButton("취소") { _, _ -> dismiss() }
             .create()
             .apply {
-                // Dialog 생성 후 Positive 버튼 동작 설정
                 setOnShowListener { dialog ->
                     (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                         if (validateInput()) {
                             submitReview()
-                            dialog.dismiss()
+                            dismiss()
                         }
                     }
                 }

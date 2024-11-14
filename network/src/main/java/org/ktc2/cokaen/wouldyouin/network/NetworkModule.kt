@@ -126,5 +126,6 @@ object NetworkModule {
     fun provideAdAPIRetrofitService(@Named("Server") retrofit: Retrofit): AdAPIRetrofitService {
         return retrofit.create(AdAPIRetrofitService::class.java)
     }
+
 }
 

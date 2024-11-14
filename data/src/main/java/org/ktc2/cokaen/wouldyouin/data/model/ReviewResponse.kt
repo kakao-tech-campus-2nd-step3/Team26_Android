@@ -50,12 +50,8 @@ data class ReviewMemberResponse(
 )
 
 data class ReviewEventResponse(
-    @SerializedName("id")
-    val id: Long,
-
-    @SerializedName("title")
+    val eventId: Long,
     val title: String,
-
-    @SerializedName("mainImage")
-    val mainImage: String
+    val startTime: String,
+    val thumbnailUrl: String
 )
