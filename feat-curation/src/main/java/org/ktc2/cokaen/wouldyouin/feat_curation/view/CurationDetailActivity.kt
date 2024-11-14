@@ -46,6 +46,9 @@ class CurationDetailActivity : AppCompatActivity() {
         binding.rvEvents.adapter = DetailCurationEventAdapter { event ->
             startEventDetailsActivity(event.eventId)
         }
+        binding.curatorProfile.setOnClickListener {
+//            startCuratorActivity(viewModel.curation.value.curator.)
+        }
     }
 
     private fun observeViewModel() {
@@ -89,6 +92,19 @@ class CurationDetailActivity : AppCompatActivity() {
                     clearTop = true
                 ),
                 data = mapOf("eventId" to eventId.toString())
+            )
+        )
+    }
+
+    private fun startCuratorActivity(curatorId: Long) {
+        navigationUtil.navigate(
+            NavigationCommand(
+                destination = NavigationDestination.Activity(DeepLinkDestinations.DETAIL_EVENT_ACTIVITY),
+                activityOptions = ActivityNavigationOptions(
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK,
+                    clearTop = true
+                ),
+                data = mapOf("curatorId" to curatorId.toString())
             )
         )
     }
