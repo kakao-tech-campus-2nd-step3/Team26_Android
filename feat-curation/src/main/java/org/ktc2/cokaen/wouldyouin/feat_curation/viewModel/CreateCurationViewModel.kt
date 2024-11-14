@@ -8,7 +8,6 @@ import android.graphics.Canvas
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.EditText
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -157,17 +156,6 @@ class CreateCurationViewModel @Inject constructor(
         checkUnsavedChanges()
     }
 
-    fun updateSelectedRegion(region: String) {
-        _selectedRegion.value = region
-    }
-
-    // ViewModel
-    // 이벤트 리스트 초기화
-    fun setEventList(events: List<SearchEventData>) {
-        _eventDataList.value = events.toMutableList()
-    }
-
-
     // 블록 추가
     fun addNewBlock() {
         Log.d("BlockAdd", "Adding new block")
@@ -222,12 +210,6 @@ class CreateCurationViewModel @Inject constructor(
                 Log.e("RemoveBlock", "Error removing block at position $blockPosition", e)
                 showError("블록 삭제 중 오류가 발생했습니다")
             }
-        }
-    }
-
-    private fun observeBlocksSize() {
-        curationBlocks.observeForever { blocks ->
-            updateAddBlockButtonState(blocks.size < MAX_BLOCKS)
         }
     }
 
@@ -319,7 +301,6 @@ class CreateCurationViewModel @Inject constructor(
         return cleanBitmap
     }
 
-    // 추가할 부분
     fun validateAndSave(context: Context): Boolean {
         val validationResult = CurationValidator.validateCuration(
             title = title.value ?: "",
@@ -388,9 +369,9 @@ class CreateCurationViewModel @Inject constructor(
                     modifiedDate = curationResponse.modifiedDate,
                     createdTime = curationResponse.createdTime,
                     curator = Gson().toJson(curationResponse.curator),
-                    curationCards = Gson().toJson(curationResponse.curationCards),
-                    area = Gson().toJson(curationResponse.area),
-                    hashTag = Gson().toJson(curationResponse.hashTag),
+                    curationCards = Gson().toJson(_curationBlocks.value), // id, url 같이 저장
+                    area = curationResponse.area.name,
+                    hashtags = Gson().toJson(curationResponse.hashtags),
                     eventsInfo = Gson().toJson(curationResponse.eventsInfo)
                 )
 
@@ -534,7 +515,7 @@ class CreateCurationViewModel @Inject constructor(
         _content.value = curation.content
         _selectedRegion.value = curation.area
         _hashtags.value = Gson().fromJson<List<String>>(
-            curation.hashTag,
+            curation.hashtags,
             object : TypeToken<List<String>>() {}.type
         ).joinToString(",")
     }
@@ -592,7 +573,7 @@ class CreateCurationViewModel @Inject constructor(
                     content = _content.value ?: "",
                     curationCards = Gson().toJson(localCards),
                     area = _selectedRegion.value ?: "전체",
-                    hashTag = Gson().toJson(hashTags)
+                    hashtags = Gson().toJson(hashTags)
                 )
 
                 curationLocalRepository.updateCuration(updatedCuration)

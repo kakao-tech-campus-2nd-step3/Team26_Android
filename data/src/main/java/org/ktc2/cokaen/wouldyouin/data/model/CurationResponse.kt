@@ -14,11 +14,12 @@ data class CurationResponse(
     val content: String,
     val curationCards: List<CurationCardResponse>,
     val area: Area,
-    val hashTag: List<String>,
+    val hashtags: List<String>,
     val eventsInfo: List<CurationEventResponse>,
     val modifiedDate: String,
     val createdTime: String
 )
+
 
 data class CurationCuratorResponse(
     val nickname: String,
