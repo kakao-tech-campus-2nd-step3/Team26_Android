@@ -1,9 +1,12 @@
 package org.ktc2.cokaen.wouldyouin.feat_profile.view
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,11 +21,13 @@ import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
 import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
+import org.ktc2.cokaen.wouldyouin.feat_profile.R
 import org.ktc2.cokaen.wouldyouin.feat_profile.adapter.CurationAdapter
 import org.ktc2.cokaen.wouldyouin.feat_profile.adapter.HashtagAdapter
 import org.ktc2.cokaen.wouldyouin.feat_profile.adapter.PostAdapter
 import org.ktc2.cokaen.wouldyouin.feat_profile.databinding.ActivityCuratorProfileBinding
 import org.ktc2.cokaen.wouldyouin.feat_profile.viewModel.CurationViewModel
+import org.ktc2.cokaen.wouldyouin.feat_profile.viewModel.LikesViewModel
 import org.ktc2.cokaen.wouldyouin.feat_profile.viewModel.ProfileViewModel
 import javax.inject.Inject
 
@@ -31,6 +36,7 @@ class CuratorProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCuratorProfileBinding
     private val profileViewModel: ProfileViewModel by viewModels()
     private val curationViewModel: CurationViewModel by viewModels()
+    private val likesViewModel: LikesViewModel by viewModels()
 
     @Inject
     lateinit var navigationUtil: NavigationUtil
@@ -136,4 +142,28 @@ class CuratorProfileActivity : AppCompatActivity() {
             )
         )
     }
+
+    private fun setupLikeButton(curatorId: Long) {
+        likesViewModel.checkIfLiked(curatorId)
+
+        lifecycleScope.launch {
+            likesViewModel.isLiked.collect { isLiked ->
+                updateLikeButtonColor(isLiked)
+            }
+        }
+
+        binding.likeButton.setOnClickListener {
+            likesViewModel.toggleLike(curatorId)
+        }
+    }
+
+    private fun updateLikeButtonColor(isLiked: Boolean) {
+        val color = if (isLiked) {
+            Color.parseColor("#FF0000")
+        } else {
+            Color.parseColor("#808080")
+        }
+        binding.likeButton.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+    }
+
 }
