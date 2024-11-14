@@ -70,6 +70,7 @@ class CurationDetailActivity : AppCompatActivity() {
 
         viewModel.curationEvents.observe(this) { curationEvents ->
             (binding.rvEvents.adapter as DetailCurationEventAdapter).submitList(curationEvents)
+            binding.eventsBox.isVisible = !curationEvents.isNullOrEmpty()
         }
     }
 

@@ -123,6 +123,7 @@
                     tools:listitem="@layout/item_detail_curation_block" />
 
                 <LinearLayout
+                    android:id="@+id/eventsBox"
                     android:layout_marginTop="80dp"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
