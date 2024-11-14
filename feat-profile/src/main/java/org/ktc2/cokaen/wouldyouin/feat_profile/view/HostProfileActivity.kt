@@ -32,19 +32,19 @@ class HostProfileActivity : AppCompatActivity() {
         }
 
         // ViewModel의 데이터를 관찰하여 UI 업데이트
-        profileViewModel.memberProfile.observe(this) { member ->
-            member?.let {
-                binding.nickname.text = it.nickname
-                binding.role.text = it.memberType.toString()
-                binding.likes.text = it.likes.toString()
-                binding.intro.text = it.intro
-                binding.phone.text = it.phoneNumber
+        profileViewModel.memberProfile.observe(this) { memberResponse ->
+            memberResponse?.data?.let { member ->
+                binding.nickname.text = member.nickname
+                binding.role.text = member.memberType.toString()
+                binding.likes.text = member.likes.toString()
+                binding.intro.text = member.intro
+                binding.phone.text = member.phoneNumber
 
                 // 해시태그 리사이클러뷰
-                setupHashtagRecyclerView(it.hashtag)
+                setupHashtagRecyclerView(member.hashtag)
 
                 //프로필 이미지
-                binding.imageUrl = it.profileUrl
+                binding.imageUrl = member.profileUrl
                 //관객 리뷰(리사이클러뷰)
             }
         }

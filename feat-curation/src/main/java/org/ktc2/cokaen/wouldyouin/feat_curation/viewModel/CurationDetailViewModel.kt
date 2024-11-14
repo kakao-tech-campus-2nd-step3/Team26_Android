@@ -44,7 +44,7 @@ class CurationDetailViewModel @Inject constructor(
                 // CurationResponse 값을 변수에 적용
                 _curation.value = curationDetail
                 _curationBlocks.value = curationDetail.curationCards
-                _hashtags.value = curationDetail.hashTag
+                _hashtags.value = curationDetail.hashtags
 
             } catch (e: Exception) {
                 ToastUtils.showShortToast(context, e.message ?: "큐레이션 상세 정보 조회에 실패했습니다. 다시 시도해주세요.")

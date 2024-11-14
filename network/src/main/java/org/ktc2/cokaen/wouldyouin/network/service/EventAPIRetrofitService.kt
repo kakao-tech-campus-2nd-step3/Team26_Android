@@ -22,8 +22,8 @@ interface EventAPIRetrofitService {
         @Query("title") title: String? = null,
         @Query("category") category: String? = null,
         @Query("area") area: String? = null,
-        @Query("page") page: Int? = null,
-        @Query("size") size: Int? = null,
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 10,
         @Query("lastId") lastId: Long? = null
     ): Response<ApiResponseBodyEventSliceResponse>
 
@@ -37,8 +37,8 @@ interface EventAPIRetrofitService {
     @GET("/api/events/hosts/{hostId}")
     suspend fun getEventsByHost(
         @Path("hostId") hostId: Long,
-        @Query("page") page: Int? = null,
-        @Query("size") size: Int? = null,
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 10,
         @Query("lastId") lastId: Long? = null
     ): Response<ApiResponseBodyEventSliceResponse>
 

@@ -10,6 +10,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
+import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyReservationResponse
+import org.ktc2.cokaen.wouldyouin.data.model.ReservationCreateRequestWrapper
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationRequest
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationResponse
 import org.ktc2.cokaen.wouldyouin.feat_booking.repository.ReservationRepository
@@ -20,7 +22,6 @@ import javax.inject.Inject
 class ReservationViewModel @Inject constructor(
     private val repository: ReservationAPIRetrofitRepository,
     application: Application,
-    private val reservationRepository: ReservationRepository
 ) : ViewModel() {
     private val context = application.applicationContext
 
@@ -43,6 +44,10 @@ class ReservationViewModel @Inject constructor(
     private val _operationSuccess = MutableLiveData<Boolean>()
     val operationSuccess: LiveData<Boolean> get() = _operationSuccess
 
+    // 예매 생성 결과를 저장할 LiveData
+    private val _reservationResponse = MutableLiveData<ApiResponseBodyReservationResponse?>()
+    val reservationResponse: LiveData<ApiResponseBodyReservationResponse?> get() = _reservationResponse
+
     // 전체 예약 목록을 가져오는 메서드
     fun fetchReservationList(page: Int = currentPage, size: Int = 10) {
         if (isLoading.value == true || isLastPage) return
@@ -52,7 +57,7 @@ class ReservationViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val response = reservationRepository.getReservationList(page, size, lastId)
+                val response = repository.getReservationList(page, size, lastId)
                 if (response.reservations.isNotEmpty()) {
                     _reservationList.value = (_reservationList.value.orEmpty() + response.reservations).distinctBy { it.id }
                     lastId = response.reservations.last().id
@@ -66,6 +71,14 @@ class ReservationViewModel @Inject constructor(
             } finally {
                 _isLoading.value = false
             }
+        }
+    }
+
+    // 예매 생성
+    fun createReservation(request: ReservationCreateRequestWrapper) {
+        viewModelScope.launch {
+            val response = repository.createReservation(request)
+            _reservationResponse.value = response
         }
     }
 
