@@ -73,7 +73,7 @@
             android:id="@+id/event_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.reservation.event.date}"
+            android:text="@{viewModel.reservation.event.startTime.toString()}"
             android:textSize="14sp"
             app:layout_constraintTop_toBottomOf="@id/event_location"
             app:layout_constraintStart_toStartOf="@id/event_name"
@@ -109,7 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
-                    android:text="@{viewModel.reservation.reservationDate}"
+                    android:text="@{viewModel.reservation.reservationDate.toString()}"
                     android:layout_marginStart="16dp"
                     tools:text="2024.02.13" />
 

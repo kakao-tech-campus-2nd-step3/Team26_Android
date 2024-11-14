@@ -47,7 +47,7 @@
                 android:id="@+id/eventDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{eventResponse.startTime}"
+                android:text="@{eventResponse.startTime.toString()}"
                 tools:text="2024.07.15.15:00"
                 android:layout_marginTop="5dp"
                 android:textSize="14sp"
