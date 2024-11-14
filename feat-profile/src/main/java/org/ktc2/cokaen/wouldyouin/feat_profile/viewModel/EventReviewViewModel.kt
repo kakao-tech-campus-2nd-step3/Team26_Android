@@ -2,8 +2,6 @@ package org.ktc2.cokaen.wouldyouin.feat_profile.viewModel
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,13 +13,13 @@ import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.model.ReviewCreateRequest
 import org.ktc2.cokaen.wouldyouin.data.model.ReviewEventResponse
-import org.ktc2.cokaen.wouldyouin.feat_profile.repository.EventReviewRepository
-import org.ktc2.cokaen.wouldyouin.network.repository.ServerCommonAPIRetrofitRepository
+import org.ktc2.cokaen.wouldyouin.network.repository.ReservationAPIRetrofitRepository
+import org.ktc2.cokaen.wouldyouin.network.repository.ReviewRepositoryAPIRetrofitService
 import javax.inject.Inject
 
 @HiltViewModel
 class EventReviewViewModel @Inject constructor(
-    private val repository: EventReviewRepository,
+    private val repository: ReviewRepositoryAPIRetrofitService,
     application: Application
 ) : ViewModel() {
     private val context = application.applicationContext
@@ -72,7 +70,7 @@ class EventReviewViewModel @Inject constructor(
         viewModelScope.launch {
             _loading.value = true
             try {
-                repository.submitReview(review)
+                repository.createReview(review)
                 removePendingReview(review.eventId)
                 _reviewSubmitResult.emit(true)
             } catch (e: Exception) {

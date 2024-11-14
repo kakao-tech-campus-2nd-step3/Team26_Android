@@ -51,6 +51,7 @@ class CuratorProfileActivity : AppCompatActivity() {
         if (curatorId != null) {
             profileViewModel.fetchMemberProfile(curatorId, this)
             curationViewModel.loadCurations(curatorId)
+            setupLikeButton(curatorId)
         } else {
             ToastUtils.showShortToast(this, "큐레이터 정보를 찾을 수 없습니다.")
             finish()

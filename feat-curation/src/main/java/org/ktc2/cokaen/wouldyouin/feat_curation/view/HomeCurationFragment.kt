@@ -50,8 +50,6 @@ class HomeCurationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d("EMPTY", "onViewCreated started")
-
         val regionArray = resources.getStringArray(R.array.region)
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, regionArray)
         binding.autoCompleteTextView.setAdapter(arrayAdapter)
