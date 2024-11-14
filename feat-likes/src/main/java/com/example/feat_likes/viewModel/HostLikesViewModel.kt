@@ -4,7 +4,6 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.feat_likes.repository.LikesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,11 +15,12 @@ import org.ktc2.cokaen.wouldyouin.data.model.LikeResponse
 import org.ktc2.cokaen.wouldyouin.data.model.LikeToggleResponse
 import org.ktc2.cokaen.wouldyouin.data.model.MemberType
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationResponse
+import org.ktc2.cokaen.wouldyouin.network.repository.LikesAPIRetrofitRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class HostLikesViewModel @Inject constructor(
-    private val likesRepository: LikesRepository,
+    private val likesRepository: LikesAPIRetrofitRepository,
     application: Application
 ): ViewModel() {
     private val context = application.applicationContext

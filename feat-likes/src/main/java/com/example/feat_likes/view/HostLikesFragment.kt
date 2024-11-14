@@ -20,12 +20,15 @@ import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
 import org.ktc2.cokaen.wouldyouin.feat_likes.databinding.HostLikesBinding
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HostLikesFragment : Fragment() {
     private val viewModel: HostLikesViewModel by viewModels()
     private lateinit var binding: HostLikesBinding
-    private lateinit var navigationUtil: NavigationUtil
+
+    @Inject
+    lateinit var navigationUtil: NavigationUtil
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,13 +59,13 @@ class HostLikesFragment : Fragment() {
             lifecycleScope.launch {
                 val success = viewModel.postLike(member.memberId)
                 if (success) {
-                    ToastUtils.showShortToast(requireContext(), "${member.nickname} 좋아요 취소됨")
+                    ToastUtils.showShortToast(requireContext(), "${member.nickname} 좋아요가 취소되었습니다.")
 
                     // UI 업데이트: 리스트에서 항목 제거 후 갱신
                     val updatedList = adapter.currentList.filter { it.memberId != member.memberId }
                     adapter.submitList(updatedList)
                 } else {
-                    ToastUtils.showShortToast(requireContext(), "좋아요 취소 실패")
+                    ToastUtils.showShortToast(requireContext(), "좋아요 취소 실패! 다시 시도해 주세요.")
                 }
             }
         }

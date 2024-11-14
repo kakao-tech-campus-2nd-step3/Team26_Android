@@ -36,4 +36,12 @@ interface CurationAPIRetrofitService {
     suspend fun getCurationDetail(
         @Path("curationId") curationId: Long
     ): Response<ApiResponseBodyCurationResponse>
+
+    @GET("/api/curations/curators/{curatorId}")
+    suspend fun getCurationsByCurator(
+        @Path("curatorId") curatorId: Long,
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 10,
+        @Query("lastId") lastId: Long = Long.MAX_VALUE
+    ): Response<ApiResponseBodyCurationSliceResponse>
 }

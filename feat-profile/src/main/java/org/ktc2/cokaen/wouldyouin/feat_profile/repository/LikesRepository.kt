@@ -1,4 +1,4 @@
-package com.example.feat_likes.repository
+package org.ktc2.cokaen.wouldyouin.feat_profile.repository
 
 import org.ktc2.cokaen.wouldyouin.data.model.LikeSliceResponse
 import org.ktc2.cokaen.wouldyouin.data.model.LikeToggleResponse
@@ -13,9 +13,6 @@ import javax.inject.Singleton
 class LikesRepository @Inject constructor(
     private val likesRepository: LikesAPIRetrofitRepository
 ) {
-    suspend fun getLikes(type: String, page: Int = 0, size: Int = 10, lastId: Long = Long.MAX_VALUE): LikeSliceResponse {
-        return likesRepository.getLikes(type, page, size, lastId)
-    }
     suspend fun postLike(targetMemberId: Long): LikeToggleResponse {
         return likesRepository.postLike(targetMemberId)
     }

@@ -45,7 +45,7 @@
             android:layout_marginStart="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
-            android:text="관람 종료된 행사 중, 리뷰를 작성하지 않은 목록이 보여집니다."
+            android:text="관람 종료된 행사 중, 리뷰를 작성하지 않은 목록이 보여집니다.\n작성해주신 후기는 행사 주최자에게 전달됩니다."
             android:textSize="12sp"
             android:textColor="#5D5D5D"
             android:textStyle="bold"/>
