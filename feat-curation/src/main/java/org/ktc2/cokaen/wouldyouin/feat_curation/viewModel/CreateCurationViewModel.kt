@@ -8,7 +8,6 @@ import android.graphics.Canvas
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.Toast
 import android.widget.EditText
 import android.widget.Toast
 import androidx.lifecycle.LiveData

@@ -66,7 +66,7 @@ data class ReservationEventResponse(
     @SerializedName("eventId")
     val eventId: Long,
 
-    @SerializedName("startTime") //TODO 백엔드측 전달
+    @SerializedName("startTime")
     val startTime: LocalDateTime,
 
     @SerializedName("title")
@@ -80,13 +80,6 @@ data class ReservationEventResponse(
 
     @SerializedName("thumbnailUrl")
     val thumbnailUrl: String
-)
-
-data class ApiResponseBodyReservationResponse(
-    val success: Boolean,
-    val data: ReservationResponse?,
-    val code: String,
-    val message: String
 )
 
 data class ApiResponseBodyReservationResponse(
