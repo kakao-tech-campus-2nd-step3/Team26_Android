@@ -19,7 +19,9 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -191,21 +193,34 @@ class CreateCurationViewModel @Inject constructor(
     // 블록 삭제
     fun removeBlock(blockPosition: Int) {
         viewModelScope.launch {
-            val currentBlocks = _curationBlocks.value?.toMutableList() ?: return@launch
-            if (blockPosition < currentBlocks.size) {
+            try {
+                val currentBlocks = _curationBlocks.value?.toMutableList() ?: return@launch
+                if (blockPosition < 0 || blockPosition >= currentBlocks.size) {
+                    Log.w("RemoveBlock", "Invalid position: $blockPosition, size: ${currentBlocks.size}")
+                    return@launch
+                }
+
                 val deletedBlock = currentBlocks.removeAt(blockPosition)
 
-                // 삭제된 블록의 모든 이미지 삭제
-                deletedBlock.images.forEach { imageResponse ->
-                    try {
-                        curationRepository.deleteImage(imageResponse.id)
-                    } catch (e: Exception) {
-                        Log.e("RemoveBlock", "Failed to delete image: ${imageResponse.id}", e)
+                // 먼저 UI 업데이트
+                _curationBlocks.value = currentBlocks.toList()
+                updateAddBlockButtonState(currentBlocks.size < MAX_BLOCKS)
+
+                // 이미지 삭제는 백그라운드에서 처리
+                withContext(Dispatchers.IO) {
+                    deletedBlock.images.forEach { imageResponse ->
+                        try {
+                            curationRepository.deleteImage(imageResponse.id)
+                            Log.d("RemoveBlock", "Successfully deleted image: ${imageResponse.id}")
+                        } catch (e: Exception) {
+                            Log.e("RemoveBlock", "Failed to delete image: ${imageResponse.id}", e)
+                        }
                     }
                 }
 
-                _curationBlocks.value = currentBlocks
-                updateAddBlockButtonState(currentBlocks.size < MAX_BLOCKS)
+            } catch (e: Exception) {
+                Log.e("RemoveBlock", "Error removing block at position $blockPosition", e)
+                showError("블록 삭제 중 오류가 발생했습니다")
             }
         }
     }

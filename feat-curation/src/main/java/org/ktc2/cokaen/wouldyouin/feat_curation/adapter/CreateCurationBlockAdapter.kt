@@ -64,6 +64,7 @@ class CreateCurationBlockAdapter(
         private var contentTextWatcher: TextWatcher? = null
         private var updateJob: Job? = null
         private var imagesAdapter: CreateBlockImagesAdapter? = null
+        private var dataObserver: RecyclerView.AdapterDataObserver? = null
 
         fun bind(block: Block, position: Int) {
             removeTextWatchers()
@@ -170,13 +171,20 @@ class CreateCurationBlockAdapter(
             binding.apply {
                 etBlockTitle.onFocusChangeListener = null
                 etBlockContent.onFocusChangeListener = null
-                // 이미지 어댑터는 유지하고 리스너만 제거
                 imagesAdapter?.unregisterAllObservers()
             }
         }
 
         fun CreateBlockImagesAdapter.unregisterAllObservers() {
-            unregisterAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {})
+            try {
+                // 저장된 Observer가 있을 때만 해제 시도
+                dataObserver?.let {
+                    unregisterAdapterDataObserver(it)
+                    dataObserver = null
+                }
+            } catch (e: IllegalStateException) {
+                // Observer가 이미 해제되었거나 등록되지 않은 경우 무시
+            }
         }
 
         private fun removeTextWatchers() {
