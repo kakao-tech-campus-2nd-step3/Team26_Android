@@ -61,17 +61,18 @@ class CuratorProfileActivity : AppCompatActivity() {
     }
 
     private fun setupObservers(curatorId: Long?) {
-        profileViewModel.memberProfile.observe(this) { member ->
-            member?.let {
-                binding.apply {
-                    nickname.text = it.nickname
-                    role.text = it.memberType.toString()
-                    likes.text = it.likes.toString()
-                    intro.text = it.intro
-                    phone.text = it.phoneNumber
-                    imageUrl = it.profileUrl
-                }
-                setupHashtagRecyclerView(it.hashtag)
+        // ViewModel의 데이터를 관찰하여 UI 업데이트
+        profileViewModel.memberProfile.observe(this) { memberResponse ->
+            memberResponse?.data?.let { member ->
+                binding.nickname.text = member.nickname
+                binding.role.text = member.memberType.toString()
+                binding.likes.text = member.likes.toString()
+                binding.intro.text = member.intro
+                binding.phone.text = member.phoneNumber
+
+                //프로필 이미지
+                binding.imageUrl = member.profileUrl
+                //관객 리뷰(리사이클러뷰)
             }
         }
 
