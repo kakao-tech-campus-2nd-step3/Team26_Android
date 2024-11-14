@@ -28,7 +28,7 @@
 
                 <data
                     android:host="booking"
-                    android:path="/booking/details"
+                    android:path="/details"
                     android:scheme="wouldyouin" />
             </intent-filter>
         </activity>

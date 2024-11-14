@@ -8,8 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationResponse
 import org.ktc2.cokaen.wouldyouin.feat_booking.databinding.BookingCardItemBinding
 
-class BookingViewPagerAdapter : ListAdapter<ReservationResponse, BookingViewPagerAdapter.ViewPagerViewHolder>(DiffCallback) {
+class BookingViewPagerAdapter: ListAdapter<ReservationResponse, BookingViewPagerAdapter.ViewPagerViewHolder>(DiffCallback) {
 
+    private var onItemClickListener: ((ReservationResponse) -> Unit)? = null
+
+    fun setOnItemClickListener(listener: (ReservationResponse) -> Unit) {
+        onItemClickListener = listener
+    }
     object DiffCallback : DiffUtil.ItemCallback<ReservationResponse>() {
         override fun areItemsTheSame(oldItem: ReservationResponse, newItem: ReservationResponse): Boolean {
             return oldItem.id == newItem.id
@@ -37,7 +42,7 @@ class BookingViewPagerAdapter : ListAdapter<ReservationResponse, BookingViewPage
         holder.bind(getItem(position))
     }
 
-    class ViewPagerViewHolder(private val binding: BookingCardItemBinding) :
+    inner class ViewPagerViewHolder(private val binding: BookingCardItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ReservationResponse) {
@@ -48,6 +53,10 @@ class BookingViewPagerAdapter : ListAdapter<ReservationResponse, BookingViewPage
                 imageUrl = item.event.thumbnailUrl
                 ticketCount.text = "${item.quantity}, ₩${item.price}"
                 reservationId.text = item.id.toString()
+
+                root.setOnClickListener {
+                    onItemClickListener?.invoke(item)
+                }
             }
         }
     }
