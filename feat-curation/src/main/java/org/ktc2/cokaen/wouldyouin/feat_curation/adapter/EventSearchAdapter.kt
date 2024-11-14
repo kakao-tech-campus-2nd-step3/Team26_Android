@@ -31,7 +31,7 @@ class EventSearchAdapter(
         fun bind(event: EventResponse) {
             binding.apply {
                 eventTitle.text = event.title
-                eventDate.text = event.startTime
+                eventDate.text = event.startTime.toString()
                 eventDescription.text = event.content
                 imageUrl = event.images[0]
             }

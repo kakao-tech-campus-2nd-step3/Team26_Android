@@ -3,6 +3,7 @@ package org.ktc2.cokaen.wouldyouin.network.service
 import okhttp3.ResponseBody
 import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyReservationResponse
 import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyReservationSliceResponse
+import org.ktc2.cokaen.wouldyouin.data.model.ReservationCreateRequestWrapper
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -24,11 +25,10 @@ interface ReservationAPIRetrofitService {
     ): Response<ApiResponseBodyReservationSliceResponse>
 
     // 예매 생성
-    @POST("api/reservations")
+    @POST("/api/reservations/test")
     suspend fun createReservation(
-        @Body reservationRequest: ReservationRequest
-    ): Response<ReservationResponse>
-
+        @Body request: ReservationCreateRequestWrapper
+    ): Response<ApiResponseBodyReservationResponse>
 
     @GET("/api/reservations/{reservationId}")
     suspend fun getReservation(

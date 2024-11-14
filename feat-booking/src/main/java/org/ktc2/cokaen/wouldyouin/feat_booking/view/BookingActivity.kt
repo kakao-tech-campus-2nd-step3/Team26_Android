@@ -4,13 +4,20 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import org.ktc2.cokaen.wouldyouin.data.model.ReservationCreateRequestWrapper
+import org.ktc2.cokaen.wouldyouin.data.model.ReservationRequest
 import org.ktc2.cokaen.wouldyouin.feat_booking.databinding.ActivityBookingBinding
+import org.ktc2.cokaen.wouldyouin.feat_booking.viewModel.BookingEventViewModel
+import org.ktc2.cokaen.wouldyouin.feat_booking.viewModel.ReservationViewModel
 
 class BookingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBookingBinding
     private var totalPrice: Int = 0
+    private val bookingEventViewModel: BookingEventViewModel by viewModels()
+    private val reservationViewModel: ReservationViewModel by viewModels()
 
     // 데이터 받는 변수 부분입니다. 나중에 수정해주세요!
     private var bookingId: String? = null
@@ -22,27 +29,58 @@ class BookingActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // 데이터 받아오는 부분
-        intent?.data?.let { uri ->
-            bookingId = uri.getQueryParameter("bookingId")
-            userId = uri.getQueryParameter("userId")
+        val eventId = intent.getStringExtra("eventId")?.toLongOrNull()
+        if (eventId != null) {
+            bookingEventViewModel.fetchEventDetails(eventId, this)
         }
 
+        // ViewModel의 eventDetails 관찰하여 UI 업데이트
+        bookingEventViewModel.eventDetails.observe(this) { eventResponse ->
+            eventResponse?.data?.let { event ->
+                binding.imageUrl = event.images[0]
+                binding.eventName.text = event.title
+                binding.eventOrganizerName.text = event.host.nickname
+                binding.eventLocation.text = event.location.detailAddress
+                binding.eventDate.text = event.startTime.toString()
+                //binding.price.text = "₩${event.price}"
+
+                // 첫 가격 설정
+                updateTotalPrice(1, event.price)
+            }
+        }
 
         binding.numberPicker.minValue = 1
         binding.numberPicker.maxValue = 10
         binding.numberPicker.wrapSelectorWheel = false
 
-        val pricePerTicket = 5000  //데이터 받아오는 코드로 추후 수정 필요
-        updateTotalPrice(1, pricePerTicket)
-
         binding.numberPicker.setOnValueChangedListener { _, _, newVal ->
-            updateTotalPrice(newVal, pricePerTicket)
+            bookingEventViewModel.eventDetails.value?.data?.price?.let { pricePerTicket ->
+                updateTotalPrice(newVal, pricePerTicket)
+            }
         }
 
         binding.payButton.setOnClickListener {
-            val paymentUrl = "https://www.example.com/payment?amount=$totalPrice"  //임시 URL
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl))
-            startActivity(intent)
+            eventId?.let { id ->
+                val quantity = binding.numberPicker.value
+                val reservationRequest = ReservationRequest(eventId = id, quantity = quantity)
+                val requestWrapper = ReservationCreateRequestWrapper(reservationCreateRequest = reservationRequest)
+
+                reservationViewModel.createReservation(requestWrapper)
+
+                reservationViewModel.reservationResponse.observe(this) { response ->
+                    if (response?.success == true) {
+                        val reservationId = response.data?.id
+                        reservationId?.let {
+                            val intent = Intent(this, BookingDetailsActivity::class.java).apply {
+                                putExtra("reservationId", reservationId)
+                            }
+                            startActivity(intent)
+                        }
+                    } else {
+                        Log.e("BookingActivity", "예매 생성 실패: ${response?.message}")
+                    }
+                }
+            }
         }
     }
 

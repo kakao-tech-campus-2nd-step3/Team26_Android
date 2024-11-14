@@ -52,7 +52,7 @@ class CurationCardAdapter(
             binding.imageUrl = firstImageUrl  // 이미지 URL을 binding에 설정
 
             // 해시태그 처리 (첫 번째 해시태그를 #으로 표시)
-            val hashtags = curation.hashTag.firstOrNull()?.split("#")?.filter { it.isNotEmpty() }
+            val hashtags = curation.hashtags.firstOrNull()?.split("#")?.filter { it.isNotEmpty() }
             if (!hashtags.isNullOrEmpty()) {
                 binding.hashtag.text = "#${hashtags[0]}"
             } else {

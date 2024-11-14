@@ -49,8 +49,8 @@ class BookingFragmentViewModel @Inject constructor(
         viewModelScope.launch {
             bookings.collect { reservationList ->
                 val processed = reservationList
-                    .filter { !isEventEnded(it.event.date) }
-                    .sortedBy { parseEventDate(it.event.date) }
+                    .filter { !isEventEnded(it.event.startTime.toString()) }
+                    .sortedBy { parseEventDate(it.event.startTime.toString()) }
                     .distinctBy { it.id }
                 _processedBookings.value = processed
             }

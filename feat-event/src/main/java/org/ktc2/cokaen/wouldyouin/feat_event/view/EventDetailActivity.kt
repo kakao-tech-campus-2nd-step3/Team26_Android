@@ -69,31 +69,11 @@ class EventDetailActivity : AppCompatActivity() {
             }
         }
 
-        /*
-        val eventTitle = intent.getStringExtra("event_title")
-        val eventStartTime = intent.getStringExtra("event_startTime")
-        val eventEndTime = intent.getStringExtra("event_endTime")
-        val eventLocation = intent.getStringExtra("event_location")
-        val eventPrice = intent.getStringExtra("event_price")
-        val eventSeats = intent.getStringExtra("event_totalSeats")
-        val eventDescription = intent.getStringExtra("event_description")
-        val eventImage = intent.getStringExtra("event_image")
-
-        binding.eventName.text = eventTitle
-        binding.eventTime.text = "$eventStartTime - $eventEndTime"
-        binding.eventLocation.text = eventLocation
-        binding.eventFee.text = "입장료 ${eventPrice}₩"
-        binding.eventSeats.text = "${eventSeats}"
-        binding.eventDescription.text = eventDescription
-
-        if (!eventImage.isNullOrEmpty()) {
-            Glide.with(this)
-                .load(eventImage)
-                .into(binding.posterImage)
-        }*/
-
         binding.bookButton.setOnClickListener {
-            startBookingActivity()
+            val eventId = eventViewModel.eventDetails.value?.data?.id
+            if(eventId != null) {
+                startBookingActivity(eventId)
+            }
         }
 
         binding.viewProfile.setOnClickListener {
@@ -102,12 +82,6 @@ class EventDetailActivity : AppCompatActivity() {
                 startMemberProfileActivity(hostId)
             }
         }
-
-        // 지도 카드(MapFragment)에서 전달받은 데이터 사용 시
-        /*
-        val placeName = intent.getStringExtra("place_name")
-        binding.placeName.text = placeName
-         */
 
         mapView = binding.mapView
         mapView.start(object : MapLifeCycleCallback() {
@@ -145,7 +119,7 @@ class EventDetailActivity : AppCompatActivity() {
         mapView.pause()
     }
 
-    private fun startBookingActivity() {
+    private fun startBookingActivity(eventId: Long) {
         navigationUtil.navigate(
             NavigationCommand(
                 destination = NavigationDestination.Activity(DeepLinkDestinations.PAYMENT_CHECK_ACTIVITY),
@@ -153,10 +127,7 @@ class EventDetailActivity : AppCompatActivity() {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK,
                     clearTop = true
                 ),
-                data = mapOf(
-                    "bookingId" to "123",
-                    "userId" to "456"
-                ) // 여기에 필요한 데이터(id) 넘겨주시면 됩니다!!
+                data = mapOf("eventId" to eventId.toString()) // 여기에 필요한 데이터(id) 넘겨주시면 됩니다!!
             )
         )
     }
