@@ -6,7 +6,7 @@
     <data>
         <variable
             name="review"
-            type="org.ktc2.cokaen.wouldyouin.feat_profile.viewModel.PendingReview" />
+            type="org.ktc2.cokaen.wouldyouin.data.model.ReviewEventResponse" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -27,7 +27,7 @@
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:scaleType="centerCrop"
-                imageUrl="@{review.eventImageUrl}"
+                imageUrl="@{review.thumbnailUrl}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"

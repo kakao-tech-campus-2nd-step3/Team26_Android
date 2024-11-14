@@ -4,16 +4,28 @@
     <application>
         <activity
             android:name=".view.EventReviewActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="profile"
+                    android:path="/review"
+                    android:scheme="wouldyouin" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".view.CuratorProfileActivity"
             android:exported="false" />
+
         <activity
             android:name=".view.HostProfileActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
