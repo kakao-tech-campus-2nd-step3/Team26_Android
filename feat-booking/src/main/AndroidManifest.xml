@@ -4,13 +4,25 @@
     <application>
         <activity
             android:name=".view.BookingListActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="booking"
+                    android:path="/list"
+                    android:scheme="wouldyouin" />
+            </intent-filter>
+        </activity>
+
+
         <activity
             android:name=".view.BookingDetailsActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
