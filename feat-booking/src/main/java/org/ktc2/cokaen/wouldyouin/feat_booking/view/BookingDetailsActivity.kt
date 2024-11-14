@@ -53,6 +53,7 @@ class BookingDetailsActivity : AppCompatActivity() {
 
         binding.cancelButton.setOnClickListener {
             viewModel.deleteReservation(reservationId)
+            finish()
         }
 
         /*
