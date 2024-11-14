@@ -1,5 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.data.model
 import com.google.gson.annotations.SerializedName
+import java.time.LocalDateTime
 import java.util.Date
 
 data class ApiResponseBodyReservationSliceResponse(
@@ -41,12 +42,12 @@ data class ReservationResponse(
     val quantity: Int,
 
     @SerializedName("reservationDate")
-    val reservationDate: String
+    val reservationDate: LocalDateTime
 )
 
 data class ReservationMemberResponse(
-    @SerializedName("id")
-    val id: Long,
+    @SerializedName("memberId")
+    val memberId: Long,
 
     @SerializedName("email")
     val email: String,
@@ -62,11 +63,11 @@ data class ReservationMemberResponse(
 )
 
 data class ReservationEventResponse(
-    @SerializedName("id")
-    val id: Long,
+    @SerializedName("eventId")
+    val eventId: Long,
 
     @SerializedName("startTime") //TODO 백엔드측 전달
-    val date: String,
+    val startTime: LocalDateTime,
 
     @SerializedName("title")
     val title: String,
@@ -78,6 +79,6 @@ data class ReservationEventResponse(
     val location: Location,
 
     @SerializedName("thumbnailUrl")
-    val imageUrl: String
+    val thumbnailUrl: String
 )
 

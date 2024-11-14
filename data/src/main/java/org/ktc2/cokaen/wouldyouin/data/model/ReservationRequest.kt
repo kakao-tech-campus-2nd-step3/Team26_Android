@@ -3,6 +3,6 @@ import com.google.gson.annotations.SerializedName
 
 data class ReservationRequest(
     val eventId: Long,
-    val price: Int,
+    //val price: Int,
     val quantity: Int
 )
