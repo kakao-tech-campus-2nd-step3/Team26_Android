@@ -2,6 +2,7 @@ package org.ktc2.cokaen.wouldyouin.feat_profile.view
 
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -13,9 +14,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.feat_profile.R
 import org.ktc2.cokaen.wouldyouin.feat_profile.adapter.PendingReviewAdapter
 import org.ktc2.cokaen.wouldyouin.feat_profile.databinding.ActivityEventReviewBinding
@@ -34,16 +37,41 @@ class EventReviewActivity : AppCompatActivity() {
         binding = ActivityEventReviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupToolbar()
         setupRecyclerView()
         setupObservers()
     }
 
-    private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            title = "리뷰 작성"
+    private fun setupObservers() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.pendingReviews.collect { reviews ->
+                        reviewAdapter.submitList(reviews)
+                        binding.emptyView.isVisible = reviews.isEmpty() && !viewModel.loading.value
+                        binding.recyclerView.isVisible = reviews.isNotEmpty()
+                    }
+                }
+
+                launch {
+                    viewModel.loading.collect { isLoading ->
+                        binding.progressBar.isVisible = isLoading && viewModel.pendingReviews.value.isEmpty()
+                    }
+                }
+
+                launch {
+                    viewModel.reviewSubmitResult.collect { success ->
+                        if (success) {
+                           ToastUtils.showShortToast(this@EventReviewActivity, "등록이 완료되었습니다.")
+                        }
+                    }
+                }
+
+                launch {
+                    binding.btnBack.setOnClickListener {
+                        finish()
+                    }
+                }
+            }
         }
     }
 
@@ -54,53 +82,25 @@ class EventReviewActivity : AppCompatActivity() {
             addItemDecoration(
                 DividerItemDecoration(this@EventReviewActivity, DividerItemDecoration.VERTICAL)
             )
-        }
-    }
 
-    private fun setupObservers() {
-        // StateFlow 수집을 위한 lifecycleScope 사용
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.pendingReviews.collect { reviews ->
-                        reviewAdapter.submitList(reviews)
-                        updateEmptyView(reviews.isEmpty())
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val totalItemCount = layoutManager.itemCount
+                    val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                    if (!viewModel.loading.value && totalItemCount <= lastVisibleItem + 5) {
+                        viewModel.loadPendingReviewList()
                     }
                 }
-
-                launch {
-                    viewModel.loading.collect { isLoading ->
-                        binding.progressBar.isVisible = isLoading
-                    }
-                }
-
-                launch {
-                    viewModel.error.collect { errorMessage ->
-                        errorMessage?.let {
-                            showErrorSnackbar(it)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun updateEmptyView(isEmpty: Boolean) {
-        binding.apply {
-            emptyView.isVisible = isEmpty
-            recyclerView.isVisible = !isEmpty
+            })
         }
     }
 
     private fun showReviewDialog(eventId: Long) {
         ReviewDialog.newInstance(eventId)
             .show(supportFragmentManager, "review_dialog")
-    }
-
-    private fun showErrorSnackbar(message: String) {
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).apply {
-            setAction("확인") { dismiss() }
-        }.show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

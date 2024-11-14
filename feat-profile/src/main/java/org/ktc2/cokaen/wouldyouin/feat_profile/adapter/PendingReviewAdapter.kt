@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.ktc2.cokaen.wouldyouin.data.model.ReviewEventResponse
 import org.ktc2.cokaen.wouldyouin.feat_profile.databinding.ItemPendingReviewBinding
-import org.ktc2.cokaen.wouldyouin.feat_profile.viewModel.PendingReview
 
 class PendingReviewAdapter(
     private val onItemClick: (Long) -> Unit
-) : ListAdapter<PendingReview, PendingReviewAdapter.ViewHolder>(DiffCallback) {
+) : ListAdapter<ReviewEventResponse, PendingReviewAdapter.ViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -32,7 +32,7 @@ class PendingReviewAdapter(
         private val onItemClick: (Long) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(review: PendingReview) {
+        fun bind(review: ReviewEventResponse) {
             binding.apply {
                 // review 객체를 직접 바인딩 변수에 할당
                 this.review = review
@@ -49,12 +49,12 @@ class PendingReviewAdapter(
     }
 
     companion object {
-        private val DiffCallback = object : DiffUtil.ItemCallback<PendingReview>() {
-            override fun areItemsTheSame(oldItem: PendingReview, newItem: PendingReview): Boolean {
+        private val DiffCallback = object : DiffUtil.ItemCallback<ReviewEventResponse>() {
+            override fun areItemsTheSame(oldItem: ReviewEventResponse, newItem: ReviewEventResponse): Boolean {
                 return oldItem.eventId == newItem.eventId
             }
 
-            override fun areContentsTheSame(oldItem: PendingReview, newItem: PendingReview): Boolean {
+            override fun areContentsTheSame(oldItem: ReviewEventResponse, newItem: ReviewEventResponse): Boolean {
                 return oldItem == newItem
             }
         }

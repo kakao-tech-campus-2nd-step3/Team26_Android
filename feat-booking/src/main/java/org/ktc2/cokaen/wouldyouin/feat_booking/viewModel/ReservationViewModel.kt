@@ -1,7 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.feat_booking.viewModel
 
 import android.app.Application
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +13,6 @@ import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyReservationResponse
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationCreateRequestWrapper
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationRequest
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationResponse
-import org.ktc2.cokaen.wouldyouin.feat_booking.repository.ReservationRepository
 import org.ktc2.cokaen.wouldyouin.network.repository.ReservationAPIRetrofitRepository
 import javax.inject.Inject
 

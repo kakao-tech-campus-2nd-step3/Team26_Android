@@ -9,15 +9,13 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
-import org.ktc2.cokaen.wouldyouin.data.model.CurationCardResponse
-import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationResponse
-import org.ktc2.cokaen.wouldyouin.feat_booking.repository.ReservationRepository
+import org.ktc2.cokaen.wouldyouin.network.repository.ReservationAPIRetrofitRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class BookingDetailsViewModel @Inject constructor(
-    val reservationRepository: ReservationRepository,
+    val reservationRepository: ReservationAPIRetrofitRepository,
     application: Application
 ): ViewModel() {
     private val context = application.applicationContext
@@ -34,7 +32,7 @@ class BookingDetailsViewModel @Inject constructor(
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                val reservationDetail = reservationRepository.getReservation(reservationId)
+                val reservationDetail = reservationRepository.getReservationDetails(reservationId)
 
                 // CurationResponse 값을 변수에 적용
                 _reservation.value = reservationDetail
