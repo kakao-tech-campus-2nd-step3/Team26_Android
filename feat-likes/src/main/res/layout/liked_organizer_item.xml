@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <!-- 이미지 URL 변수를 선언합니다. -->
         <variable
             name="imageUrl"
             type="String" />
@@ -36,7 +35,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/heart_button"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:src="@{imageUrl}" />
+            imageUrl="@{imageUrl}" />
 
         <TextView
             android:id="@+id/organizer_name"
@@ -44,6 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             app:layout_constraintTop_toTopOf="@id/profile_image"
             app:layout_constraintStart_toEndOf="@id/profile_image"
             android:textSize="16sp"

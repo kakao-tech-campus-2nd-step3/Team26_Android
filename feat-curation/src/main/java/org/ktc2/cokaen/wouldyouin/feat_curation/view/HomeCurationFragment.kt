@@ -50,6 +50,8 @@ class HomeCurationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.d("EMPTY", "onViewCreated started")
+
         val regionArray = resources.getStringArray(R.array.region)
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, regionArray)
         binding.autoCompleteTextView.setAdapter(arrayAdapter)
@@ -70,23 +72,38 @@ class HomeCurationFragment : Fragment() {
         // RecyclerView에 Adapter 설정
         binding.curationCard.adapter = adapter
 
-        // ViewModel에서 curationList를 관찰
-        viewModel.curationList.observe(viewLifecycleOwner, Observer { curations ->
-            // 데이터가 변경되면 adapter에 새로운 데이터를 전달
-            if (curations != null) {
-                adapter.setData(curations)
-            }
-        })
 
-        // isLoading을 관찰하여 로딩 상태 처리
-        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            // 로딩 상태 처리 (예: 스크롤 시 로딩 아이콘 표시)
-            if (isLoading) {
-                // 로딩 중일 때 UI 변경!!!
-            } else {
-                // 로딩 완료 후 UI 변경!!!!!
+        viewModel.curationList.observe(viewLifecycleOwner) { curations ->
+            if (curations != null) {
+                Log.d("EMPTY", "Observer triggered with size: ${curations.size}")
             }
-        })
+
+            if (curations != null) {
+                if (viewModel.isLoading.value != true && curations.isEmpty()) {
+                    Log.d("EMPTY", "Showing empty view")
+                    binding.curationCard.visibility = View.GONE
+                    binding.emptyView.visibility = View.VISIBLE
+                } else {
+                    Log.d("EMPTY", "Showing content")
+                    binding.curationCard.visibility = View.VISIBLE
+                    binding.emptyView.visibility = View.GONE
+                    adapter.setData(curations)
+                }
+            }
+        }
+
+        // isLoading observer 추가
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            Log.d("EMPTY", "Loading state changed: $isLoading")
+            if (!isLoading) {
+                // 로딩이 끝났을 때 현재 리스트가 비어있는지 다시 확인
+                val currentList = viewModel.curationList.value
+                if (currentList.isNullOrEmpty()) {
+                    binding.curationCard.visibility = View.GONE
+                    binding.emptyView.visibility = View.VISIBLE
+                }
+            }
+        }
 
         // 처음 데이터 로딩
         viewModel.loadCurationList(savedArea ?: "전체")
@@ -117,6 +134,7 @@ class HomeCurationFragment : Fragment() {
             viewModel.updateSelectedArea(selectedArea)
             Log.d("DropDown", "Changed")
         }
+        Log.d("EMPTY", "Observer setup completed")
     }
 
     override fun onDestroyView() {

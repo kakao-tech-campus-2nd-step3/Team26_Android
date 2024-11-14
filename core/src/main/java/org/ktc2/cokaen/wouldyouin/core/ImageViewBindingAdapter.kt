@@ -22,11 +22,31 @@ fun setImageUrl(imageView: ImageView, path: String?, placeHolder: Drawable?) {
         return
     }
 
-    Log.d("Adapter called", "Hi")
 
     Glide.with(imageView.context)
         .load(path)
         .placeholder(ph)
+        .error(ph)
+        .into(imageView)
+}
+
+@BindingAdapter(
+    value = ["circleImageUrl", "imagePlaceHolder"],
+    requireAll = false
+)
+fun circleImageUrl(imageView: ImageView, path: String?, placeHolder: Drawable?) {
+    val ph = placeHolder ?: ContextCompat.getDrawable(imageView.context, R.drawable.default_image)
+
+    // path가 null이거나 빈 문자열이면 플레이스홀더 표시
+    if (path.isNullOrEmpty()) {
+        imageView.setImageDrawable(ph)
+        return
+    }
+
+    Glide.with(imageView.context)
+        .load(path)
+        .placeholder(ph)
+        .circleCrop()
         .error(ph)
         .into(imageView)
 }

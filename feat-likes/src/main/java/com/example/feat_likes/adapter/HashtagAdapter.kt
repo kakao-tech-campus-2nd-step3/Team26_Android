@@ -1,9 +1,9 @@
-package org.ktc2.cokaen.wouldyouin.feat_profile.view.adapter
+package com.example.feat_likes.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.ktc2.cokaen.wouldyouin.feat_profile.databinding.HashtagItemBinding
+import org.ktc2.cokaen.wouldyouin.feat_likes.databinding.HashtagItemBinding
 
 class HashtagAdapter(private val hashtags: List<String>) :
     RecyclerView.Adapter<HashtagAdapter.HashtagViewHolder>()  {

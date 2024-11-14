@@ -13,7 +13,9 @@ class CreateBlockImagesAdapter(
     private val viewModel: CreateCurationViewModel,
     private val blockPosition: Int
 ) : ListAdapter<ImageResponse, CreateBlockImagesAdapter.ImageViewHolder>(ImageDiffCallback) {
-
+    fun CreateBlockImagesAdapter.unregisterAllObservers() {
+        unregisterAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {})
+    }
     companion object {
         private object ImageDiffCallback : DiffUtil.ItemCallback<ImageResponse>() {
             override fun areItemsTheSame(oldItem: ImageResponse, newItem: ImageResponse): Boolean {
