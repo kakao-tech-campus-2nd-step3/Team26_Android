@@ -42,10 +42,10 @@ class BookingViewPagerAdapter : ListAdapter<ReservationResponse, BookingViewPage
 
         fun bind(item: ReservationResponse) {
             binding.apply {
-                eventDate.text = item.event.date
+                eventDate.text = item.event.startTime.toString()
                 eventName.text = item.event.title
                 eventLocation.text = item.event.location.detailAddress
-                imageUrl = item.event.imageUrl
+                imageUrl = item.event.thumbnailUrl
                 ticketCount.text = "${item.quantity}, ₩${item.price}"
                 reservationId.text = item.id.toString()
             }

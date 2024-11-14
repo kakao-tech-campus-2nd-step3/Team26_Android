@@ -366,8 +366,8 @@ class CreateCurationViewModel @Inject constructor(
                     id = curationResponse.id,
                     title = curationResponse.title,
                     content = curationResponse.content,
-                    modifiedDate = curationResponse.modifiedDate,
-                    createdTime = curationResponse.createdTime,
+                    modifiedDate = curationResponse.modifiedDate.toString(),
+                    createdTime = curationResponse.createdTime.toString(),
                     curator = Gson().toJson(curationResponse.curator),
                     curationCards = Gson().toJson(_curationBlocks.value), // id, url 같이 저장
                     area = curationResponse.area.name,

@@ -7,6 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.ktc2.cokaen.wouldyouin.network.service.AdAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.CurationAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.EventAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.KakaoAPIRetrofitService
@@ -118,6 +119,12 @@ object NetworkModule {
     @Singleton
     fun provideReviewAPIRetrofitService(@Named("Server") retrofit: Retrofit): ReviewAPIRetrofitService {
         return retrofit.create(ReviewAPIRetrofitService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAdAPIRetrofitService(@Named("Server") retrofit: Retrofit): AdAPIRetrofitService {
+        return retrofit.create(AdAPIRetrofitService::class.java)
     }
 }
 
