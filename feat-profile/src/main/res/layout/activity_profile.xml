@@ -124,6 +124,7 @@
                     android:layout_height="match_parent"
                     app:layout_constraintEnd_toStartOf="@id/hashtag"
                     android:maxLines="5"
+                    android:layout_marginStart="20dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/hashtag"
                     tools:text="intro"

@@ -36,7 +36,8 @@ import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.data.model.LocalCurationCard
 import org.ktc2.cokaen.wouldyouin.data.model.SearchEventData
 import org.ktc2.cokaen.wouldyouin.data.repository.CurationLocalRepository
-import org.ktc2.cokaen.wouldyouin.feat_curation.repository.CurationRepository
+import org.ktc2.cokaen.wouldyouin.network.repository.CurationAPIRetrofitRepository
+import org.ktc2.cokaen.wouldyouin.network.repository.ServerCommonAPIRetrofitRepository
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
@@ -44,7 +45,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateCurationViewModel @Inject constructor(
     application: Application,
-    private val curationRepository: CurationRepository,
+    private val curationRepository: CurationAPIRetrofitRepository,
+    private val commonRepository: ServerCommonAPIRetrofitRepository,
     private val curationLocalRepository: CurationLocalRepository
 ) : ViewModel() {
     private val MAX_BLOCKS = 10
@@ -198,7 +200,7 @@ class CreateCurationViewModel @Inject constructor(
                 withContext(Dispatchers.IO) {
                     deletedBlock.images.forEach { imageResponse ->
                         try {
-                            curationRepository.deleteImage(imageResponse.id)
+                            commonRepository.deleteImage(imageResponse.id, "CURATION")
                             Log.d("RemoveBlock", "Successfully deleted image: ${imageResponse.id}")
                         } catch (e: Exception) {
                             Log.e("RemoveBlock", "Failed to delete image: ${imageResponse.id}", e)
@@ -251,7 +253,7 @@ class CreateCurationViewModel @Inject constructor(
                 )
 
                 // 이미지 업로드
-                val imageResponse = curationRepository.uploadImageWithPart(part)
+                val imageResponse = commonRepository.uploadImageWithPart(part, "CURATION")
                 Log.d("ImageUpload", "이미지 업로드 성공, 응답: $imageResponse")
 
                 val currentBlocks = _curationBlocks.value?.toMutableList() ?: return@launch
@@ -391,7 +393,7 @@ class CreateCurationViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val success = curationRepository.deleteImage(image.id)
+                val success = commonRepository.deleteImage(image.id, "CURATION")
                 if (success) {
                     // 현재 블록의 이미지 목록에서 해당 이미지만 제거
                     val currentBlocks = _curationBlocks.value?.toMutableList() ?: return@launch
@@ -527,7 +529,7 @@ class CreateCurationViewModel @Inject constructor(
                 // 삭제된 이미지 처리
                 deletedImages.forEach { image ->
                     try {
-                        curationRepository.deleteImage(image.id)
+                        commonRepository.deleteImage(image.id, "CURATION")
                     } catch (e: Exception) {
                         Log.e("EditCuration", "Failed to delete image: ${image.id}", e)
                     }

@@ -32,23 +32,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_gravity="center"
-                android:text="리뷰 작성하기"
+                android:text="예매내역"
                 android:textSize="18sp"
                 android:textStyle="bold"/>
 
         </androidx.appcompat.widget.Toolbar>
-
-        <TextView
-            android:id="@+id/hintText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            android:text="관람 종료된 행사 중, 리뷰를 작성하지 않은 목록이 보여집니다.\n작성해주신 후기는 행사 주최자에게 전달됩니다."
-            android:textSize="12sp"
-            android:textColor="#5D5D5D"
-            android:textStyle="bold"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -56,14 +44,14 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:layout_marginTop="20dp"
-            tools:listitem="@layout/item_pending_review"
+            tools:listitem="@layout/item_reservation"
             android:padding="16dp" />
 
         <TextView
             android:id="@+id/emptyView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="리뷰할 항목이 없습니다"
+            android:text="예매 내역이 없습니다."
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
