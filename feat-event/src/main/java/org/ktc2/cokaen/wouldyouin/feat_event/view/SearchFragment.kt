@@ -1,5 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.feat_event.view
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,17 +15,23 @@ import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import org.ktc2.cokaen.wouldyouin.data.model.Category
 import org.ktc2.cokaen.wouldyouin.feat_event.R
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.FragmentSearchBinding
+import org.ktc2.cokaen.wouldyouin.feat_event.view.adapter.AdAdapter
+import org.ktc2.cokaen.wouldyouin.feat_event.view.adapter.EventAdapter
+import org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel.AdViewModel
 import org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel.SearchViewModel
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
-    private val viewModel: SearchViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModels()
+    private lateinit var adAdapter: AdAdapter
+    private val adViewModel: AdViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +40,16 @@ class SearchFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false)
         binding.search = this
         Log.d("test", "search")
+
+        // ViewModel의 eventList 관찰
+        searchViewModel.eventList.observe(viewLifecycleOwner) { eventResponse ->
+            val eventList = eventResponse?.data?.events ?: emptyList()
+            if (eventList.isNotEmpty()) {
+                findNavController().navigate(R.id.action_searchFragment_to_searchResultFragment)
+            } else {
+                Toast.makeText(requireContext(), "검색 결과가 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         val searchInput = binding.inputSearchMap
         searchInput.setOnEditorActionListener { _, actionId, event ->
@@ -99,6 +116,26 @@ class SearchFragment : Fragment() {
             navigateToCategory(Category.전시회.name)
         }
 
+        // AdAdapter 초기화 및 설정
+        adAdapter = AdAdapter(emptyList())
+        binding.adRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = adAdapter
+        }
+
+        // ViewModel의 adList를 관찰하여 UI 업데이트
+        adViewModel.adList.observe(viewLifecycleOwner) { adResponse ->
+            val adList = adResponse?.let { listOf(it.data) } ?: emptyList()
+            if (adList.isNotEmpty()) {
+                adAdapter.updateAdList(adList)
+            } else {
+                Toast.makeText(requireContext(), "광고를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // 광고 데이터 가져오기
+        adViewModel.fetchAdList(requireContext())
+
         return binding.root
     }
 
@@ -112,18 +149,32 @@ class SearchFragment : Fragment() {
 
     private fun performSearch(query: String) {
         if (query.isNotEmpty()) {
-            viewModel.searchEvents(
-                //수정 필요
-                query = query,
-                startLatitude = 37.5665,      // 예시값
-                startLongitude = 126.9780,
-                endLatitude = 37.5765,
-                endLongitude = 126.9880,
-                latitude = 37.5665,
-                longitude = 126.9780,
+            // SharedPreferences에서 위치 데이터 가져오기
+            val sharedPreferences = requireActivity().getSharedPreferences("LocationData", Context.MODE_PRIVATE)
+
+            val latitude = sharedPreferences.getString("centerLat", "0.0")!!.toDouble()
+            val longitude = sharedPreferences.getString("centerLng", "0.0")!!.toDouble()
+            val startLatitude = sharedPreferences.getString("topLeftLat", "0.0")!!.toDouble()
+            val startLongitude = sharedPreferences.getString("topLeftLng", "0.0")!!.toDouble()
+            val endLatitude = sharedPreferences.getString("bottomRightLat", "0.0")!!.toDouble()
+            val endLongitude = sharedPreferences.getString("bottomRightLng", "0.0")!!.toDouble()
+
+            Log.d("LocationData", "Center Latitude: $latitude, Center Longitude: $longitude")
+            Log.d("LocationData", "Top Left Latitude: $startLatitude, Top Left Longitude: $startLongitude")
+            Log.d("LocationData", "Bottom Right Latitude: $endLatitude, Bottom Right Longitude: $endLongitude")
+
+            //viewModel.searchEvents(
+            searchViewModel.fetchEventList(
+                title = query,
+                startLatitude = startLatitude,
+                startLongitude = startLongitude,
+                endLatitude = endLatitude,
+                endLongitude = endLongitude,
+                latitude = latitude,
+                longitude = longitude,
                 context = requireContext()
             )
-            findNavController().navigate(R.id.action_searchFragment_to_searchResultFragment)
+            //findNavController().navigate(R.id.action_searchFragment_to_searchResultFragment)
             //Toast.makeText(requireContext(), "검색어: $query", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), "검색어를 입력하세요.", Toast.LENGTH_SHORT).show()

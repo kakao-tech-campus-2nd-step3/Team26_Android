@@ -33,7 +33,7 @@ class EventSearchAdapter(
                 eventTitle.text = event.title
                 eventDate.text = event.startTime
                 eventDescription.text = event.content
-                imageUrl = event.imageUrls[0]
+                imageUrl = event.images[0]
             }
 
             itemView.setOnClickListener {

@@ -11,7 +11,6 @@ import org.ktc2.cokaen.wouldyouin.network.service.CurationAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.EventAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.KakaoAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.ServerAPIRetrofitService
-import org.ktc2.cokaen.wouldyouin.network.service.CurationAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.MemberAPIRetrofitService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
