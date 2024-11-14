@@ -16,9 +16,8 @@ import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.MotionEvent
-import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
@@ -28,9 +27,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
+import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.entities.CurationEntity
 import org.ktc2.cokaen.wouldyouin.feat_curation.R
 import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CreateBlockImagesAdapter
@@ -40,6 +40,7 @@ import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.ActivityCreateCurati
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CreateCurationViewModel
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CurationSearchViewModel
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.NavigationEvent
+import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.ValidationResult
 
 @AndroidEntryPoint
 class CreateCurationActivity : AppCompatActivity() {
@@ -105,57 +106,15 @@ class CreateCurationActivity : AppCompatActivity() {
         setUpSelectedEventsView()
         setupNavigation()
         setupRegionSpinner()
-        setupSearchInput()
+        setupShowEvents()
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setupSearchInput() {
-        binding.inputSearchMap.apply {
-            // IME Action 리스너 설정
-            setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    val query = text.toString().trim()
-                    performSearch(query)
-                    true
-                } else {
-                    false
-                }
-            }
-
-            // TextWatcher 설정
-            addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val drawableEnd = if (s.isNullOrEmpty()) {
-                        ContextCompat.getDrawable(this@CreateCurationActivity, R.drawable.magnifyingglass)
-                    } else {
-                        ContextCompat.getDrawable(this@CreateCurationActivity, R.drawable.xmark)
-                    }
-                    setCompoundDrawablesWithIntrinsicBounds(null, null, drawableEnd, null)
-                }
-
-                override fun afterTextChanged(s: Editable?) {}
-            })
-
-            // X 버튼 (clear) 터치 리스너
-            setOnTouchListener { view, event ->
-                if (event.action == MotionEvent.ACTION_UP) {
-                    val drawableEnd = compoundDrawables[2]
-                    if (drawableEnd != null) {
-                        val drawableWidth = drawableEnd.bounds.width()
-                        val touchArea = event.x >= (view.width - drawableWidth - view.paddingEnd)
-
-                        if (touchArea) {
-                            if (text.isNotEmpty()) {
-                                text.clear()
-                            }
-                            return@setOnTouchListener true
-                        }
-                    }
-                }
-                false
-            }
+    private fun setupShowEvents() {
+        binding.addEventButton.setOnClickListener {
+            val fragment = CurationSearchResultFragment()
+            fragment.show(supportFragmentManager, "search_result")
         }
     }
 
@@ -200,16 +159,14 @@ class CreateCurationActivity : AppCompatActivity() {
         }
         viewModel.curationBlocks.observe(this) { blocks ->
             Log.d("UI_Update", "Received blocks size: ${blocks.size}")
-            // 새 리스트로 전달
             adapter.submitList(blocks.toList())
         }
     }
 
     private fun setupListeners() {
-        // 폼 입력 리스너들
         setupTextWatchers()
         setupButtons()
-
+        checkHashtags()
         binding.addCurationBlockButton.setOnClickListener {
             if (viewModel.isAddBlockButtonEnabled.value == true) {
                 Log.d("ButtonClick", "Add block button clicked")
@@ -227,17 +184,40 @@ class CreateCurationActivity : AppCompatActivity() {
                 }
             }
         )
+
+        // 제목 검증
+        binding.etTitle.addValidationWatcher { title ->
+            if (title.isBlank()) {
+                ValidationResult.Error("제목은 필수입니다")
+            } else {
+                ValidationResult.Success
+            }
+        }
+
+        // 본문 검증
+        binding.etContent.addValidationWatcher { content ->
+            when {
+                content.length < 20 ->
+                    ValidationResult.Error("본문은 20자 이상이어야 합니다")
+                content.length > 1000 ->
+                    ValidationResult.Error("본문은 1000자 이하여야 합니다")
+                else -> ValidationResult.Success
+            }
+        }
+
+        // 저장 버튼 클릭시 전체 검증
+        binding.btnRegister.setOnClickListener {
+            if (viewModel.validateAndSave(this)) {
+                ToastUtils.showShortToast(this, "업로드 되었습니다.")
+                finish()
+            }
+        }
     }
 
     private fun setupButtons() {
         binding.btnRegister.apply {
             // 초기 상태 설정
             isEnabled = viewModel.isFormValid.value ?: false
-
-            // 클릭 리스너 설정
-            setOnClickListener {
-                viewModel.saveCuration()
-            }
         }
     }
 
@@ -508,15 +488,37 @@ class CreateCurationActivity : AppCompatActivity() {
 
     private fun performSearch(query: String) {
         if (query.isNotEmpty()) {
-            val fragment = CurationSearchResultFragment().apply {
-                arguments = Bundle().apply {
-                    putString("search_query", query)
-                }
-            }
-            fragment.show(supportFragmentManager, "search_result")
+
         } else {
             Toast.makeText(this, "검색어를 입력하세요.", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun EditText.addValidationWatcher(validateFn: (String) -> ValidationResult) {
+        addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                when (val result = validateFn(s?.toString() ?: "")) {
+                    is ValidationResult.Error -> error = result.message
+                    ValidationResult.Success -> error = null
+                }
+            }
+        })
+    }
+
+    // TextInputEditText용 확장 함수도 추가
+    private fun TextInputEditText.addValidationWatcher(validateFn: (String) -> ValidationResult) {
+        addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                when (val result = validateFn(s?.toString() ?: "")) {
+                    is ValidationResult.Error -> error = result.message
+                    ValidationResult.Success -> error = null
+                }
+            }
+        })
     }
 
     companion object {

@@ -82,3 +82,10 @@ data class ReservationEventResponse(
     val thumbnailUrl: String
 )
 
+data class ApiResponseBodyReservationResponse(
+    val success: Boolean,
+    val data: ReservationResponse?,
+    val code: String,
+    val message: String
+)
+

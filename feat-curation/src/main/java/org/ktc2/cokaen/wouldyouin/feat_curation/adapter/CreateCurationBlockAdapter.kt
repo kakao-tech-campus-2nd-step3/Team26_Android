@@ -5,6 +5,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -61,8 +62,9 @@ class CreateCurationBlockAdapter(
 
         private var titleTextWatcher: TextWatcher? = null
         private var contentTextWatcher: TextWatcher? = null
-        private var titleUpdateJob: Job? = null
-        private var contentUpdateJob: Job? = null
+        private var updateJob: Job? = null
+        private var imagesAdapter: CreateBlockImagesAdapter? = null
+        private var dataObserver: RecyclerView.AdapterDataObserver? = null
 
         fun bind(block: Block, position: Int) {
             removeTextWatchers()
@@ -71,42 +73,118 @@ class CreateCurationBlockAdapter(
                 this.viewModel = this@CreateCurationBlockAdapter.viewModel
                 this.position = position
 
+                // 기존 텍스트 설정
                 etBlockTitle.setText(block.title)
                 etBlockContent.setText(block.body)
 
-                setupTextWatchers(position)
+                // 이미지 어댑터 설정 및 검증
+                setupImagesAdapter(position, block)
+
+                // 유효성 검사 설정
+                setupValidation(position)
 
                 executePendingBindings()
             }
         }
 
-        private fun setupTextWatchers(position: Int) {
-            titleTextWatcher = object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable?) {
-                    titleUpdateJob?.cancel()
-                    titleUpdateJob = CoroutineScope(Dispatchers.Main).launch {
-                        delay(1000)
-                        this@CreateCurationBlockAdapter.viewModel?.updateBlockTitle(position, s.toString())
-                    }
+        private fun setupImagesAdapter(position: Int, block: Block) {
+            // 어댑터가 없는 경우에만 새로 생성
+            if (imagesAdapter == null) {
+                imagesAdapter = CreateBlockImagesAdapter(viewModel, position).apply {
+                    registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                            super.onItemRangeInserted(positionStart, itemCount)
+                            val totalImages = currentList.size
+                            if (totalImages > 5) {
+                                viewModel.showError("이미지는 5개까지만 추가할 수 있습니다.")
+                                viewModel.handleImageDelete(position, currentList.last())
+                            }
+                        }
+                    })
+                }
+                binding.rvImages.adapter = imagesAdapter
+            }
+
+            // 이미지 리스트 업데이트
+            imagesAdapter?.submitList(block.images)
+        }
+
+        private fun setupValidation(position: Int) {
+            // 제목 유효성 검사
+            binding.etBlockTitle.addValidationWatcher { title ->
+                if (title.isBlank()) {
+                    binding.etBlockTitle.error = "제목은 필수입니다"
+                    false
+                } else {
+                    binding.etBlockTitle.error = null
+                    viewModel.updateBlockTitle(position, title)
+                    true
                 }
             }
 
-            contentTextWatcher = object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable?) {
-                    contentUpdateJob?.cancel()
-                    contentUpdateJob = CoroutineScope(Dispatchers.Main).launch {
-                        delay(1000)
-                        this@CreateCurationBlockAdapter.viewModel?.updateBlockBody(position, s.toString())
+            // 본문 유효성 검사
+            binding.etBlockContent.addValidationWatcher { content ->
+                when {
+                    content.length < 20 -> {
+                        binding.etBlockContent.error = "본문은 20자 이상이어야 합니다"
+                        false
+                    }
+                    content.length > 1000 -> {
+                        binding.etBlockContent.error = "본문은 1000자 이하여야 합니다"
+                        false
+                    }
+                    else -> {
+                        binding.etBlockContent.error = null
+                        viewModel.updateBlockBody(position, content)
+                        true
                     }
                 }
             }
+        }
 
-            binding.etBlockTitle.addTextChangedListener(titleTextWatcher)
-            binding.etBlockContent.addTextChangedListener(contentTextWatcher)
+        private fun EditText.addValidationWatcher(validate: (String) -> Boolean): TextWatcher {
+            return object : TextWatcher {
+                private var cursorPosition = 0
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    cursorPosition = selectionStart
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    val currentText = s.toString()
+                    updateJob?.cancel()
+                    updateJob = CoroutineScope(Dispatchers.Main).launch {
+                        delay(500) // 디바운싱
+                        validate(currentText)
+                        // 커서 위치 복원
+                        setSelection(cursorPosition.coerceAtMost(currentText.length))
+                    }
+                }
+            }.also { addTextChangedListener(it) }
+        }
+
+        fun unbind() {
+            removeTextWatchers()
+            updateJob?.cancel()
+            binding.apply {
+                etBlockTitle.onFocusChangeListener = null
+                etBlockContent.onFocusChangeListener = null
+                imagesAdapter?.unregisterAllObservers()
+            }
+        }
+
+        fun CreateBlockImagesAdapter.unregisterAllObservers() {
+            try {
+                // 저장된 Observer가 있을 때만 해제 시도
+                dataObserver?.let {
+                    unregisterAdapterDataObserver(it)
+                    dataObserver = null
+                }
+            } catch (e: IllegalStateException) {
+                // Observer가 이미 해제되었거나 등록되지 않은 경우 무시
+            }
         }
 
         private fun removeTextWatchers() {
@@ -114,14 +192,6 @@ class CreateCurationBlockAdapter(
             contentTextWatcher?.let { binding.etBlockContent.removeTextChangedListener(it) }
             titleTextWatcher = null
             contentTextWatcher = null
-            titleUpdateJob?.cancel()
-            contentUpdateJob?.cancel()
-        }
-
-        fun unbind() {
-            removeTextWatchers()
-            binding.etBlockTitle.onFocusChangeListener = null
-            binding.etBlockContent.onFocusChangeListener = null
         }
     }
 }

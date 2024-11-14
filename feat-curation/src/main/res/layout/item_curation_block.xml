@@ -56,7 +56,7 @@
 
                 <!-- 이미지 목록 -->
                 <HorizontalScrollView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:visibility="@{viewModel.getBlockImages(position).empty ? View.GONE : View.VISIBLE}">
 
@@ -67,13 +67,6 @@
                         android:gravity="center_vertical">
 
                         <!-- 이미지 추가 버튼 -->
-                        <ImageView
-                            android:id="@+id/rvAddImage"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_marginStart="8dp"
-                            android:onClick="@{() -> viewModel.onImageClick(position)}"
-                            android:src="@drawable/photo_badge_plus"/>
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rvImages"
@@ -84,6 +77,14 @@
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                             tools:listitem="@layout/block_image_item"
                             android:layout_marginHorizontal="8dp"/>
+
+                        <ImageView
+                            android:id="@+id/rvAddImage"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="8dp"
+                            android:onClick="@{() -> viewModel.onImageClick(position)}"
+                            android:src="@drawable/photo_badge_plus"/>
                     </LinearLayout>
                 </HorizontalScrollView>
 
@@ -102,6 +103,7 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:textStyle="bold"
+                    android:inputType="textMultiLine"
                     android:hint="큐레이션 블록의 제목을 입력하세요."/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -118,6 +120,7 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:hint="본문을 입력하세요."
+                    android:inputType="textMultiLine"
                     android:minLines="3"
                     android:gravity="top"/>
             </com.google.android.material.textfield.TextInputLayout>

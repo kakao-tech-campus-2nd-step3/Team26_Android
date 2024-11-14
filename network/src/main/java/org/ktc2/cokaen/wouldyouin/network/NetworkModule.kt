@@ -10,8 +10,11 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.ktc2.cokaen.wouldyouin.network.service.CurationAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.EventAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.KakaoAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.service.LikesAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.ServerAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.MemberAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.service.ReservationAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.service.ReviewAPIRetrofitService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named
@@ -98,6 +101,23 @@ object NetworkModule {
     @Singleton
     fun provideMemberAPIRetrofitService(@Named("Server") retrofit: Retrofit): MemberAPIRetrofitService {
         return retrofit.create(MemberAPIRetrofitService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideReservationAPIRetrofitService(@Named("Server") retrofit: Retrofit): ReservationAPIRetrofitService {
+        return retrofit.create(ReservationAPIRetrofitService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideLikesAPIRetrofitService(@Named("Server") retrofit: Retrofit): LikesAPIRetrofitService {
+        return retrofit.create(LikesAPIRetrofitService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideReviewAPIRetrofitService(@Named("Server") retrofit: Retrofit): ReviewAPIRetrofitService {
+        return retrofit.create(ReviewAPIRetrofitService::class.java)
     }
 }
 

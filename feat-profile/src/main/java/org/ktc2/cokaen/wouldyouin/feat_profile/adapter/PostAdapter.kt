@@ -1,4 +1,4 @@
-package org.ktc2.cokaen.wouldyouin.feat_profile.view.adapter
+package org.ktc2.cokaen.wouldyouin.feat_profile.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

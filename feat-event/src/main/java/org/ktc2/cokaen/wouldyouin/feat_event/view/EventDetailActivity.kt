@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.bumptech.glide.Glide
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -165,7 +164,7 @@ class EventDetailActivity : AppCompatActivity() {
     private fun startMemberProfileActivity(hostId: Long) {
         navigationUtil.navigate(
             NavigationCommand(
-                destination = NavigationDestination.Activity(DeepLinkDestinations.MEMBER_PROFILE_ACTIVITY),
+                destination = NavigationDestination.Activity(DeepLinkDestinations.HOST_PROFILE_ACTIVITY),
                 activityOptions = ActivityNavigationOptions(
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK,
                     clearTop = true

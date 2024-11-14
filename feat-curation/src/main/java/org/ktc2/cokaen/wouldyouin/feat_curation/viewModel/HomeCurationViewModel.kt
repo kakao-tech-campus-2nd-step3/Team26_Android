@@ -25,7 +25,7 @@ class HomeCurationViewModel @Inject constructor(
     private val sharedPreferences = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE)
     private var selectedArea: String = sharedPreferences.getString("selectedRegion", "전체") ?: "전체"
 
-    private val _curationList = MutableLiveData<List<CurationResponse>?>()
+    private val _curationList = MutableLiveData<List<CurationResponse>?>(emptyList())
     val curationList: MutableLiveData<List<CurationResponse>?> = _curationList
 
     private val _selectedCuration = MutableLiveData<CurationResponse>()
@@ -53,7 +53,7 @@ class HomeCurationViewModel @Inject constructor(
             try {
                 val response = curationRepository.getCurationList(area, page, size, lastId)
                 if (response.curations.isNotEmpty()) {
-                    _curationList.value = (_curationList.value.orEmpty() + response.curations).distinctBy { it.id }
+                    _curationList.postValue((_curationList.value.orEmpty() + response.curations).distinctBy { it.id })
                     lastId = response.curations.last().id
                     currentPage++
                 } else {

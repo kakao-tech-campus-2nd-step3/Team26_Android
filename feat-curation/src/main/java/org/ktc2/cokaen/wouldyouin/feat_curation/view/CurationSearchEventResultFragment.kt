@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
@@ -51,24 +52,16 @@ class CurationSearchResultFragment : DialogFragment() {
 
         setupRecyclerView()
         observeEvents()
-
-        arguments?.getString("search_query")?.let { query ->
-            Log.d("SearchQuery", "Performing search with query: $query")
-            performSearch(query)
-            binding.searchQuery.text = query.toString()
-        } ?: run {
-            ToastUtils.showShortToast(requireContext(), "잘못된 접근입니다.")
-            dismiss()
-        }
+        performSearch()
 
         viewModel.isEmpty.observe(viewLifecycleOwner) { isEmpty ->
             binding.emptyView.visibility = if (isEmpty) View.VISIBLE else View.GONE
-            Log.d("SearchQuery", "$isEmpty")
         }
 
         binding.closeButton.setOnClickListener {
             dismiss()
         }
+
     }
 
     private fun onEventSelected(event: EventResponse) {
@@ -91,6 +84,21 @@ class CurationSearchResultFragment : DialogFragment() {
             adapter = eventAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
+
+        // RecyclerView 스크롤 리스너 설정 (무한 스크롤)
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val totalItemCount = layoutManager.itemCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                if (!viewModel.isLoading.value!! && totalItemCount <= lastVisibleItem + 5) {
+                    viewModel.loadEventList()
+                }
+            }
+        })
     }
 
     private fun observeEvents() {
@@ -99,16 +107,8 @@ class CurationSearchResultFragment : DialogFragment() {
         }
     }
 
-    private fun performSearch(query: String) {
-        viewModel.searchEvents(
-            query = query,
-            startLatitude = 37.5665,
-            startLongitude = 126.9780,
-            endLatitude = 37.5765,
-            endLongitude = 126.9880,
-            latitude = 37.5665,
-            longitude = 126.9780,
-            context = requireContext()
-        )
+    private fun performSearch() {
+        // 단순히 데이터 로드
+        viewModel.loadEventList()
     }
 }

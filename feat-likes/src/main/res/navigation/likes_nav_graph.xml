@@ -16,14 +16,14 @@
 
     <fragment
         android:id="@+id/organizerLikesFragment"
-        android:name="com.example.feat_likes.view.OrganizerLikesFragment"
+        android:name="com.example.feat_likes.view.HostLikesFragment"
         android:label="fragment_organizer_likes"
         tools:layout="@layout/fragment_organizer_likes" >
     </fragment>
 
     <fragment
         android:id="@+id/curatorLikesFragment"
-        android:name="com.example.feat_likes.view.OrganizerLikesFragment"
+        android:name="com.example.feat_likes.view.HostLikesFragment"
         android:label="fragment_organizer_likes"
         tools:layout="@layout/fragment_curator_likes" >
     </fragment>
