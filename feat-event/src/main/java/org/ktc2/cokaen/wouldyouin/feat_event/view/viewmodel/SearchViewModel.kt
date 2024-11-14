@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyEventSliceResponse
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
 import org.ktc2.cokaen.wouldyouin.network.repository.EventAPIRetrofitRepository
 import javax.inject.Inject
@@ -15,17 +16,22 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(private val repository: EventAPIRetrofitRepository) : ViewModel() {
 
-    private val _eventList = MutableLiveData<List<EventResponse>>()
-    val eventList: LiveData<List<EventResponse>> get() = _eventList
+    private val _eventList = MutableLiveData<ApiResponseBodyEventSliceResponse?>()
+    val eventList: LiveData<ApiResponseBodyEventSliceResponse?> get() = _eventList
 
-    fun searchEvents(
-        query: String,
+    fun fetchEventList(
+        title: String,
         startLatitude: Double,
         startLongitude: Double,
         endLatitude: Double,
         endLongitude: Double,
         latitude: Double,
         longitude: Double,
+        category: String? = null,
+        area: String? = null,
+        page: Int = 0,
+        size: Int = 10,
+        lastId: Long? = null,
         context: Context
     ) {
         viewModelScope.launch {
@@ -41,20 +47,25 @@ class SearchViewModel @Inject constructor(private val repository: EventAPIRetrof
                 context = context
             )
             _eventList.value = result ?: emptyList()*/
-            Log.d("SearchViewModel", "Starting search with query: $query") // 로그 추가
+            Log.d("SearchViewModel", "Starting search with title: $title") // 로그 추가
             try {
-                val result = repository.searchEvents(
-                    query = query,
+                val result = repository.getEventList(
+                    title = title,
                     startLatitude = startLatitude,
                     startLongitude = startLongitude,
                     endLatitude = endLatitude,
                     endLongitude = endLongitude,
                     latitude = latitude,
                     longitude = longitude,
+                    category = category,
+                    area = area,
+                    page = page,
+                    size = size,
+                    lastId = lastId,
                     context = context
                 )
                 Log.d("SearchViewModel", "Search result: $result") // 검색 결과 로그 추가
-                _eventList.value = result ?: emptyList()
+                _eventList.value = result
             } catch (e: Exception) {
                 Log.e("SearchViewModel", "Search failed: ${e.message}", e) // 오류 발생 시 로그 추가
             }

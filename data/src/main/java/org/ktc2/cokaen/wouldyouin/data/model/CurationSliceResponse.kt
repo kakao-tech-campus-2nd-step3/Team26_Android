@@ -11,5 +11,5 @@ data class ApiResponseBodyCurationSliceResponse(
 
 data class CurationSliceResponse(
     @SerializedName("curations") val curations: List<CurationResponse>,
-    @SerializedName("slice") val slice: SliceInfo
+    @SerializedName("sliceInfo") val sliceInfo: SliceInfo
 )

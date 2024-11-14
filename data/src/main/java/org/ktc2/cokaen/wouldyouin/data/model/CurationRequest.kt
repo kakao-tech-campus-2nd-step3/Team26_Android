@@ -26,7 +26,9 @@ data class CurationEditRequest(
     val hashTag: List<String>,
 
     @SerializedName("eventIds")
-    val eventIds: List<Long>
+    val eventIds: List<Long>,
+
+    val curationCardsSizeValid: Boolean = true
 )
 
 data class Block(

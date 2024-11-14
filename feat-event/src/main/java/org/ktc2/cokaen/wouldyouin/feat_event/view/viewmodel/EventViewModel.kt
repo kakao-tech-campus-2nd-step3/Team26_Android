@@ -30,7 +30,6 @@ class EventViewModel @Inject constructor(
     private val _eventsByHost = MutableLiveData<ApiResponseBodyEventSliceResponse?>()
     val eventsByHost: LiveData<ApiResponseBodyEventSliceResponse?> get() = _eventsByHost
 
-
     //전체 행사 목록 조회
     fun fetchEventList(
         startLatitude: Double,
@@ -42,8 +41,8 @@ class EventViewModel @Inject constructor(
         title: String? = null,
         category: String? = null,
         area: String? = null,
-        page: Int? = null,
-        size: Int? = null,
+        page: Int = 0,
+        size: Int = 10,
         lastId: Long? = null,
         context: Context
     ) {
@@ -85,8 +84,8 @@ class EventViewModel @Inject constructor(
     //주최자별 행사 조회
     fun fetchEventsByHost(
         hostId: Long,
-        page: Int? = null,
-        size: Int? = null,
+        page: Int = 0,
+        size: Int = 10,
         lastId: Long? = null,
         context: Context
     ) {

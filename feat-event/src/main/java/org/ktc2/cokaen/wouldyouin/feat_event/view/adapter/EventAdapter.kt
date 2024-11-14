@@ -16,7 +16,7 @@ class EventAdapter(private var events: List<EventResponse>) : RecyclerView.Adapt
         fun bind(event: EventResponse) {
             binding.imageUrl = event.images[0]
             binding.eventTitle.text = event.title
-            binding.eventDate.text = event.startTime
+            binding.eventDate.text = event.startTime.toString()
             binding.eventLocation.text = event.location.detailAddress
             binding.eventFee.text = "입장료 ${event.price}₩"
             binding.eventSeats.text = "${event.leftSeat}/${event.totalSeat}"
