@@ -24,11 +24,24 @@ class BookingDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityBookingDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        loadCurationDetail()
+
+        //loadCurationDetail()
+        val reservationId = intent.getLongExtra("reservationId", -1L)
+        if (reservationId != -1L) {
+            viewModel.loadReservationDetail(reservationId)
+        } else {
+            Toast.makeText(this, "예매 내역을 찾을 수 없습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
+            finish()
+        }
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
+        binding.cancelButton.setOnClickListener {
+            viewModel.deleteReservation(reservationId)
+        }
+
+        /*
         binding.cancelButton.setOnClickListener {
             try {
                 reservationId?.toLong()?.let { it1 -> viewModel.deleteReservation(it1) }
@@ -36,9 +49,10 @@ class BookingDetailsActivity : AppCompatActivity() {
                 Toast.makeText(this, "잘못된 접근입니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
             }
 
-        }
+        }*/
     }
 
+    /*
     private fun loadCurationDetail() {
         reservationId = intent.data?.getQueryParameter("reservationID")
         reservationId?.let { id ->
@@ -47,5 +61,5 @@ class BookingDetailsActivity : AppCompatActivity() {
             Toast.makeText(this, "예매 내역을 찾을 수 없습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
             finish()
         }
-    }
+    }*/
 }

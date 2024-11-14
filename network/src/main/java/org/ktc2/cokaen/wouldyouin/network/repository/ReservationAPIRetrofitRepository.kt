@@ -3,8 +3,10 @@ package org.ktc2.cokaen.wouldyouin.network.repository
 import android.content.Context
 import android.util.Log
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
+import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyReservationResponse
 import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
 import org.ktc2.cokaen.wouldyouin.data.model.CurationSliceResponse
+import org.ktc2.cokaen.wouldyouin.data.model.ReservationCreateRequestWrapper
 import org.ktc2.cokaen.wouldyouin.network.service.ReservationAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationRequest
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationResponse
@@ -52,6 +54,22 @@ open class ReservationAPIRetrofitRepository @Inject constructor(
                 is HttpException -> ServerCommonAPIRetrofitRepository.CustomException("서버 통신 오류: ${e.code()}")
                 else -> e
             }
+        }
+    }
+
+    // 예매 생성
+    suspend fun createReservation(request: ReservationCreateRequestWrapper): ApiResponseBodyReservationResponse? {
+        return try {
+            val response = retrofitService.createReservation(request)
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                Log.e("ReservationRepository", "Error creating reservation: ${response.errorBody()?.string()}")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("ReservationRepository", "Exception creating reservation", e)
+            null
         }
     }
 

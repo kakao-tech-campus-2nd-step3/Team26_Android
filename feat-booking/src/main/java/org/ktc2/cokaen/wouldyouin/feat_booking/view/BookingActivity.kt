@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import org.ktc2.cokaen.wouldyouin.data.model.ReservationCreateRequestWrapper
+import org.ktc2.cokaen.wouldyouin.data.model.ReservationRequest
 import org.ktc2.cokaen.wouldyouin.feat_booking.databinding.ActivityBookingBinding
+import org.ktc2.cokaen.wouldyouin.feat_booking.viewModel.ReservationViewModel
 import org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel.EventViewModel
 
 class BookingActivity : AppCompatActivity() {
@@ -14,6 +17,7 @@ class BookingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBookingBinding
     private var totalPrice: Int = 0
     private val eventViewModel: EventViewModel by viewModels()
+    private val reservationViewModel: ReservationViewModel by viewModels()
 
     // 데이터 받는 변수 부분입니다. 나중에 수정해주세요!
     private var bookingId: String? = null
@@ -29,11 +33,6 @@ class BookingActivity : AppCompatActivity() {
         if (eventId != null) {
             eventViewModel.fetchEventDetails(eventId, this)
         }
-        /*
-        intent?.data?.let { uri ->
-            bookingId = uri.getQueryParameter("bookingId")
-            userId = uri.getQueryParameter("userId")
-        }*/
 
         // ViewModel의 eventDetails 관찰하여 UI 업데이트
         eventViewModel.eventDetails.observe(this) { eventResponse ->
@@ -62,9 +61,27 @@ class BookingActivity : AppCompatActivity() {
         }
 
         binding.payButton.setOnClickListener {
-            val paymentUrl = "https://www.example.com/payment?amount=$totalPrice"  //임시 URL
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl))
-            startActivity(intent)
+            eventId?.let { id ->
+                val quantity = binding.numberPicker.value
+                val reservationRequest = ReservationRequest(eventId = id, quantity = quantity)
+                val requestWrapper = ReservationCreateRequestWrapper(reservationCreateRequest = reservationRequest)
+
+                reservationViewModel.createReservation(requestWrapper)
+
+                reservationViewModel.reservationResponse.observe(this) { response ->
+                    if (response?.success == true) {
+                        val reservationId = response.data?.id
+                        reservationId?.let {
+                            val intent = Intent(this, BookingDetailsActivity::class.java).apply {
+                                putExtra("reservationId", reservationId)
+                            }
+                            startActivity(intent)
+                        }
+                    } else {
+                        Log.e("BookingActivity", "예매 생성 실패: ${response?.message}")
+                    }
+                }
+            }
         }
     }
 
