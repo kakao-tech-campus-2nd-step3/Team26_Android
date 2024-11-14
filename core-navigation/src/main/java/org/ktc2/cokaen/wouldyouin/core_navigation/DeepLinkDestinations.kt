@@ -20,7 +20,8 @@ object DeepLinkDestinations {
     val CREATE_CURATION_DEEPLINK = R.string.create_curation_deeplink_url
     val DETAIL_CURATION_DEEPLINK = R.string.detail_curation_deeplink_url
 
-    val MEMBER_PROFILE_ACTIVITY = R.string.member_profile_deeplink_url
+    val HOST_PROFILE_ACTIVITY = R.string.host_profile_deeplink_url
+    val CURATOR_PROFILE_ACTIVITY = R.string.curator_profile_deeplink_url
 
     val PAYMENT_CHECK_ACTIVITY = R.string.payment_check_deeplink_url
 }

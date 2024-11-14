@@ -52,13 +52,15 @@ class Converters {
     // Hashtags
     @TypeConverter
     fun fromStringList(value: List<String>?): String {
+        // List<String> -> JSON String
         return gson.toJson(value)
     }
 
     @TypeConverter
-    fun toStringList(value: String): List<String>? {
+    fun toStringList(value: String?): List<String> {
+        // JSON String -> List<String>
         val listType = object : TypeToken<List<String>>() {}.type
-        return gson.fromJson(value, listType)
+        return gson.fromJson(value, listType) ?: emptyList() // null 처리
     }
 
     // Area

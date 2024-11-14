@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
     <application>
-        <activity android:name=".view.ProfileActivity"
+        <activity
+            android:name=".view.EventReviewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.CuratorProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.HostProfileActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="wouldyouin" android:host="profile" android:path="/member"/>
+
+                <data
+                    android:host="profile"
+                    android:path="/host"
+                    android:scheme="wouldyouin" />
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

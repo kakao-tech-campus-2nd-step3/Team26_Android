@@ -2,17 +2,36 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
-    <activity
-        android:name=".view.BookingActivity"
-        android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="wouldyouin" android:host="booking" android:path="/payment/check"/>
-        </intent-filter>
-    </activity>
+        <activity
+            android:name=".view.BookingDetailsActivity"
+            android:exported="true">
 
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="booking"
+                    android:path="/booking/details"
+                    android:scheme="wouldyouin" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.BookingActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="booking"
+                    android:path="/payment/check"
+                    android:scheme="wouldyouin" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

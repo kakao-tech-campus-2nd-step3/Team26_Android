@@ -8,12 +8,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
 import org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel.EventViewModel
 import org.ktc2.cokaen.wouldyouin.feat_profile.databinding.ActivityProfileBinding
-import org.ktc2.cokaen.wouldyouin.feat_profile.view.adapter.HashtagAdapter
-import org.ktc2.cokaen.wouldyouin.feat_profile.view.adapter.PostAdapter
-import org.ktc2.cokaen.wouldyouin.feat_profile.view.viewmodel.ProfileViewModel
+import org.ktc2.cokaen.wouldyouin.feat_profile.adapter.HashtagAdapter
+import org.ktc2.cokaen.wouldyouin.feat_profile.adapter.PostAdapter
+import org.ktc2.cokaen.wouldyouin.feat_profile.viewModel.ProfileViewModel
 
 @AndroidEntryPoint
-class ProfileActivity : AppCompatActivity() {
+class HostProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProfileBinding
     private val profileViewModel: ProfileViewModel by viewModels()
     private val eventViewModel: EventViewModel by viewModels()
@@ -61,7 +61,7 @@ class ProfileActivity : AppCompatActivity() {
     private fun setupHashtagRecyclerView(hashtags: List<String>) {
         val hashtagAdapter = HashtagAdapter(hashtags)
         binding.hashtag.apply {
-            layoutManager = LinearLayoutManager(this@ProfileActivity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(this@HostProfileActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = hashtagAdapter
         }
     }
@@ -70,7 +70,7 @@ class ProfileActivity : AppCompatActivity() {
     private fun setupPostRecyclerView(events: List<EventResponse>) {
         val postAdapter = PostAdapter(events)
         binding.post.apply {
-            layoutManager = LinearLayoutManager(this@ProfileActivity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(this@HostProfileActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = postAdapter
         }
     }

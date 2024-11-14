@@ -108,6 +108,7 @@
                         android:text="@{viewModel.content}"
                         android:afterTextChanged="@{(editable) -> viewModel.updateContent(editable.toString())}"
                         android:focusable="true"
+                        android:inputType="textMultiLine"
                         android:focusableInTouchMode="true"
                         android:minLines="5"
                         android:hint="큐레이션을 요약하는 본문을 작성하세요."/>
@@ -134,6 +135,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{viewModel.hashtags}"
+                    android:inputType="textMultiLine"
                     android:afterTextChanged="@{(editable) -> viewModel.updateHashtags(editable.toString())}"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
@@ -154,6 +156,7 @@
                 android:id="@+id/region_dropdown_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
                 android:layout_marginTop="8dp"
                 app:boxBackgroundColor="@color/white"
                 app:boxStrokeColor="@color/black">
@@ -206,22 +209,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    android:text="이벤트 선택"
+                    android:text="이벤트 추가"
                     android:textSize="16sp"
                     android:textStyle="bold"/>
 
-                <EditText
-                    android:id="@+id/inputSearchMap"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/addEventButton"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:hint="행사 제목을 입력하세요."
-                    android:background="#f1f1f1"
-                    android:padding="16dp"
-                    android:drawableRight="@drawable/magnifyingglass"
-                    android:gravity="center_vertical"
-                    android:inputType="text"
-                    android:imeOptions="actionDone"/>
+                    android:text="추가하기"
+                    android:textColor="#528ADE"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvSelectedEvents"

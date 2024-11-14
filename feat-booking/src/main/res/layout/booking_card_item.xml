@@ -31,7 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     imageUrl="@{imageUrl}"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="fitXY" />
             </androidx.cardview.widget.CardView>
         </FrameLayout>
 
@@ -76,7 +76,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/event_location"
             android:textSize="14sp"
-            tools:text="2인 4,000"/>
+            tools:text="2인"/>
 
         <TextView
             android:id="@+id/reservation_id"
