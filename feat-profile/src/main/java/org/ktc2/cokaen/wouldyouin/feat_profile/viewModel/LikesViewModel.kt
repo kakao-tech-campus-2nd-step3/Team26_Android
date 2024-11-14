@@ -1,16 +1,13 @@
 package org.ktc2.cokaen.wouldyouin.feat_profile.viewModel
 
 import android.app.Application
-import android.graphics.PorterDuff
 import android.util.Log
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.ktc2.cokaen.wouldyouin.feat_profile.R
 import org.ktc2.cokaen.wouldyouin.network.repository.LikesAPIRetrofitRepository
 import javax.inject.Inject
 

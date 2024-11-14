@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationResponse
+import org.ktc2.cokaen.wouldyouin.network.repository.ReservationAPIRetrofitRepository
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -19,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BookingFragmentViewModel @Inject constructor(
     application: Application,
-    private val reservationRepository: ReservationRepository
+    private val reservationRepository: ReservationAPIRetrofitRepository
 ) : ViewModel() {
     private val context = application.applicationContext
 

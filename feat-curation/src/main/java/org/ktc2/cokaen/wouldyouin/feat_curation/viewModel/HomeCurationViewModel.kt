@@ -11,11 +11,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
+import org.ktc2.cokaen.wouldyouin.network.repository.CurationAPIRetrofitRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeCurationViewModel @Inject constructor(
-    private val curationRepository: CurationRepository,
+    private val curationRepository: CurationAPIRetrofitRepository,
     application: Application
 ) : ViewModel() {
 

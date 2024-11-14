@@ -104,15 +104,6 @@
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/rounded_background_button" />
 
-            <Button
-                android:id="@+id/apply"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="큐레이터/주최자 지원"
-                android:backgroundTint="@android:color/darker_gray"
-                android:textColor="@android:color/white"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/rounded_background_button" />
         </LinearLayout>
 
     </LinearLayout>

@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.feat_profile.view
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -42,6 +43,10 @@ class AccountFragment : Fragment() {
 //            binding.payHistory.setOnClickListener {
 //                startActivityTo(DeepLinkDestinations.PAYMENT_CHECK_ACTIVITY)
 //            }
+
+            ask.setOnClickListener {
+                openWebPage("https://www.google.com")
+            }
         }
     }
 
@@ -55,5 +60,11 @@ class AccountFragment : Fragment() {
                 )
             )
         )
+    }
+
+    private fun openWebPage(url: String) {
+        val webpage: Uri = Uri.parse(url)
+        val intent = Intent(Intent.ACTION_VIEW, webpage)
+        startActivity(intent)
     }
 }
