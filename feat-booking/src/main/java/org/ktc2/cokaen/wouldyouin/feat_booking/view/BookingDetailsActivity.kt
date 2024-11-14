@@ -7,9 +7,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Observer
 import dagger.hilt.android.AndroidEntryPoint
 import org.ktc2.cokaen.wouldyouin.feat_booking.R
-import org.ktc2.cokaen.wouldyouin.feat_booking.databinding.ActivityBookingBinding
 import org.ktc2.cokaen.wouldyouin.feat_booking.databinding.ActivityBookingDetailsBinding
 import org.ktc2.cokaen.wouldyouin.feat_booking.viewModel.BookingDetailsViewModel
 
@@ -25,6 +25,9 @@ class BookingDetailsActivity : AppCompatActivity() {
         binding = ActivityBookingDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+
         //loadCurationDetail()
         val reservationId = intent.getLongExtra("reservationId", -1L)
         if (reservationId != -1L) {
@@ -34,8 +37,19 @@ class BookingDetailsActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.lifecycleOwner = this
-        binding.viewModel = viewModel
+        viewModel.reservation.observe(this, Observer { reservation ->
+            reservation?.let {
+                binding.imageUrl = reservation.event.thumbnailUrl
+                binding.eventName.text = reservation.event.title
+                binding.eventLocation.text = reservation.event.location.detailAddress
+                binding.eventDate.text = reservation.event.startTime.toString()
+                binding.paymentDate.text = reservation.reservationDate.toString()
+                binding.paymentAmount.text = "₩${reservation.price}"
+                binding.reservationNumber.text = reservation.id.toString()
+                binding.bookerName.text = reservation.member.nickname
+                binding.ticketQuantity.text = reservation.quantity.toString()
+            }
+        })
 
         binding.cancelButton.setOnClickListener {
             viewModel.deleteReservation(reservationId)

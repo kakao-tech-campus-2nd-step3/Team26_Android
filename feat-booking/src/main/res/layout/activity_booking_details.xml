@@ -7,6 +7,10 @@
         <variable
             name="viewModel"
             type="org.ktc2.cokaen.wouldyouin.feat_booking.viewModel.BookingDetailsViewModel" />
+
+        <variable
+            name="imageUrl"
+            type="String" />
     </data>
     
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -44,7 +48,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             android:scaleType="fitXY"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            imageUrl="@{imageUrl}" />
 
         <TextView
             android:id="@+id/event_name"

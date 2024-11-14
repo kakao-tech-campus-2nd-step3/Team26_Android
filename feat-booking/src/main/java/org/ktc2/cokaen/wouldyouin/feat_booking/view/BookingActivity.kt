@@ -9,14 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationCreateRequestWrapper
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationRequest
 import org.ktc2.cokaen.wouldyouin.feat_booking.databinding.ActivityBookingBinding
+import org.ktc2.cokaen.wouldyouin.feat_booking.viewModel.BookingEventViewModel
 import org.ktc2.cokaen.wouldyouin.feat_booking.viewModel.ReservationViewModel
-import org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel.EventViewModel
 
 class BookingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBookingBinding
     private var totalPrice: Int = 0
-    private val eventViewModel: EventViewModel by viewModels()
+    private val bookingEventViewModel: BookingEventViewModel by viewModels()
     private val reservationViewModel: ReservationViewModel by viewModels()
 
     // 데이터 받는 변수 부분입니다. 나중에 수정해주세요!
@@ -31,12 +31,13 @@ class BookingActivity : AppCompatActivity() {
         // 데이터 받아오는 부분
         val eventId = intent.getStringExtra("eventId")?.toLongOrNull()
         if (eventId != null) {
-            eventViewModel.fetchEventDetails(eventId, this)
+            bookingEventViewModel.fetchEventDetails(eventId, this)
         }
 
         // ViewModel의 eventDetails 관찰하여 UI 업데이트
-        eventViewModel.eventDetails.observe(this) { eventResponse ->
+        bookingEventViewModel.eventDetails.observe(this) { eventResponse ->
             eventResponse?.data?.let { event ->
+                binding.imageUrl = event.images[0]
                 binding.eventName.text = event.title
                 binding.eventOrganizerName.text = event.host.nickname
                 binding.eventLocation.text = event.location.detailAddress
@@ -48,14 +49,12 @@ class BookingActivity : AppCompatActivity() {
             }
         }
 
-
         binding.numberPicker.minValue = 1
         binding.numberPicker.maxValue = 10
         binding.numberPicker.wrapSelectorWheel = false
 
-
         binding.numberPicker.setOnValueChangedListener { _, _, newVal ->
-            eventViewModel.eventDetails.value?.data?.price?.let { pricePerTicket ->
+            bookingEventViewModel.eventDetails.value?.data?.price?.let { pricePerTicket ->
                 updateTotalPrice(newVal, pricePerTicket)
             }
         }
