@@ -41,4 +41,13 @@ interface EventAPIRetrofitService {
         @Query("size") size: Int? = null,
         @Query("lastId") lastId: Long? = null
     ): Response<ApiResponseBodyEventSliceResponse>
+
+
+    // 모든 행사 조회
+    @GET("/api/events")
+    suspend fun getAllEvents(
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 10,
+        @Query("lastId") lastId: Long = Long.MAX_VALUE
+    ): Response<ApiResponseBodyEventSliceResponse>
 }

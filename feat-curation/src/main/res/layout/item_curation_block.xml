@@ -102,6 +102,7 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:textStyle="bold"
+                    android:inputType="textMultiLine"
                     android:hint="큐레이션 블록의 제목을 입력하세요."/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -118,6 +119,7 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:hint="본문을 입력하세요."
+                    android:inputType="textMultiLine"
                     android:minLines="3"
                     android:gravity="top"/>
             </com.google.android.material.textfield.TextInputLayout>

@@ -63,6 +63,7 @@ class CreateCurationBlockAdapter(
         private var titleTextWatcher: TextWatcher? = null
         private var contentTextWatcher: TextWatcher? = null
         private var updateJob: Job? = null
+        private var imagesAdapter: CreateBlockImagesAdapter? = null
 
         fun bind(block: Block, position: Int) {
             removeTextWatchers()
@@ -86,22 +87,25 @@ class CreateCurationBlockAdapter(
         }
 
         private fun setupImagesAdapter(position: Int, block: Block) {
-            val imagesAdapter = CreateBlockImagesAdapter(viewModel, position).apply {
-                // 이미지 추가 전 검증
-                registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-                    override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                        super.onItemRangeInserted(positionStart, itemCount)
-                        val totalImages = currentList.size
-                        if (totalImages > 5) {
-                            viewModel.showError("이미지는 5개까지만 추가할 수 있습니다.")
-                            // 초과된 이미지 제거
-                            viewModel.handleImageDelete(position, currentList.last())
+            // 어댑터가 없는 경우에만 새로 생성
+            if (imagesAdapter == null) {
+                imagesAdapter = CreateBlockImagesAdapter(viewModel, position).apply {
+                    registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                            super.onItemRangeInserted(positionStart, itemCount)
+                            val totalImages = currentList.size
+                            if (totalImages > 5) {
+                                viewModel.showError("이미지는 5개까지만 추가할 수 있습니다.")
+                                viewModel.handleImageDelete(position, currentList.last())
+                            }
                         }
-                    }
-                })
+                    })
+                }
+                binding.rvImages.adapter = imagesAdapter
             }
-            binding.rvImages.adapter = imagesAdapter
-            imagesAdapter.submitList(block.images)
+
+            // 이미지 리스트 업데이트
+            imagesAdapter?.submitList(block.images)
         }
 
         private fun setupValidation(position: Int) {
@@ -166,9 +170,13 @@ class CreateCurationBlockAdapter(
             binding.apply {
                 etBlockTitle.onFocusChangeListener = null
                 etBlockContent.onFocusChangeListener = null
-                // 이미지 리사이클러뷰 정리
-                rvImages.adapter = null
+                // 이미지 어댑터는 유지하고 리스너만 제거
+                imagesAdapter?.unregisterAllObservers()
             }
+        }
+
+        fun CreateBlockImagesAdapter.unregisterAllObservers() {
+            unregisterAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {})
         }
 
         private fun removeTextWatchers() {

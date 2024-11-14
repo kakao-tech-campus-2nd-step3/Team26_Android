@@ -11,6 +11,7 @@ import org.ktc2.cokaen.wouldyouin.data.model.CurationEditRequestWrapper
 import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
 import org.ktc2.cokaen.wouldyouin.data.model.CurationSliceResponse
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
+import org.ktc2.cokaen.wouldyouin.data.model.EventSliceResponse
 import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
 import org.ktc2.cokaen.wouldyouin.network.repository.CurationAPIRetrofitRepository
 import org.ktc2.cokaen.wouldyouin.network.repository.EventAPIRetrofitRepository
@@ -58,18 +59,11 @@ class CurationRepository @Inject constructor(
         return curationRepository.getCurationDetail(curatorId)
     }
 
-    suspend fun searchEvents(
-        query: String,
-        startLatitude: Double,
-        startLongitude: Double,
-        endLatitude: Double,
-        endLongitude: Double,
-        latitude: Double,
-        longitude: Double,
-        page: Int = 1,
+    suspend fun getAllEvents(
+        page: Int = 0,
         size: Int = 10,
-        context: Context
-    ): List<EventResponse>? {
-        return eventRepository.searchEvents(query, startLatitude, startLongitude, endLatitude, endLongitude, latitude, longitude, page, size, context)
+        lastId: Long = Long.MAX_VALUE
+    ): EventSliceResponse {
+        return eventRepository.getAllEvents(page, size, lastId)
     }
 }

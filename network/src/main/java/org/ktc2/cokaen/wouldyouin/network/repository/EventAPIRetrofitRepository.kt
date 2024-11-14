@@ -6,7 +6,11 @@ import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyEventResponse
 import org.ktc2.cokaen.wouldyouin.network.service.EventAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyEventSliceResponse
+import org.ktc2.cokaen.wouldyouin.data.model.CurationSliceResponse
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
+import org.ktc2.cokaen.wouldyouin.data.model.EventSliceResponse
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -142,6 +146,42 @@ class EventAPIRetrofitRepository @Inject constructor(
             Log.e("EventAPIRetrofitRepository", "Exception occurred in Events by Host: ${e.message}", e)
             ToastUtils.showShortToast(context, "오류 발생: ${e.message}")
             null
+        }
+    }
+
+    suspend fun getAllEvents(
+        page: Int = 0,
+        size: Int = 10,
+        lastId: Long = Long.MAX_VALUE
+    ): EventSliceResponse {
+        try {
+            val response = retrofitService.getAllEvents(page, size, lastId)
+            return when {
+                response.isSuccessful -> {
+                    response.body()?.let { body ->
+                        if (body.success) {
+                            body.data
+                        } else {
+                            throw ServerCommonAPIRetrofitRepository.CustomException(
+                                body.message ?: "이벤트 목록 조회에 실패했습니다"
+                            )
+                        }
+                    }
+                        ?: throw ServerCommonAPIRetrofitRepository.CustomException("서버로부터 유효한 응답을 받지 못했습니다")
+                }
+
+                else -> {
+                    val errorBody = response.errorBody()?.string()
+                    throw ServerCommonAPIRetrofitRepository.CustomException("서버 응답 오류: ${response.code()}")
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("GetAllEvents", "Get failed", e)
+            throw when (e) {
+                is IOException -> ServerCommonAPIRetrofitRepository.CustomException("네트워크 연결을 확인해주세요")
+                is HttpException -> ServerCommonAPIRetrofitRepository.CustomException("서버 통신 오류: ${e.code()}")
+                else -> e
+            }
         }
     }
 }
