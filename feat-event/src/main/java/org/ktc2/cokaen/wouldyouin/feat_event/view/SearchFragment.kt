@@ -125,7 +125,7 @@ class SearchFragment : Fragment() {
 
         // ViewModel의 adList를 관찰하여 UI 업데이트
         adViewModel.adList.observe(viewLifecycleOwner) { adResponse ->
-            val adList = adResponse?.let { listOf(it.data) } ?: emptyList()
+            val adList = adResponse?.data ?: emptyList()
             if (adList.isNotEmpty()) {
                 adAdapter.updateAdList(adList)
             } else {

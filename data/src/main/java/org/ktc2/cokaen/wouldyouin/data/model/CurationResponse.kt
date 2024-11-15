@@ -25,6 +25,7 @@ data class CurationResponse(
 
 
 data class CurationCuratorResponse(
+    val curatorId: Int,
     val nickname: String,
     val email: String,
     val phone: String,
@@ -48,12 +49,4 @@ data class CurationEventResponse(
     val thumbnailImageUrl: String,
     val hostProfileImageUrl: String,
     val hostNickname: String
-)
-
-
-data class LocalCurationCard(
-    // 임시 -> 추후 수정 필요!!!
-    val title: String,
-    val images: List<ImageResponse>,
-    val body: String
 )

@@ -5,7 +5,7 @@
     <data>
         <variable
             name="eventResponse"
-            type="org.ktc2.cokaen.wouldyouin.data.model.EventResponse" />
+            type="org.ktc2.cokaen.wouldyouin.data.model.CurationEventResponse" />
         <variable
             name="imageUrl"
             type="String" />
@@ -25,7 +25,7 @@
             android:layout_height="120dp"
             android:contentDescription="Poster"
             android:layout_marginEnd="8dp"
-            imageUrl="@{imageUrl}" />
+            imageUrl="@{eventResponse.thumbnailImageUrl}" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -44,6 +44,16 @@
                 android:textColor="#000000" />
 
             <TextView
+                android:id="@+id/eventHost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{eventResponse.hostNickname}"
+                android:layout_marginTop="5dp"
+                tools:text="주최자"
+                android:textSize="14sp"
+                android:textColor="#666666" />
+
+            <TextView
                 android:id="@+id/eventDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -52,18 +62,6 @@
                 android:layout_marginTop="5dp"
                 android:textSize="14sp"
                 android:textColor="#666666" />
-
-            <TextView
-                android:id="@+id/eventDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{eventResponse.content}"
-                android:layout_marginTop="5dp"
-                android:maxLines="1"
-                tools:text="공연내용"
-
-                android:textSize="12sp"
-                android:textColor="#999999" />
 
             <TextView
                 android:id="@+id/eventLocation"

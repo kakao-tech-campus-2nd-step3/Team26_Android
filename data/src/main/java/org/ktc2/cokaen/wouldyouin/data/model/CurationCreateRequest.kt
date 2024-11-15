@@ -13,19 +13,12 @@ data class CurationCreateRequest(
     val content: String,
     val curationCards: List<CurationCardRequest>,
     val area: String,
-    val hashTag: List<String>,
-    val eventIds: List<Long>,
-    val curationCardsSizeValid: Boolean = true
+    val hashtags: List<String>,
+    val eventIds: List<Long>
 )
 
 data class CurationCardRequest(
     val subtitle: String,
     val content: String,
     val imageIds: List<Long>,
-    val imageSizeValid: Boolean = true
-)
-
-data class CreateCurationRequestBody(
-    val curationCreateRequest: CurationCreateRequest,
-    val curator: CuratorRequest
 )

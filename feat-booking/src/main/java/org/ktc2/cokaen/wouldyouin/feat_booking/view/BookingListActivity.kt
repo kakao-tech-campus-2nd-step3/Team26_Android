@@ -2,14 +2,19 @@ package org.ktc2.cokaen.wouldyouin.feat_booking.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.core_navigation.ActivityNavigationOptions
 import org.ktc2.cokaen.wouldyouin.core_navigation.DeepLinkDestinations
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
@@ -30,15 +35,26 @@ class BookingListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityBookingListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setupObservers()
-        viewModel.loadReservations() 
+        viewModel.loadReservations()
+        binding.btnBack.setOnClickListener {
+            Log.d("BUTTON", "Clicked")
+            finish()
+        }
     }
 
     private fun setupObservers() {
+
         lifecycleScope.launch {
-            viewModel.reservations.collect { reservations ->
-                setupCurationRecyclerView(reservations)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.reservations.collect { reservations ->
+                        setupCurationRecyclerView(reservations)
+                    }
+                }
             }
         }
     }
@@ -63,6 +79,7 @@ class BookingListActivity : AppCompatActivity() {
                 startActivityTo(reservation.id)
             }
 
+            // 세로 스크롤
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
@@ -70,7 +87,9 @@ class BookingListActivity : AppCompatActivity() {
                     val totalItemCount = layoutManager.itemCount
                     val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
 
-                    if (!viewModel.isLoading.value && totalItemCount <= lastVisibleItem + 5) {
+                    if (!viewModel.isLoading.value &&
+                        totalItemCount <= lastVisibleItem + 5 &&
+                        dy > 0) {  // 아래로 스크롤할 때만
                         viewModel.loadReservations()
                     }
                 }

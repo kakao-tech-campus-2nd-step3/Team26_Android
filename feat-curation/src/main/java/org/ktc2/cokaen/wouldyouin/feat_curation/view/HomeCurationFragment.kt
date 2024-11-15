@@ -68,7 +68,10 @@ class HomeCurationFragment : Fragment() {
         })
 
         // RecyclerView에 Adapter 설정
-        binding.curationCard.adapter = adapter
+        binding.curationCard.apply {
+            layoutManager = LinearLayoutManager(context)  // 이게 없어서 발생한 오류
+            adapter = this@HomeCurationFragment.adapter
+        }
 
 
         viewModel.curationList.observe(viewLifecycleOwner) { curations ->

@@ -47,10 +47,7 @@
             android:name=".LikedOrganizersActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".feat_event.view.EventDetailActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".BookingDetailsActivity"
             android:exported="false" />
