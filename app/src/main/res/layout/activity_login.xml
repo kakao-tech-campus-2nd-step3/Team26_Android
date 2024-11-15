@@ -40,17 +40,6 @@
             android:gravity="center"/>
 
         <Button
-            android:id="@+id/naver_login_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#03C75A"
-            android:text="네이버 로그인"
-            android:textColor="@android:color/white"
-            android:padding="16dp"
-            android:textStyle="bold"
-            android:gravity="center" />
-
-        <Button
             android:id="@+id/local_login_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,6 +50,12 @@
             android:layout_marginTop="8dp"
             android:textStyle="bold"
             android:gravity="center" />
+
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
 
     </LinearLayout>
 </layout>
