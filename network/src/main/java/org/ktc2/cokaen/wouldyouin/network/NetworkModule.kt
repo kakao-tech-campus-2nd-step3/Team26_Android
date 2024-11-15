@@ -12,6 +12,7 @@ import org.ktc2.cokaen.wouldyouin.network.service.CurationAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.EventAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.KakaoAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.LikesAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.network.service.AuthAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.ServerAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.MemberAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.ReservationAPIRetrofitService
@@ -127,5 +128,10 @@ object NetworkModule {
         return retrofit.create(AdAPIRetrofitService::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideAuthAPIRetrofitService(@Named("Server") retrofit: Retrofit): AuthAPIRetrofitService {
+        return retrofit.create(AuthAPIRetrofitService::class.java)
+    }
 }
 

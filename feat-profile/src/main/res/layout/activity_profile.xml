@@ -177,23 +177,6 @@
                             android:orientation="horizontal"
                             tools:listitem="@layout/post_item"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:textStyle="bold"
-                            android:textSize="16dp"
-                            tools:text="관객 리뷰"/>
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/review"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            app:layoutManager="GridLayoutManager"
-                            app:spanCount="2"
-                            tools:listitem="@layout/review_item"/>
-
                     </LinearLayout>
                 
             </androidx.constraintlayout.widget.ConstraintLayout>
