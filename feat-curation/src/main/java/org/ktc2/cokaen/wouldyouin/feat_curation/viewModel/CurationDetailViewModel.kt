@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.model.CurationCardResponse
+import org.ktc2.cokaen.wouldyouin.data.model.CurationEventResponse
 import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
 import org.ktc2.cokaen.wouldyouin.network.repository.CurationAPIRetrofitRepository
 import javax.inject.Inject
@@ -30,6 +31,9 @@ class CurationDetailViewModel @Inject constructor(
     private val _curationBlocks = MutableLiveData<List<CurationCardResponse>>()
     val curationBlocks: LiveData<List<CurationCardResponse>> = _curationBlocks
 
+    private val _curationEvents = MutableLiveData<List<CurationEventResponse>>()
+    val curationEvents: LiveData<List<CurationEventResponse>> = _curationEvents
+
     private val _hashtags = MutableLiveData<List<String>>()
     val hashtags: LiveData<List<String>> = _hashtags
 
@@ -45,6 +49,7 @@ class CurationDetailViewModel @Inject constructor(
                 _curation.value = curationDetail
                 _curationBlocks.value = curationDetail.curationCards
                 _hashtags.value = curationDetail.hashtags
+                _curationEvents.value = curationDetail.eventsInfo
 
             } catch (e: Exception) {
                 ToastUtils.showShortToast(context, e.message ?: "큐레이션 상세 정보 조회에 실패했습니다. 다시 시도해주세요.")
@@ -53,5 +58,9 @@ class CurationDetailViewModel @Inject constructor(
                 _isLoading.value = false
             }
         }
+    }
+
+    fun deleteCuration(curationId: Long) {
+
     }
 }

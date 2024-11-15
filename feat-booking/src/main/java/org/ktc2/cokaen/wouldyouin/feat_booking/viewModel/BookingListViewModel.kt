@@ -22,9 +22,6 @@ class BookingListViewModel @Inject constructor(
 ): ViewModel() {
     private val context = application.applicationContext
 
-    private val _loading = MutableStateFlow(false)
-    val loading = _loading.asStateFlow()
-
     private var lastId: Long = Long.MAX_VALUE
     private var isLastPage: Boolean = false
     private var currentPage: Int = 0

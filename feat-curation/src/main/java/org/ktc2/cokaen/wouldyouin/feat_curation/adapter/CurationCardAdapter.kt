@@ -2,6 +2,7 @@ package org.ktc2.cokaen.wouldyouin.feat_curation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
 import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
@@ -51,12 +52,13 @@ class CurationCardAdapter(
             val firstImageUrl = curation.curationCards.firstOrNull()?.imageUrls?.get(0)
             binding.imageUrl = firstImageUrl  // 이미지 URL을 binding에 설정
 
-            // 해시태그 처리 (첫 번째 해시태그를 #으로 표시)
-            val hashtags = curation.hashtags.firstOrNull()?.split("#")?.filter { it.isNotEmpty() }
+
+            val hashtags = curation.hashtags[0]
             if (!hashtags.isNullOrEmpty()) {
-                binding.hashtag.text = "#${hashtags[0]}"
+                binding.hashtag.text = "#${hashtags}"
             } else {
                 binding.hashtag.text = ""
+                binding.hashtag.isVisible = false
             }
 
             binding.executePendingBindings()

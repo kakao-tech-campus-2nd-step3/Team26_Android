@@ -40,9 +40,9 @@ class AccountFragment : Fragment() {
                 startActivityTo(DeepLinkDestinations.MY_EVENT_REVIEW_ACTIVITY)
             }
 
-//            binding.payHistory.setOnClickListener {
-//                startActivityTo(DeepLinkDestinations.PAYMENT_CHECK_ACTIVITY)
-//            }
+            binding.payHistory.setOnClickListener {
+                startActivityTo(DeepLinkDestinations.BOOKING_LIST_ACTIVITY)
+            }
 
             ask.setOnClickListener {
                 openWebPage("https://www.google.com")

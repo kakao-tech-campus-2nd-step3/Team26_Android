@@ -1,5 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.feat_booking.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,6 +14,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.ktc2.cokaen.wouldyouin.core_navigation.ActivityNavigationOptions
+import org.ktc2.cokaen.wouldyouin.core_navigation.DeepLinkDestinations
+import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
+import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
+import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
 import org.ktc2.cokaen.wouldyouin.data.model.Location
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationEventResponse
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationMemberResponse
@@ -21,6 +27,7 @@ import org.ktc2.cokaen.wouldyouin.feat_booking.R
 import org.ktc2.cokaen.wouldyouin.feat_booking.adapter.BookingViewPagerAdapter
 import org.ktc2.cokaen.wouldyouin.feat_booking.databinding.FragmentBookingBinding
 import org.ktc2.cokaen.wouldyouin.feat_booking.viewModel.BookingFragmentViewModel
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class BookingFragment : Fragment() {
@@ -30,6 +37,9 @@ class BookingFragment : Fragment() {
     private val viewModel: BookingFragmentViewModel by viewModels()
 
     private val bookingAdapter = BookingViewPagerAdapter()
+
+    @Inject
+    lateinit var navigationUtil: NavigationUtil
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,6 +68,10 @@ class BookingFragment : Fragment() {
     private fun setupViewPager() {
         binding.viewPager.apply {
             adapter = bookingAdapter
+
+            bookingAdapter.setOnItemClickListener { reservation ->
+                startBookingDetailsActivity(reservation.id)
+            }
 
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
@@ -92,6 +106,19 @@ class BookingFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun startBookingDetailsActivity(reservationId: Long) {
+        navigationUtil.navigate(
+            NavigationCommand(
+                destination = NavigationDestination.Activity(DeepLinkDestinations.DETAIL_BOOKING_ACTIVITY),
+                activityOptions = ActivityNavigationOptions(
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK,
+                    clearTop = true
+                ),
+                data = mapOf("reservationId" to reservationId.toString())
+            )
+        )
     }
 }
 

@@ -26,4 +26,9 @@ object DeepLinkDestinations {
     val MY_EVENT_REVIEW_ACTIVITY = R.string.member_review_deeplink_url
 
     val PAYMENT_CHECK_ACTIVITY = R.string.payment_check_deeplink_url
+
+    val BOOKING_LIST_ACTIVITY = R.string.booking_lists_deeplink_url
+    val DETAIL_BOOKING_ACTIVITY = R.string.booking_details_deeplink_url
+
+    val DETAIL_EVENT_ACTIVITY = R.string.event_details_deeplink_url
 }

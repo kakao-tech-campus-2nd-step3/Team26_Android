@@ -29,11 +29,15 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.data.entities.CurationEntity
 import org.ktc2.cokaen.wouldyouin.feat_curation.R
@@ -92,12 +96,43 @@ class CreateCurationActivity : AppCompatActivity() {
     }
 
     private fun setupInitialState() {
-        @Suppress("DEPRECATION")
-        val curationToEdit: CurationEntity? = intent.getParcelableExtra("curation")
-        isEditMode = curationToEdit != null
-        viewModel.initialize(curationToEdit)
-    }
+        val curationId = if (intent.hasExtra("curationId")) {
+            intent.getLongExtra("curationId", -1L)
+        } else {
+            null
+        }
 
+        when (curationId) {
+            null -> {
+                // 새로운 큐레이션 작성 모드
+                isEditMode = false
+                viewModel.initialize(null)
+            }
+            -1L -> {
+                // 잘못된 ID 값이 전달된 경우
+                ToastUtils.showShortToast(this@CreateCurationActivity, "잘못된 접근입니다.")
+                finish()
+            }
+            else -> {
+                // 유효한 ID로 수정 모드 진입
+                viewModel.viewModelScope.launch {
+                    try {
+                        val localCuration = viewModel.getCurationFromLocal(curationId)
+                        if (localCuration != null) {
+                            isEditMode = true
+                            viewModel.initialize(localCuration)
+                        } else {
+                            ToastUtils.showShortToast(this@CreateCurationActivity, "잘못된 접근입니다.")
+                            finish()
+                        }
+                    } catch (e: Exception) {
+                        ToastUtils.showShortToast(this@CreateCurationActivity, "잘못된 접근입니다.")
+                        finish()
+                    }
+                }
+            }
+        }
+    }
     private fun setupViews() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_curation)
         binding.apply {
@@ -111,7 +146,7 @@ class CreateCurationActivity : AppCompatActivity() {
         setupNavigation()
         setupRegionSpinner()
         setupShowEvents()
-
+        checkHashtags()
     }
 
     @SuppressLint("ClickableViewAccessibility")
