@@ -12,7 +12,7 @@ data class AdvertisementResponse(
 
 data class ApiResponseBodyListAdvertisementResponse(
     val success: Boolean,
-    val data: AdvertisementResponse,
+    val data: List<AdvertisementResponse>,
     val code: String,
     val message: String
 )

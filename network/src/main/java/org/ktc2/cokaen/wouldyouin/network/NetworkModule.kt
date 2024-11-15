@@ -58,6 +58,7 @@ object NetworkModule {
                 Log.d("OkHttp", "Request Method: ${request.method}")
                 Log.d("OkHttp", "Request Headers: ${request.headers}")
                 Log.d("OkHttp", "Request Body: ${request.body}")
+                Log.d("OkHttp", "Request Body: ${request}")
 
                 val response = chain.proceed(request)
                 Log.d("OkHttp", "Response Code: ${response.code}")
@@ -67,6 +68,7 @@ object NetworkModule {
                 response
             }
             .build()
+
         return Retrofit.Builder()
             .client(client)
             .baseUrl("https://wouldyouin.store")
