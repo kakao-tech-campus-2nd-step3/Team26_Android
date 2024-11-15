@@ -18,6 +18,8 @@
     <!-- Booking  -->
     <string name="booking_deeplink_url">wouldyouin://booking</string>
     <string name="payment_check_deeplink_url">wouldyouin://booking/payment/check</string>
+    <string name="booking_lists_deeplink_url">wouldyouin://booking/list</string>
+    <string name="booking_details_deeplink_url">wouldyouin://booking/details</string>
 
     <!--  Profile  -->
     <string name="profile_deeplink_url">wouldyouin://profile</string>
@@ -28,4 +30,8 @@
     <!-- Onboarding -->
     <string name="location_permission_deeplink_url">wouldyouin://location_permission</string>
     <string name="select_area_deeplink_url">wouldyouin://select_area</string>
+
+    <!-- Event -->
+    <string name="event_details_deeplink_url">wouldyouin://event/details</string>
+
 </resources>

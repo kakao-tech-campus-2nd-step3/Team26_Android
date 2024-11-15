@@ -20,15 +20,13 @@ data class CurationEditRequest(
     val curationCards: List<CurationCardRequest>,
 
     @SerializedName("area")
-    val area: String, // 예시: "서울"
+    val area: String,
 
-    @SerializedName("hashTag")
-    val hashTag: List<String>,
+    @SerializedName("hashtags")
+    val hashtags: List<String>,
 
     @SerializedName("eventIds")
     val eventIds: List<Long>,
-
-    val curationCardsSizeValid: Boolean = true
 )
 
 data class Block(
@@ -36,7 +34,14 @@ data class Block(
     val title: String,
     val images: List<ImageResponse>,
     val body: String
-)
+) { fun toCurationCardRequest(): CurationCardRequest {
+        return CurationCardRequest(
+            subtitle = this.title,
+            content = this.body,
+            imageIds = this.images.map { it.id }
+        )
+    }
+}
 
 
 

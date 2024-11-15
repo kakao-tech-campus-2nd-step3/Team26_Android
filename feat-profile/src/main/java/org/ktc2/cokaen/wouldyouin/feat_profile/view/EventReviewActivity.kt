@@ -42,6 +42,9 @@ class EventReviewActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
@@ -63,12 +66,6 @@ class EventReviewActivity : AppCompatActivity() {
                         if (success) {
                            ToastUtils.showShortToast(this@EventReviewActivity, "등록이 완료되었습니다.")
                         }
-                    }
-                }
-
-                launch {
-                    binding.btnBack.setOnClickListener {
-                        finish()
                     }
                 }
             }

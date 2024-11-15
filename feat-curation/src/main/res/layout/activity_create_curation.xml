@@ -57,7 +57,6 @@
                         android:layout_gravity="end"
                         android:layout_marginEnd="16dp"
                         android:text="등록"
-                        android:onClick="@{() -> viewModel.createCuration()}"
                         android:textColor="#528ADE"
                         android:textSize="16sp"/>
 
@@ -99,7 +98,9 @@
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="1000">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etContent"
@@ -111,6 +112,7 @@
                         android:inputType="textMultiLine"
                         android:focusableInTouchMode="true"
                         android:minLines="5"
+                        android:maxLength="1000"
                         android:hint="큐레이션을 요약하는 본문을 작성하세요."/>
 
                 </com.google.android.material.textfield.TextInputLayout>

@@ -11,8 +11,6 @@ data class CurationEntity(
     @PrimaryKey val id: Long,
     val title: String,
     val content: String,
-    val modifiedDate: String,
-    val createdTime: String,
     val curator: String, // JSON String for CurationCuratorResponse
     val curationCards: String, // JSON String for List<LocalCurationCard>
     val area: String, // JSON String for Area

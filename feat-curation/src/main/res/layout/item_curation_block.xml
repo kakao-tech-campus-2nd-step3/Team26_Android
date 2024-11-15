@@ -104,6 +104,7 @@
                     android:focusableInTouchMode="true"
                     android:textStyle="bold"
                     android:inputType="textMultiLine"
+
                     android:hint="큐레이션 블록의 제목을 입력하세요."/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -111,7 +112,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:counterEnabled="true"
+                app:counterMaxLength="1000">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etBlockContent"
@@ -122,6 +125,7 @@
                     android:hint="본문을 입력하세요."
                     android:inputType="textMultiLine"
                     android:minLines="3"
+                    android:maxLength="1000"
                     android:gravity="top"/>
             </com.google.android.material.textfield.TextInputLayout>
 
