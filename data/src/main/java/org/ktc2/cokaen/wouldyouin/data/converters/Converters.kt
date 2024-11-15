@@ -4,25 +4,25 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.ktc2.cokaen.wouldyouin.data.model.Area
+import org.ktc2.cokaen.wouldyouin.data.model.Block
 import org.ktc2.cokaen.wouldyouin.data.model.CurationCuratorResponse
 import org.ktc2.cokaen.wouldyouin.data.model.CurationEventResponse
 import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
-import org.ktc2.cokaen.wouldyouin.data.model.LocalCurationCard
 import org.ktc2.cokaen.wouldyouin.data.model.Location
 
 class Converters {
 
     private val gson = Gson()
 
-    // LocalCurationCard
+    // Block
     @TypeConverter
-    fun fromCurationCardResponseList(value: List<LocalCurationCard>?): String {
+    fun fromCurationCardResponseList(value: List<Block>?): String {
         return gson.toJson(value)
     }
 
     @TypeConverter
-    fun toCurationCardResponseList(value: String): List<LocalCurationCard>? {
-        val listType = object : TypeToken<List<LocalCurationCard>>() {}.type
+    fun toCurationCardResponseList(value: String): List<Block>? {
+        val listType = object : TypeToken<List<Block>>() {}.type
         return gson.fromJson(value, listType)
     }
 

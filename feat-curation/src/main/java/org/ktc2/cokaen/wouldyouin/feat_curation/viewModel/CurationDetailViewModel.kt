@@ -59,4 +59,8 @@ class CurationDetailViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteCuration(curationId: Long) {
+
+    }
 }

@@ -3,7 +3,9 @@ package org.ktc2.cokaen.wouldyouin.network.repository
 import android.util.Log
 import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyCurationResponse
 import org.ktc2.cokaen.wouldyouin.data.model.ApiResponseBodyCurationSliceResponse
+import org.ktc2.cokaen.wouldyouin.data.model.CurationCreateRequest
 import org.ktc2.cokaen.wouldyouin.data.model.CurationCreateRequestWrapper
+import org.ktc2.cokaen.wouldyouin.data.model.CurationEditRequest
 import org.ktc2.cokaen.wouldyouin.data.model.CurationEditRequestWrapper
 import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
 import org.ktc2.cokaen.wouldyouin.data.model.CurationSliceResponse
@@ -20,14 +22,13 @@ import javax.inject.Singleton
 open class CurationAPIRetrofitRepository @Inject constructor(
     private val curationRetrofitService: CurationAPIRetrofitService
 ) {
-    suspend fun createCuration(request: CurationCreateRequestWrapper): CurationResponse {
+    suspend fun createCuration(request: CurationCreateRequest): CurationResponse {
         try {
             val response = curationRetrofitService.createCuration(request)
             return when {
                 response.isSuccessful -> {
                     response.body()?.let { body ->
                         if (body.success) {
-                            // 큐레이션 응답은 단일 객체이므로 firstOrNull() 필요 없음
                             body.data
                         } else {
                             throw ServerCommonAPIRetrofitRepository.CustomException(
@@ -53,7 +54,7 @@ open class CurationAPIRetrofitRepository @Inject constructor(
         }
     }
 
-    suspend fun updateCuration(request: CurationEditRequestWrapper): CurationResponse {
+    suspend fun updateCuration(request: CurationEditRequest): CurationResponse {
         try {
             val response = curationRetrofitService.updateCuration(request)
             return when {
@@ -185,6 +186,23 @@ open class CurationAPIRetrofitRepository @Inject constructor(
                 is IOException -> ServerCommonAPIRetrofitRepository.CustomException("네트워크 연결을 확인해주세요")
                 is HttpException -> ServerCommonAPIRetrofitRepository.CustomException("서버 통신 오류: ${e.code()}")
                 else -> e
+            }
+        }
+    }
+
+    suspend fun deleteCuration(curationId: Long): Boolean {
+        return try {
+            val response = curationRetrofitService.deleteCuration(curationId)
+            if (response.isSuccessful) {
+                true
+            } else {
+                throw Exception("큐레이션 삭제에 실패했습니다. 오류 코드: ${response.code()}")
+            }
+        } catch (e: Exception) {
+            when (e) {
+                is IOException -> throw Exception("네트워크 연결을 확인해주세요.")
+                is HttpException -> throw Exception("서버 통신 중 오류가 발생했습니다.")
+                else -> throw e
             }
         }
     }

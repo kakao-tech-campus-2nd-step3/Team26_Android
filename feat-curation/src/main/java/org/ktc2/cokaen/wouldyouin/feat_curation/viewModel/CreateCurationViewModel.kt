@@ -29,11 +29,9 @@ import org.ktc2.cokaen.wouldyouin.data.entities.CurationEntity
 import org.ktc2.cokaen.wouldyouin.data.model.Block
 import org.ktc2.cokaen.wouldyouin.data.model.CurationCardRequest
 import org.ktc2.cokaen.wouldyouin.data.model.CurationCreateRequest
-import org.ktc2.cokaen.wouldyouin.data.model.CurationCreateRequestWrapper
 import org.ktc2.cokaen.wouldyouin.data.model.CurationEditRequest
-import org.ktc2.cokaen.wouldyouin.data.model.CurationEditRequestWrapper
+import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
 import org.ktc2.cokaen.wouldyouin.data.model.ImageResponse
-import org.ktc2.cokaen.wouldyouin.data.model.LocalCurationCard
 import org.ktc2.cokaen.wouldyouin.data.model.SearchEventData
 import org.ktc2.cokaen.wouldyouin.data.repository.CurationLocalRepository
 import org.ktc2.cokaen.wouldyouin.network.repository.CurationAPIRetrofitRepository
@@ -93,12 +91,15 @@ class CreateCurationViewModel @Inject constructor(
     private val _isFragmentVisible = MutableLiveData(false)
     val isFragmentVisible: LiveData<Boolean> get() = _isFragmentVisible
 
-    fun showFragment() {
-        _isFragmentVisible.value = true
-    }
-
-    fun hideFragment() {
-        _isFragmentVisible.value = false
+    suspend fun getCurationFromLocal(curationId: Long): CurationEntity? {
+        return withContext(Dispatchers.IO) {
+            try {
+                curationLocalRepository.getCurationById(curationId)
+            } catch (e: Exception) {
+                Log.e("Curation", "Failed to get curation from local DB", e)
+                null
+            }
+        }
     }
 
     // 큐레이션 블록 데이터
@@ -339,28 +340,18 @@ class CreateCurationViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val hashTags = _hashtags.value?.split(",")?.map { it.trim() } ?: listOf()
-
-                val curationCards = _curationBlocks.value?.map { block ->
-                    CurationCardRequest(
-                        subtitle = block.title,
-                        content = block.body,
-                        imageIds = block.images.map { it.id },
-                        imageSizeValid = true
-                    )
-                } ?: listOf()
-
+                val hashtags = _hashtags.value?.split(",")?.map { it.trim() } ?: listOf()
+                val curationCards = _curationBlocks.value?.map { it.toCurationCardRequest() } ?: listOf()
                 val eventIds = _eventDataList.value?.map { it.eventId } ?: listOf()
-                val requestBody = CurationCreateRequestWrapper(
-                    curationCreateRequest = CurationCreateRequest(
+
+                val requestBody = CurationCreateRequest(
                         title = _title.value ?: "",
                         content = _content.value ?: "",
                         curationCards = curationCards,
                         area = _selectedRegion.value ?: "전체",
-                        hashTag = hashTags,
+                        hashtags = hashtags,
                         eventIds = eventIds
                     )
-                )
 
                 val curationResponse = curationRepository.createCuration(requestBody)
 
@@ -368,8 +359,6 @@ class CreateCurationViewModel @Inject constructor(
                     id = curationResponse.id,
                     title = curationResponse.title,
                     content = curationResponse.content,
-                    modifiedDate = curationResponse.modifiedDate.toString(),
-                    createdTime = curationResponse.createdTime.toString(),
                     curator = Gson().toJson(curationResponse.curator),
                     curationCards = Gson().toJson(_curationBlocks.value), // id, url 같이 저장
                     area = curationResponse.area.name,
@@ -390,60 +379,42 @@ class CreateCurationViewModel @Inject constructor(
     }
 
     fun handleImageDelete(blockPosition: Int, image: ImageResponse) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                val success = commonRepository.deleteImage(image.id, "CURATION")
-                if (success) {
-                    // 현재 블록의 이미지 목록에서 해당 이미지만 제거
-                    val currentBlocks = _curationBlocks.value?.toMutableList() ?: return@launch
-                    if (blockPosition < currentBlocks.size) {
-                        val currentBlock = currentBlocks[blockPosition]
-                        val updatedImages = currentBlock.images.filterNot { it.id == image.id }
-                        currentBlocks[blockPosition] = currentBlock.copy(
-                            images = updatedImages
-                        )
-                        _curationBlocks.value = currentBlocks
+        // 삭제할 이미지 임시 저장
+        deletedImages.add(image)
 
-                        // 이미지 버튼 상태 업데이트 추가
-                        val MAX_IMAGES = 5
-                        updateAddImageButtonState(blockPosition, updatedImages.size < MAX_IMAGES)
-                    }
-                } else {
-                    ToastUtils.showShortToast(context, "이미지 삭제에 실패했습니다")
-                }
-            } catch (e: Exception) {
-                ToastUtils.showShortToast(context, e.message ?: "이미지 삭제에 실패했습니다")
-            } finally {
-                _isLoading.value = false
-            }
+        // UI에서만 이미지 제거
+        val currentBlocks = _curationBlocks.value?.toMutableList() ?: return
+        if (blockPosition < currentBlocks.size) {
+            val currentBlock = currentBlocks[blockPosition]
+            val updatedImages = currentBlock.images.filterNot { it.id == image.id }
+            currentBlocks[blockPosition] = currentBlock.copy(
+                images = updatedImages
+            )
+            _curationBlocks.value = currentBlocks
+
+            val MAX_IMAGES = 5
+            updateAddImageButtonState(blockPosition, updatedImages.size < MAX_IMAGES)
         }
     }
 
-    // 큐레이션 생성
-    fun createCuration(): CurationCreateRequest {
-        // curationCards는 _curationBlocks를 사용하여 변환
-        val curationCards = _curationBlocks.value?.map { block ->
-            CurationCardRequest(
-                subtitle = block.title ?: "",  // 각 블록의 subtitle을 가져옴
-                content = block.body ?: "",    // 각 블록의 content를 가져옴
-                imageIds = block.images?.map { it.id } ?: listOf(),  // 블록에 포함된 이미지 ID 목록
-                imageSizeValid = block.images?.all { it.size > 0 } ?: true  // 이미지 크기가 유효한지 여부
-            )
-        } ?: listOf()
+    private fun cancelEdit() {
+        // 임시 삭제 목록 초기화
+        deletedImages.clear()
 
-        // eventIds는 예시로 빈 리스트로 처리했으므로, 필요 시 추가 로직을 적용할 수 있음
-        val eventIds = listOf<Long>()
+        // 원래 상태로 복구
+        originalBlocks?.let { blocks ->
+            _curationBlocks.value = blocks
+        }
 
-        return CurationCreateRequest(
-            title = _title.value ?: "",
-            content = _content.value ?: "",
-            curationCards = curationCards,
-            area = _selectedRegion.value ?: "",
-            hashTag = listOf(_hashtags.value ?: ""),
-            eventIds = eventIds,
-            curationCardsSizeValid = curationCards.isNotEmpty()
-        )
+        originalCuration?.let { curation ->
+            _title.value = curation.title
+            _content.value = curation.content
+            _selectedRegion.value = curation.area
+            _hashtags.value = Gson().fromJson<List<String>>(
+                curation.hashtags,
+                object : TypeToken<List<String>>() {}.type
+            ).joinToString("#")
+        }
     }
 
     // 지역 업데이트
@@ -455,6 +426,7 @@ class CreateCurationViewModel @Inject constructor(
         if (hasUnsavedChanges.value == true) {
             _navigationEvent.value = NavigationEvent.ShowExitConfirmation
         } else {
+            cancelEdit()
             _navigationEvent.value = NavigationEvent.Back
         }
     }
@@ -495,9 +467,9 @@ class CreateCurationViewModel @Inject constructor(
     val isFormValid: LiveData<Boolean> = _isFormValid
 
     private fun initializeEditMode(curation: CurationEntity) {
-        val localCards = Gson().fromJson<List<LocalCurationCard>>(
+        val localCards = Gson().fromJson<List<Block>>(
             curation.curationCards,
-            object : TypeToken<List<LocalCurationCard>>() {}.type
+            object : TypeToken<List<Block>>() {}.type
         )
 
         originalBlocks = localCards.map { card ->
@@ -522,77 +494,91 @@ class CreateCurationViewModel @Inject constructor(
         ).joinToString(",")
     }
 
-    private fun saveEdit(originalCuration: CurationEntity) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                // 삭제된 이미지 처리
-                deletedImages.forEach { image ->
-                    try {
-                        commonRepository.deleteImage(image.id, "CURATION")
-                    } catch (e: Exception) {
-                        Log.e("EditCuration", "Failed to delete image: ${image.id}", e)
-                    }
-                }
-
-                // 해시태그와 큐레이션 카드 준비
-                val hashTags = _hashtags.value?.split(",")?.map { it.trim() } ?: listOf()
-                val curationCards = _curationBlocks.value?.map { block ->
-                    CurationCardRequest(
-                        subtitle = block.title,
-                        content = block.body,
-                        imageIds = block.images.map { it.id},
-                        imageSizeValid = true
-                    )
-                } ?: listOf()
-
-                // API 요청 바디 생성
-                val requestBody = CurationEditRequestWrapper(
-                    curationEditRequest = CurationEditRequest(
-                        title = _title.value ?: "",
-                        content = _content.value ?: "",
-                        curationCards = curationCards,
-                        area = _selectedRegion.value ?: "전체",
-                        hashTag = hashTags,
-                        eventIds = listOf()
-                    )
-                )
-
-                // API 호출
-                val response = curationRepository.updateCuration(requestBody)
-
-                // 로컬 DB 업데이트
+    private suspend fun updateLocalDatabase(originalCuration: CurationEntity, response: CurationResponse) {
+        try {
+            withContext(Dispatchers.IO) {
                 val localCards = _curationBlocks.value?.map { block ->
-                    LocalCurationCard(
+                    Block(
+                        id = block.id,
                         title = block.title,
                         body = block.body,
                         images = block.images
                     )
                 } ?: listOf()
 
+                val hashtags = _hashtags.value?.split("#")
+                    ?.filterNot { it.isBlank() }  // 빈 문자열 제거
+                    ?.map { it.trim() }           // 앞뒤 공백 제거
+                    ?: listOf()
+
                 val updatedCuration = originalCuration.copy(
-                    title = _title.value ?: "",
-                    content = _content.value ?: "",
+                    title = response.title,
+                    content = response.content,
                     curationCards = Gson().toJson(localCards),
-                    area = _selectedRegion.value ?: "전체",
-                    hashtags = Gson().toJson(hashTags)
+                    area = response.area.name,
+                    hashtags = Gson().toJson(hashtags)
                 )
 
+                // 트랜잭션으로 처리
                 curationLocalRepository.updateCuration(updatedCuration)
+            }
+        } catch (e: Exception) {
+            Log.e("Database", "Failed to update local database", e)
+            throw e // 상위에서 처리하도록 전파
+        }
+    }
 
-                // 상태 초기화
-                deletedImages.clear()
-                originalBlocks = null
+    private suspend fun saveEdit(originalCuration: CurationEntity) {
+        _isLoading.value = true
+        try {
+            val response = updateCurationAPI(originalCuration)
 
-                _navigationEvent.value = NavigationEvent.Success
+            updateLocalDatabase(originalCuration, response)
 
+            _navigationEvent.value = NavigationEvent.Success
+        } catch (e: Exception) {
+            Log.e("EditCuration", "Failed to update curation", e)
+            ToastUtils.showShortToast(context, e.message ?: "큐레이션 수정에 실패했습니다")
+        } finally {
+            _isLoading.value = false
+        }
+    }
+
+    private suspend fun updateCurationAPI(originalCuration: CurationEntity): CurationResponse {
+        // 삭제된 이미지 처리
+        deletedImages.forEach { image ->
+            try {
+                commonRepository.deleteImage(image.id, "CURATION")
             } catch (e: Exception) {
-                Log.e("EditCuration", "Failed to update curation", e)
-                ToastUtils.showShortToast(context, e.message ?: "큐레이션 수정에 실패했습니다")
-            } finally {
-                _isLoading.value = false
+                Log.e("EditCuration", "Failed to delete image: ${image.id}", e)
             }
         }
+
+        // 해시태그와 큐레이션 카드 준비
+        val hashtags = _hashtags.value?.split("#")
+            ?.filterNot { it.isBlank() }
+            ?.map { it.trim() }
+            ?: listOf()
+        val curationCards = _curationBlocks.value?.map { block ->
+            CurationCardRequest(
+                subtitle = block.title,
+                content = block.body,
+                imageIds = block.images.map { it.id},
+            )
+        } ?: listOf()
+
+        // API 요청 바디 생성
+        val requestBody = CurationEditRequest(
+            title = _title.value!!,
+            content = _content.value!!,
+            curationCards = curationCards,
+            area = _selectedRegion.value!!,
+            hashtags = hashtags,
+            eventIds = listOf()
+        )
+
+        // API 호출 및 응답 반환
+        return curationRepository.updateCuration(requestBody)
     }
 
     fun initialize(curation: CurationEntity? = null) {
@@ -615,10 +601,12 @@ class CreateCurationViewModel @Inject constructor(
     }
 
     fun saveCuration() {
-        if (isEditMode) {
-            originalCuration?.let { saveEdit(it) }
-        } else {
-            createCurationWithApi()
+        viewModelScope.launch {
+            if (isEditMode) {
+                originalCuration?.let { saveEdit(it) }
+            } else {
+                createCurationWithApi()
+            }
         }
     }
 
@@ -650,7 +638,6 @@ class CreateCurationViewModel @Inject constructor(
     fun showError(s: String) {
         ToastUtils.showShortToast(context, s)
     }
-
 }
 sealed class NavigationEvent {
     object Back : NavigationEvent()

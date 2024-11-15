@@ -2,9 +2,12 @@ package org.ktc2.cokaen.wouldyouin.feat_curation.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,6 +43,26 @@ class CurationDetailActivity : AppCompatActivity() {
         loadCurationDetail()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.curation_toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_delete -> {
+
+                true
+            }
+            R.id.action_edit -> {
+
+
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun setupUI() {
         binding.rvCurationBlocks.adapter = DetailCurationBlockAdapter()
         binding.rvHashtags.adapter = CurationHashtagAdapter()
@@ -47,7 +70,11 @@ class CurationDetailActivity : AppCompatActivity() {
             startEventDetailsActivity(event.eventId)
         }
         binding.curatorProfile.setOnClickListener {
-//            startCuratorActivity(viewModel.curation.value.curator.)
+//   TODO         startCuratorActivity(viewModel.curation.value.curator.id)
+        }
+
+        viewModel.curation.observe(this) { curation ->
+//  TODO          checkEditable(viewModel.curation.value.curator.id)
         }
     }
 
@@ -108,5 +135,50 @@ class CurationDetailActivity : AppCompatActivity() {
                 data = mapOf("curatorId" to curatorId.toString())
             )
         )
+    }
+
+    private fun startCreateCurationActivity(curationId: Long) {
+        navigationUtil.navigate(
+            NavigationCommand(
+                destination = NavigationDestination.Activity(DeepLinkDestinations.CREATE_CURATION_DEEPLINK),
+                activityOptions = ActivityNavigationOptions(
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK,
+                    clearTop = true
+                ),
+                data = mapOf("curationId" to curationId.toString())
+            )
+        )
+    }
+
+    private fun checkEditable(curationId: Long) {
+        val isEditable = curationId == 1111L // TODO SharedPreference
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+
+        if (isEditable) {
+            setSupportActionBar(toolbar)
+            supportActionBar?.setDisplayShowTitleEnabled(false)
+
+            // 메뉴 아이템 활성화
+            toolbar.inflateMenu(R.menu.curation_toolbar_menu)
+            toolbar.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.action_delete -> {
+                        viewModel.deleteCuration(curationId)
+                        true
+                    }
+                    R.id.action_edit -> {
+
+                        startCreateCurationActivity(curationId)
+
+                        true
+                    }
+                    else -> false
+                }
+            }
+        } else {
+            // 편집 불가능한 경우 메뉴 아이템 제거
+            toolbar.menu.clear()
+        }
     }
 }
