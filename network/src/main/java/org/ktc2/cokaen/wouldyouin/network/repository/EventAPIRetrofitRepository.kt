@@ -62,42 +62,43 @@ class EventAPIRetrofitRepository @Inject constructor(
         }
     }
 
-    /*
-    suspend fun searchEvents(
-        query: String,
-        startLatitude: Double,
-        startLongitude: Double,
-        endLatitude: Double,
-        endLongitude: Double,
+    suspend fun getEventListDetail(
+        startLatitude: Double? = null,
+        startLongitude: Double? = null,
+        endLatitude: Double? = null,
+        endLongitude: Double? = null,
         latitude: Double,
         longitude: Double,
-        page: Int = 1,
+        title: String? = null,
+        category: String? = null,
+        area: String? = null,
+        page: Int = 0,
         size: Int = 10,
+        lastId: Long? = null,
         context: Context
-    ): List<EventResponse>? {
+    ): ApiResponseBodyEventSliceResponse? {
         return try {
-            val response = retrofitService.getEventList(
-                startLatitude = startLatitude,
-                startLongitude = startLongitude,
-                endLatitude = endLatitude,
-                endLongitude = endLongitude,
-                latitude = latitude,
-                longitude = longitude,
-                title = query,
-                page = page,
-                size = size
+
+            val response = retrofitService.getEventListDetail(
+                startLatitude, startLongitude, endLatitude, endLongitude, latitude, longitude, title, category, area, page, size, lastId
             )
-            if (response.isSuccessful && response.body()?.success == true) {
-                response.body()?.data?.events
+
+            Log.d("EventAPIRetrofitRepository", "Received response with code: ${response.code()}")
+
+            if (response.isSuccessful) {
+                Log.d("EventAPIRetrofitRepository", "Event list fetched successfully. Body: ${response.body()}")
+                response.body()
             } else {
-                ToastUtils.showShortToast(context, "검색에 실패했습니다.")
+                Log.e("EventAPIRetrofitRepository", "Failed to fetch event list. Code: ${response.code()}, Error: ${response.errorBody()?.string()}")
+                ToastUtils.showShortToast(context, "행사 목록 상세 조회에 실패했습니다.")
                 null
             }
         } catch (e: Exception) {
+            Log.e("EventAPIRetrofitRepository", "Exception occurred Event list: ${e.message}", e)
             ToastUtils.showShortToast(context, "오류 발생: ${e.message}")
             null
         }
-    }*/
+    }
 
     // 단일 행사 상세 조회
     suspend fun getEventDetails(eventId: Long, context: Context): ApiResponseBodyEventResponse? {
@@ -106,10 +107,10 @@ class EventAPIRetrofitRepository @Inject constructor(
 
             val response = retrofitService.getEventDetails(eventId)
             if (response.isSuccessful) {
-                Log.d("EventAPIRetrofitRepository", "Event details fetched successfully for eventId: $eventId. Body: ${response.body()}")
+                Log.d("EventAPIRetrofitRepository", "ㅇㅇEvent details fetched successfully for eventId: $eventId. Body: ${response.body()}")
                 response.body()
             } else {
-                Log.e("EventAPIRetrofitRepository", "Failed to fetch event details. Code: ${response.code()}, Error: ${response.errorBody()?.string()}")
+                Log.e("EventAPIRetrofitRepository", "ㅇㅇFailed to fetch event details. Code: ${response.code()}, Error: ${response.errorBody()?.string()}")
                 ToastUtils.showShortToast(context, "행사 상세 조회에 실패했습니다.")
                 null
             }

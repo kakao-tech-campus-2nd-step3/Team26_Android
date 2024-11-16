@@ -6,8 +6,8 @@ data class AdvertisementResponse(
     val id: Long,
     val title: String,
     val imageUrl: String,
-    val startTime: String,
-    val endTime: String
+    val startTime: List<String>,
+    val endTime: List<String>
 )
 
 data class ApiResponseBodyListAdvertisementResponse(

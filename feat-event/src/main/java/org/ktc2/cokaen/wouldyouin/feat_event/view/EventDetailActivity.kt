@@ -2,6 +2,7 @@ package org.ktc2.cokaen.wouldyouin.feat_event.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -11,11 +12,13 @@ import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
 import dagger.hilt.android.AndroidEntryPoint
+import org.ktc2.cokaen.wouldyouin.core.DateTimeUtils
 import org.ktc2.cokaen.wouldyouin.core_navigation.ActivityNavigationOptions
 import org.ktc2.cokaen.wouldyouin.core_navigation.DeepLinkDestinations
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
+import org.ktc2.cokaen.wouldyouin.feat_booking.view.BookingActivity
 import org.ktc2.cokaen.wouldyouin.feat_event.R
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.ActivityEventDetailBinding
 import org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel.EventViewModel
@@ -46,10 +49,11 @@ class EventDetailActivity : AppCompatActivity() {
         eventViewModel.eventDetails.observe(this) { eventResponse ->
             eventResponse?.let { event ->
                 binding.eventName.text = event.data?.title
-                binding.eventTime.text = event.data?.startTime.toString()
-                binding.eventDuration.text = "약 ${event.data?.endTime} - ${event.data?.startTime}분"
+                binding.eventTime.text = event.data?.startTime?.let(DateTimeUtils::formatDateTimeString) ?: "시간 정보 없음"
+                binding.eventEndTime.text = event.data?.endTime?.let(DateTimeUtils::formatDateTimeString) ?: "시간 정보 없음"
+                //binding.eventDuration.text = "약 ${DateTimeUtils.formatDateTimeString(event.data!!.endTime)} - ${DateTimeUtils.formatDateTimeString(event.data!!.startTime)}분"
                 binding.eventLocation.text = event.data?.location?.detailAddress
-                binding.eventFee.text = "입장료 ₩${event.data?.price}"
+                binding.eventFee.text = "₩${event.data?.price}"
                 binding.eventSeats.text = "${event.data?.leftSeat}/${event.data?.totalSeat}"
                 binding.eventDescription.text = event.data?.content
 
@@ -60,7 +64,7 @@ class EventDetailActivity : AppCompatActivity() {
                 //주최자 정보 설정
                 binding.organizerName.text = event.data?.host?.nickname
                 binding.organizerInfo.text = event.data?.host?.intro
-                binding.eventDescriptionTitle.text = event.data?.content
+                binding.eventDescription.text = event.data?.content
                 binding.contactPhone.text = event.data?.host?.phone
                 binding.contactEmail.text = event.data?.host?.email
 
@@ -120,6 +124,8 @@ class EventDetailActivity : AppCompatActivity() {
     }
 
     private fun startBookingActivity(eventId: Long) {
+        Log.d("EventDetailActivity", "Navigating to BookingActivity with eventId: $eventId")
+        /*
         navigationUtil.navigate(
             NavigationCommand(
                 destination = NavigationDestination.Activity(DeepLinkDestinations.PAYMENT_CHECK_ACTIVITY),
@@ -129,10 +135,16 @@ class EventDetailActivity : AppCompatActivity() {
                 ),
                 data = mapOf("eventId" to eventId.toString()) // 여기에 필요한 데이터(id) 넘겨주시면 됩니다!!
             )
-        )
+        )*/
+        val intent = Intent(this, BookingActivity::class.java).apply {
+            putExtra("eventId", eventId.toString()) // 데이터 추가
+        }
+        startActivity(intent)
     }
 
     private fun startMemberProfileActivity(hostId: Long) {
+        Log.d("EventDetailActivity", "Navigating to BookingActivity with hostId: $hostId")
+        /*
         navigationUtil.navigate(
             NavigationCommand(
                 destination = NavigationDestination.Activity(DeepLinkDestinations.HOST_PROFILE_ACTIVITY),
@@ -142,6 +154,15 @@ class EventDetailActivity : AppCompatActivity() {
                 ),
                 data = mapOf("hostId" to hostId.toString())
             )
-        )
+        )*/
+        val intent = Intent().apply {
+            action = Intent.ACTION_VIEW
+            setClassName(
+                this@EventDetailActivity,
+                "org.ktc2.cokaen.wouldyouin.feat_profile.view.HostProfileActivity"
+            )
+            putExtra("hostId", hostId.toString())
+        }
+        startActivity(intent)
     }
 }

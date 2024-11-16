@@ -27,6 +27,22 @@ interface EventAPIRetrofitService {
         @Query("lastId") lastId: Long? = null
     ): Response<ApiResponseBodyEventSliceResponse>
 
+    @GET("/api/events/filter")
+    suspend fun getEventListDetail(
+        @Query("startLatitude") startLatitude: Double? = null,
+        @Query("startLongitude") startLongitude: Double? = null,
+        @Query("endLatitude") endLatitude: Double? = null,
+        @Query("endLongitude") endLongitude: Double? = null,
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double,
+        @Query("title") title: String? = null,
+        @Query("category") category: String? = null,
+        @Query("area") area: String? = null,
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 10,
+        @Query("lastId") lastId: Long? = null
+    ): Response<ApiResponseBodyEventSliceResponse>
+
     // 단일 행사 상세 조회
     @GET("/api/events/{eventId}")
     suspend fun getEventDetails(

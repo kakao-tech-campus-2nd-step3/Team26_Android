@@ -22,6 +22,9 @@ class EventViewModel @Inject constructor(
     private val _eventList = MutableLiveData<ApiResponseBodyEventSliceResponse?>()
     val eventList: LiveData<ApiResponseBodyEventSliceResponse?> get() = _eventList
 
+    private val _eventListDetail = MutableLiveData<ApiResponseBodyEventSliceResponse?>()
+    val eventListDetail: LiveData<ApiResponseBodyEventSliceResponse?> get() = _eventListDetail
+
     //단일 행사 상세 조회
     private val _eventDetails = MutableLiveData<ApiResponseBodyEventResponse?>()
     val eventDetails: LiveData<ApiResponseBodyEventResponse?> get() = _eventDetails
@@ -72,6 +75,30 @@ class EventViewModel @Inject constructor(
                 startLatitude, startLongitude, endLatitude, endLongitude, latitude, longitude, title, category, area, page, size, lastId, context
             )
         }*/
+    }
+
+    fun fetchEventListDetail(
+        startLatitude: Double? = null,
+        startLongitude: Double? = null,
+        endLatitude: Double? = null,
+        endLongitude: Double? = null,
+        latitude: Double,
+        longitude: Double,
+        title: String? = null,
+        category: String? = null,
+        area: String? = null,
+        page: Int = 0,
+        size: Int = 10,
+        lastId: Long? = null,
+        context: Context
+    ) {
+        viewModelScope.launch {
+            val result = repository.getEventListDetail(
+                startLatitude, startLongitude, endLatitude, endLongitude,
+                latitude, longitude, title, category, area, page, size, lastId, context
+            )
+            _eventListDetail.value = result
+        }
     }
 
     //단일 행사 상세 조회

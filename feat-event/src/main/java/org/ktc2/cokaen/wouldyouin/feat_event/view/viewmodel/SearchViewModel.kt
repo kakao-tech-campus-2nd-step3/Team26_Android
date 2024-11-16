@@ -19,12 +19,12 @@ class SearchViewModel @Inject constructor(private val repository: EventAPIRetrof
     private val _eventList = MutableLiveData<ApiResponseBodyEventSliceResponse?>()
     val eventList: LiveData<ApiResponseBodyEventSliceResponse?> get() = _eventList
 
-    fun fetchEventList(
+    fun fetchEventListDetail(
         title: String,
-        startLatitude: Double,
-        startLongitude: Double,
-        endLatitude: Double,
-        endLongitude: Double,
+        startLatitude: Double? = null,
+        startLongitude: Double? = null,
+        endLatitude: Double? = null,
+        endLongitude: Double? = null,
         latitude: Double,
         longitude: Double,
         category: String? = null,
@@ -35,21 +35,9 @@ class SearchViewModel @Inject constructor(private val repository: EventAPIRetrof
         context: Context
     ) {
         viewModelScope.launch {
-            /*
-            val result = repository.searchEvents(
-                query = query,
-                startLatitude = startLatitude,
-                startLongitude = startLongitude,
-                endLatitude = endLatitude,
-                endLongitude = endLongitude,
-                latitude = latitude,
-                longitude = longitude,
-                context = context
-            )
-            _eventList.value = result ?: emptyList()*/
             Log.d("SearchViewModel", "Starting search with title: $title") // 로그 추가
             try {
-                val result = repository.getEventList(
+                val result = repository.getEventListDetail(
                     title = title,
                     startLatitude = startLatitude,
                     startLongitude = startLongitude,
@@ -66,6 +54,8 @@ class SearchViewModel @Inject constructor(private val repository: EventAPIRetrof
                 )
                 Log.d("SearchViewModel", "Search result: $result") // 검색 결과 로그 추가
                 _eventList.value = result
+                //_eventList.postValue(result)
+                Log.d("SearchViewModel", "Fetched event list: ${_eventList.value}")
             } catch (e: Exception) {
                 Log.e("SearchViewModel", "Search failed: ${e.message}", e) // 오류 발생 시 로그 추가
             }

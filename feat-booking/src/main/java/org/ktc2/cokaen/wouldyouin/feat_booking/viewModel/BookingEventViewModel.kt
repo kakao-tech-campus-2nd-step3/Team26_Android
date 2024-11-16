@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.feat_booking.viewModel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,7 +22,14 @@ class BookingEventViewModel @Inject constructor(
 
     fun fetchEventDetails(eventId: Long, context: Context) {
         viewModelScope.launch {
-            _eventDetails.value = repository.getEventDetails(eventId, context)
+            //_eventDetails.value = repository.getEventDetails(eventId, context)
+            val eventDetails = repository.getEventDetails(eventId, context)
+            if (eventDetails != null) {
+                Log.d("BookingEventViewModel", "Event details fetched: $eventDetails")
+            } else {
+                Log.e("BookingEventViewModel", "Failed to fetch event details.")
+            }
+            _eventDetails.value = eventDetails
         }
     }
 }

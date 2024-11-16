@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,6 +23,9 @@ class AdViewModel @Inject constructor(
         viewModelScope.launch {
             val response = repository.getAdList(context)
             _adList.postValue(response)
+            response?.data?.forEach {
+                Log.d("AdViewModel", "Fetched Ad: ${it.imageUrl}")
+            }
         }
     }
 }

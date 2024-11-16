@@ -1,5 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.feat_event.view.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +11,7 @@ class AdAdapter (private var adList: List<AdvertisementResponse>) : RecyclerView
     inner class AdViewHolder(private val binding: AdItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(advertisement: AdvertisementResponse) {
             binding.imageUrl = advertisement.imageUrl
+            Log.d("AdAdapter", "Binding imageUrl: ${advertisement.imageUrl}")
         }
     }
 
@@ -26,6 +28,7 @@ class AdAdapter (private var adList: List<AdvertisementResponse>) : RecyclerView
 
     fun updateAdList(newAdList: List<AdvertisementResponse>) {
         adList = newAdList
+        Log.d("AdAdapter", "Updated ad list with size: ${adList.size}")
         notifyDataSetChanged()
     }
 }

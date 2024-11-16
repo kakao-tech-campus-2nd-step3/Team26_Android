@@ -67,7 +67,7 @@ data class ReservationEventResponse(
     val eventId: Long,
 
     @SerializedName("startTime")
-    val startTime: String,
+    val startTime: List<String>,
 
     @SerializedName("title")
     val title: String,

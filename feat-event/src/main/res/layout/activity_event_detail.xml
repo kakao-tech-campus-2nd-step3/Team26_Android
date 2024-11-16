@@ -112,6 +112,17 @@
                         android:layout_marginTop="4dp"/>
 
                     <TextView
+                        android:id="@+id/eventEndTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2024.02.15, PM 7:00"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:drawableStart="@drawable/calendar"
+                        android:drawablePadding="4dp"
+                        android:layout_marginTop="4dp"/>
+
+                    <TextView
                         android:id="@+id/eventLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -131,6 +142,7 @@
 
                 </LinearLayout>
 
+                <!--
                 <TextView
                     android:id="@+id/eventDuration"
                     android:layout_width="wrap_content"
@@ -140,6 +152,7 @@
                     android:textColor="@android:color/black"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="8dp"/>
+                    -->
             </LinearLayout>
 
             <TextView
@@ -290,27 +303,15 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/contactEmail"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
+                android:drawableStart="@drawable/mail"
+                android:text="chldnntkd@kakao.com"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"/>
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/mail"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="8dp"/>
-
-                <TextView
-                    android:id="@+id/contactEmail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="chldnntkd@kakao.com"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/black"/>
-            </LinearLayout>
 
             <Button
                 android:id="@+id/bookButton"

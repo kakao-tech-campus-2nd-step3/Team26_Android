@@ -52,6 +52,6 @@ data class ReviewMemberResponse(
 data class ReviewEventResponse(
     val eventId: Long,
     val title: String,
-    val startTime: String,
+    val startTime: List<String>,
     val thumbnailUrl: String
 )

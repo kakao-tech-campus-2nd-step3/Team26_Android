@@ -16,6 +16,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import org.ktc2.cokaen.wouldyouin.data.model.Category
 import org.ktc2.cokaen.wouldyouin.feat_event.R
@@ -32,6 +33,7 @@ class SearchFragment : Fragment() {
     private val searchViewModel: SearchViewModel by viewModels()
     private lateinit var adAdapter: AdAdapter
     private val adViewModel: AdViewModel by viewModels()
+    private lateinit var eventAdapter: EventAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +47,17 @@ class SearchFragment : Fragment() {
         searchViewModel.eventList.observe(viewLifecycleOwner) { eventResponse ->
             val eventList = eventResponse?.data?.events ?: emptyList()
             if (eventList.isNotEmpty()) {
-                findNavController().navigate(R.id.action_searchFragment_to_searchResultFragment)
+                // JSON으로 변환하여 전달
+                val gson = Gson()
+                val eventListJson = eventList.map { gson.toJson(it) }.toTypedArray()
+
+                // Bundle 생성
+                val bundle = Bundle().apply {
+                    putStringArray("eventList", eventListJson)
+                }
+
+                findNavController().navigate(R.id.action_searchFragment_to_searchResultFragment, bundle)
+                //eventAdapter.submitList(eventList)
             } else {
                 Toast.makeText(requireContext(), "검색 결과가 없습니다.", Toast.LENGTH_SHORT).show()
             }
@@ -154,9 +166,11 @@ class SearchFragment : Fragment() {
 
             val latitude = sharedPreferences.getString("centerLat", "0.0")!!.toDouble()
             val longitude = sharedPreferences.getString("centerLng", "0.0")!!.toDouble()
-            val startLatitude = sharedPreferences.getString("topLeftLat", "0.0")!!.toDouble()
+            //val startLatitude = sharedPreferences.getString("topLeftLat", "0.0")!!.toDouble()
+            val startLatitude = sharedPreferences.getString("bottomRightLat", "0.0")!!.toDouble()
             val startLongitude = sharedPreferences.getString("topLeftLng", "0.0")!!.toDouble()
-            val endLatitude = sharedPreferences.getString("bottomRightLat", "0.0")!!.toDouble()
+            //val endLatitude = sharedPreferences.getString("bottomRightLat", "0.0")!!.toDouble()
+            val endLatitude = sharedPreferences.getString("topLeftLat", "0.0")!!.toDouble()
             val endLongitude = sharedPreferences.getString("bottomRightLng", "0.0")!!.toDouble()
 
             Log.d("LocationData", "Center Latitude: $latitude, Center Longitude: $longitude")
@@ -164,12 +178,12 @@ class SearchFragment : Fragment() {
             Log.d("LocationData", "Bottom Right Latitude: $endLatitude, Bottom Right Longitude: $endLongitude")
 
             //viewModel.searchEvents(
-            searchViewModel.fetchEventList(
+            searchViewModel.fetchEventListDetail(
                 title = query,
-                startLatitude = startLatitude,
-                startLongitude = startLongitude,
-                endLatitude = endLatitude,
-                endLongitude = endLongitude,
+                //startLatitude = startLatitude,
+                //startLongitude = startLongitude,
+                //endLatitude = endLatitude,
+                //endLongitude = endLongitude,
                 latitude = latitude,
                 longitude = longitude,
                 context = requireContext()
