@@ -3,8 +3,8 @@ package org.ktc2.cokaen.wouldyouin.data.model
 import java.time.LocalDateTime
 
 data class EventRequest(
-    val startTime: String,
-    val endTime: String,
+    val startTime: List<String>,
+    val endTime: List<String>,
     val location: Location,
     val title: String,
     val content: String,
