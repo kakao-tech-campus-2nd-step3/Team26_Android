@@ -3,6 +3,7 @@ package org.ktc2.cokaen.wouldyouin.feat_booking.view
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -47,17 +48,27 @@ class BookingListActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
+                    // 예매 내역 관찰
                     viewModel.reservations.collect { reservations ->
                         setupCurationRecyclerView(reservations)
+
+                        // RecyclerView 및 빈 상태 뷰 처리
+                        if (reservations.isEmpty()) {
+                            binding.recyclerView.visibility = View.GONE
+                            binding.emptyView.visibility = View.VISIBLE
+                        } else {
+                            binding.recyclerView.visibility = View.VISIBLE
+                            binding.emptyView.visibility = View.GONE
+                        }
                     }
                 }
             }
         }
     }
+
 
     private fun setupCurationRecyclerView(reservations: List<ReservationResponse>) {
         val bookingAdapter = BookingAdapter(reservations)

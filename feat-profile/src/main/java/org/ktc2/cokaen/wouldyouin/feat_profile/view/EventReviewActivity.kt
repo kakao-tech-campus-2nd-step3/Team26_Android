@@ -1,7 +1,9 @@
 package org.ktc2.cokaen.wouldyouin.feat_profile.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -37,6 +39,20 @@ class EventReviewActivity : AppCompatActivity() {
         binding = ActivityEventReviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        // Intent에서 데이터 추출 및 null 처리
+        val testData = intent.getStringExtra("key")
+
+        if (testData != null) {
+            // 데이터가 존재하는 경우
+            Log.d("TargetActivity", "Received data: $testData")
+            // 여기서 testData를 사용하는 추가 로직 구현
+        } else {
+            // 데이터가 null인 경우
+            Log.w("TargetActivity", "No data received or data is null")
+            // 데이터가 없는 경우에 대한 처리 로직 구현
+        }
+
         setupRecyclerView()
         setupObservers()
     }
@@ -50,8 +66,13 @@ class EventReviewActivity : AppCompatActivity() {
                 launch {
                     viewModel.pendingReviews.collect { reviews ->
                         reviewAdapter.submitList(reviews)
-                        binding.emptyView.isVisible = reviews.isEmpty() && !viewModel.loading.value
-                        binding.recyclerView.isVisible = reviews.isNotEmpty()
+                        if (reviews.isEmpty()) {
+                            binding.recyclerView.visibility = View.GONE
+                            binding.emptyView.visibility = View.VISIBLE
+                        } else {
+                            binding.recyclerView.visibility = View.VISIBLE
+                            binding.emptyView.visibility = View.GONE
+                        }
                     }
                 }
 

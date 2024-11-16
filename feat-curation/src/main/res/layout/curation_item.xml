@@ -25,8 +25,8 @@
     </data>
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:clickable="true"
         android:focusable="true"
@@ -38,7 +38,7 @@
             android:layout_height="491dp"
             android:layout_gravity="center"
             app:cardCornerRadius="16dp"
-            android:onClick="@{() -> clickListener.onItemClick(position)}">
+            >
 
             <FrameLayout
                 android:layout_width="match_parent"

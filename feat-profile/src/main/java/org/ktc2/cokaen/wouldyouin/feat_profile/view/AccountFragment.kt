@@ -12,6 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.ktc2.cokaen.wouldyouin.core_navigation.ActivityNavigationOptions
 import org.ktc2.cokaen.wouldyouin.core_navigation.DeepLinkDestinations
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
+import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommandBuilder
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
 import org.ktc2.cokaen.wouldyouin.feat_profile.R
@@ -59,15 +60,14 @@ class AccountFragment : Fragment() {
     }
 
     private fun startActivityTo(activity: Int) {
-        navigationUtil.navigate(
-            NavigationCommand(
-                destination = NavigationDestination.Activity(activity),
-                activityOptions = ActivityNavigationOptions(
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK,
-                    clearTop = true
-                )
+        val command = NavigationCommand(
+            destination = NavigationDestination.Activity(activity),
+            data = mapOf("key" to "value"),
+            activityOptions = ActivityNavigationOptions(
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
             )
         )
+        navigationUtil.navigate(command)
     }
 
     private fun openWebPage(url: String) {

@@ -73,6 +73,13 @@ class HostLikesFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.likesList.collect { list ->
                 adapter.submitList(list)
+                if (list.isEmpty()) {
+                    binding.likedMembersList.visibility = View.GONE
+                    binding.emptyView.visibility = View.VISIBLE
+                } else {
+                    binding.likedMembersList.visibility = View.VISIBLE
+                    binding.emptyView.visibility = View.GONE
+                }
             }
         }
     }

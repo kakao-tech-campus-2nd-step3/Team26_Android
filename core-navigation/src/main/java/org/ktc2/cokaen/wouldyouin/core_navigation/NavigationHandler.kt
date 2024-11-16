@@ -27,6 +27,9 @@ class NavigationHandler @Inject constructor(
 
     private fun navigateToActivity(command: NavigationCommand) {
         val intent = Intent(Intent.ACTION_VIEW, buildDeepLinkUri(command))
+        command.data.forEach { (key, value) ->
+            intent.putExtra(key, value)
+        }
         applyActivityOptions(intent, command.activityOptions)
         context.startActivity(intent)
     }
