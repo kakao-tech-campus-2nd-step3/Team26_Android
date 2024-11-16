@@ -2,7 +2,7 @@ package org.ktc2.cokaen.wouldyouin.network.repository
 
 import android.util.Log
 import org.ktc2.cokaen.wouldyouin.data.model.MemberAdditionalInfoRequest
-import org.ktc2.cokaen.wouldyouin.data.model.ReservationResponse
+import org.ktc2.cokaen.wouldyouin.data.model.SocialLoginRequest
 import org.ktc2.cokaen.wouldyouin.data.model.SocialTokenResponse
 import org.ktc2.cokaen.wouldyouin.data.model.TokenResponse
 import org.ktc2.cokaen.wouldyouin.network.service.AuthAPIRetrofitService
@@ -16,12 +16,11 @@ import javax.inject.Singleton
 class AuthAPIRepository @Inject constructor(
     private val retrofitService: AuthAPIRetrofitService
 ) {
-    suspend fun socialLoginRedirect(
-        accountType: String,
-        code: String
+    suspend fun socialLogin(
+        request: SocialLoginRequest
     ): SocialTokenResponse {
         try {
-            val response = retrofitService.socialLoginRedirect(accountType, code)
+            val response = retrofitService.socialLogin(request)
             return when {
                 response.isSuccessful -> {
                     response.body()?.let { body ->

@@ -26,7 +26,7 @@ class HomeCurationViewModel @Inject constructor(
     private var selectedArea: String = sharedPreferences.getString("selectedRegion", "전체") ?: "전체"
 
     private val _curationList = MutableLiveData<List<CurationResponse>?>(emptyList())
-    val curationList: MutableLiveData<List<CurationResponse>?> = _curationList
+    val curationList: LiveData<List<CurationResponse>?> = _curationList
 
     private val _selectedCuration = MutableLiveData<CurationResponse>()
     val selectedCuration: LiveData<CurationResponse> = _selectedCuration

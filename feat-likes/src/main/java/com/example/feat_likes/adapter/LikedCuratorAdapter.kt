@@ -13,6 +13,7 @@ import org.ktc2.cokaen.wouldyouin.feat_likes.databinding.LikedOrganizerItemBindi
 class LikedCuratorAdapter :
     ListAdapter<LikeResponse, LikedCuratorAdapter.MemberViewHolder>(LikeResponseDiffCallback()) {
 
+    var onHeartClick: ((LikeResponse) -> Unit)? = null
     var onItemClick: ((LikeResponse) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemberViewHolder {
@@ -38,6 +39,10 @@ class LikedCuratorAdapter :
             binding.hashtag.adapter = hashtagAdapter
 
             binding.heartButton.setOnClickListener {
+                onItemClick?.invoke(member)
+            }
+
+            binding.memberProfile.setOnClickListener {
                 onItemClick?.invoke(member)
             }
         }

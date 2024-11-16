@@ -2,7 +2,9 @@ package org.ktc2.cokaen.wouldyouin
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -14,14 +16,12 @@ import androidx.lifecycle.lifecycleScope
 import com.example.feat_onboarding.view.OnboardingActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.ktc2.cokaen.wouldyouin.BuildConfig.GOOGLE_REDIRECT_URI
 import org.ktc2.cokaen.wouldyouin.BuildConfig.KAKAO_REDIRECT_URI
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
+import org.ktc2.cokaen.wouldyouin.data.model.AccountType
 import org.ktc2.cokaen.wouldyouin.databinding.ActivityLoginBinding
-import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.NavigationEvent
-import org.ktc2.cokaen.wouldyouin.network.AuthPreferenceManager
-import org.ktc2.cokaen.wouldyouin.network.repository.AuthAPIRepository
 import org.ktc2.cokaen.wouldyouin.viewModel.LoginViewModel
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
@@ -38,48 +38,69 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        setupWebView()
+        setupLoginButtons()
         observeUiState()
+        handleDeepLink(intent)
     }
 
-    private fun setupWebView() {
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleDeepLink(intent)
+    }
+
+    private fun setupLoginButtons() {
         binding.kakaoLoginButton.setOnClickListener {
-            binding.webview.apply {
-                webViewClient = object : WebViewClient() {
-                    override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                        if (url.startsWith(KAKAO_REDIRECT_URI)) {
-                            val uri = Uri.parse(url)
-                            val code = uri.getQueryParameter("code")
-                            if (code != null) {
-                                binding.webview.visibility = View.GONE
-                                viewModel.fetchToken(code)
-                            }
-                            return true
-                        }
-                        return false
-                    }
+            launchExternalBrowser(
+                AccountType.kakao,
+                "https://kauth.kakao.com/oauth/authorize?client_id=${BuildConfig.KAKAO_CLIENT_ID}&redirect_uri=${BuildConfig.KAKAO_REDIRECT_URI}&response_type=code"
+            )
+        }
+
+        binding.googleLoginButton.setOnClickListener {
+            launchExternalBrowser(
+                AccountType.google,
+                "https://accounts.google.com/o/oauth2/auth?client_id=${BuildConfig.GOOGLE_CLIENT_ID}&redirect_uri=${BuildConfig.GOOGLE_REDIRECT_URI}&response_type=code&scope=email profile"
+            )
+        }
+    }
+
+    private fun launchExternalBrowser(accountType: AccountType, oauthUrl: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(oauthUrl))
+        startActivity(intent)
+    }
+
+    private fun handleDeepLink(intent: Intent) {
+        val uri = intent.data
+        if (uri != null && uri.scheme == "wouldyouin" && uri.host == "redirect") {
+            val path = uri.path
+            if (path?.startsWith("/login/social/") == true) {
+                val socialPlatform = path.substringAfterLast("/")
+                val code = uri.getQueryParameter("code")
+
+                when (socialPlatform) {
+                    "kakao" -> handleSocialLogin(code, AccountType.kakao)
+                    "google" -> handleSocialLogin(code, AccountType.google)
+                    else -> Log.e("LoginActivity", "Unknown social platform: $socialPlatform")
                 }
-                settings.javaScriptEnabled = true
-                binding.apply {
-                    profileImage.visibility = View.GONE
-                    kakaoLoginButton.visibility = View.GONE
-                    localLoginButton.visibility = View.GONE
-                    webview.visibility = View.VISIBLE
-                }
-                loadUrl("https://kauth.kakao.com/oauth/authorize?client_id=${BuildConfig.KAKAO_CLIENT_ID}&redirect_uri=${BuildConfig.KAKAO_REDIRECT_URI}&response_type=code")
             }
+        }
+    }
+
+    private fun handleSocialLogin(code: String?, accountType: AccountType) {
+        code?.let {
+            viewModel.fetchToken(it, accountType)
+        } ?: run {
+            Toast.makeText(this, "로그인 실패: 인증 코드를 받지 못했습니다.", Toast.LENGTH_LONG).show()
         }
     }
 
     private fun observeUiState() {
         lifecycleScope.launch {
             viewModel.uiState.collect { state ->
-                // 에러 처리
                 state.error?.let { error ->
                     Toast.makeText(this@LoginActivity, error, Toast.LENGTH_LONG).show()
                 }
 
-                // 네비게이션 처리
                 state.navigation?.let { navigation ->
                     when (navigation) {
                         is LoginViewModel.Navigation.ToOnboarding -> {

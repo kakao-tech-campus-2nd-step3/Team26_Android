@@ -3,7 +3,10 @@ package org.ktc2.cokaen.wouldyouin.feat_profile.view
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.graphics.Rect
 import android.os.Bundle
+import android.util.TypedValue
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -112,6 +115,24 @@ class CuratorProfileActivity : AppCompatActivity() {
                     DividerItemDecoration.HORIZONTAL
                 )
             )
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    // 원하는 간격을 dp 단위로 설정
+                    val spacing = TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        8f, // 8dp
+                        resources.displayMetrics
+                    ).toInt()
+
+                    outRect.top = spacing
+                    outRect.bottom = spacing
+                }
+            })
 
             curationAdapter.setOnItemClickListener { curation ->
                 startActivityTo(curation.id)

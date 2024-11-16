@@ -25,7 +25,7 @@ data class CurationResponse(
 
 
 data class CurationCuratorResponse(
-    val curatorId: Int,
+    val curatorId: Long,
     val nickname: String,
     val email: String,
     val phone: String,

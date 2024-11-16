@@ -2,18 +2,14 @@ package org.ktc2.cokaen.wouldyouin.viewModel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.Navigation
-import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.ktc2.cokaen.wouldyouin.data.model.SocialTokenResponse
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.ktc2.cokaen.wouldyouin.data.model.AccountType
+import org.ktc2.cokaen.wouldyouin.data.model.SocialLoginRequest
 import org.ktc2.cokaen.wouldyouin.network.AuthPreferenceManager
 import org.ktc2.cokaen.wouldyouin.network.repository.AuthAPIRepository
 import org.ktc2.cokaen.wouldyouin.network.repository.MemberAPIRetrofitRepository
@@ -41,15 +37,14 @@ class LoginViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun fetchToken(code: String) {
+    fun fetchToken(code: String, accountType: AccountType) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, navigation = null) }
 
             try {
-                // 1. 소셜 로그인
-                val socialTokenResponse = authAPIRepository.socialLoginRedirect(
-                    accountType = "kakao",
-                    code = code
+                // 1. 소셜 로그인 - 리다이렉트 말고 새로생긴 /api/auth/social/login으로 요청 - body를 accountType(local, kakao, google), Token(code)
+                val socialTokenResponse = authAPIRepository.socialLogin(
+                    SocialLoginRequest(accountType = accountType , token = code )
                 )
 
                 // 2. 토큰 저장
