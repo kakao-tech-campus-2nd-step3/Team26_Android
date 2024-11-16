@@ -11,6 +11,7 @@ import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
 import dagger.hilt.android.AndroidEntryPoint
+import org.ktc2.cokaen.wouldyouin.core.DateTimeUtils
 import org.ktc2.cokaen.wouldyouin.core_navigation.ActivityNavigationOptions
 import org.ktc2.cokaen.wouldyouin.core_navigation.DeepLinkDestinations
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
@@ -46,10 +47,11 @@ class EventDetailActivity : AppCompatActivity() {
         eventViewModel.eventDetails.observe(this) { eventResponse ->
             eventResponse?.let { event ->
                 binding.eventName.text = event.data?.title
-                binding.eventTime.text = event.data?.startTime.toString()
-                binding.eventDuration.text = "약 ${event.data?.endTime} - ${event.data?.startTime}분"
+                binding.eventTime.text = event.data?.startTime?.let(DateTimeUtils::formatDateTimeString) ?: "시간 정보 없음"
+                binding.eventEndTime.text = event.data?.endTime?.let(DateTimeUtils::formatDateTimeString) ?: "시간 정보 없음"
+                //binding.eventDuration.text = "약 ${DateTimeUtils.formatDateTimeString(event.data!!.endTime)} - ${DateTimeUtils.formatDateTimeString(event.data!!.startTime)}분"
                 binding.eventLocation.text = event.data?.location?.detailAddress
-                binding.eventFee.text = "입장료 ₩${event.data?.price}"
+                binding.eventFee.text = "₩${event.data?.price}"
                 binding.eventSeats.text = "${event.data?.leftSeat}/${event.data?.totalSeat}"
                 binding.eventDescription.text = event.data?.content
 
@@ -60,7 +62,7 @@ class EventDetailActivity : AppCompatActivity() {
                 //주최자 정보 설정
                 binding.organizerName.text = event.data?.host?.nickname
                 binding.organizerInfo.text = event.data?.host?.intro
-                binding.eventDescriptionTitle.text = event.data?.content
+                binding.eventDescription.text = event.data?.content
                 binding.contactPhone.text = event.data?.host?.phone
                 binding.contactEmail.text = event.data?.host?.email
 

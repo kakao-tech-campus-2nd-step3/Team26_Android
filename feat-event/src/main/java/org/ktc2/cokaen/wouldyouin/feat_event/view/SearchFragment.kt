@@ -164,7 +164,7 @@ class SearchFragment : Fragment() {
             Log.d("LocationData", "Bottom Right Latitude: $endLatitude, Bottom Right Longitude: $endLongitude")
 
             //viewModel.searchEvents(
-            searchViewModel.fetchEventList(
+            searchViewModel.fetchEventListDetail(
                 title = query,
                 startLatitude = startLatitude,
                 startLongitude = startLongitude,

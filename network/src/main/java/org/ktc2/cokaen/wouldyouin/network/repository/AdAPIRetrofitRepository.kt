@@ -22,7 +22,7 @@ class AdAPIRetrofitRepository @Inject constructor(
                 Log.d("AdAPIRetrofitRepository", "Ad list fetched successfully. Body: ${response.body()}")
                 response.body()
             } else {
-                Log.e("AdAPIRetrofitRepository", "Failed to fetch ad list. Code: ${response.code()}, Error: ${response.errorBody()?.string()}")
+                Log.e("AdAPIRetrofitRepository", "Failed to fetch ad list. Code: ${response.code()}, Message: ${response.message()}, Error: ${response.errorBody()?.string()}")
                 ToastUtils.showShortToast(context, "광고 목록 조회에 실패했습니다.")
                 null
             }

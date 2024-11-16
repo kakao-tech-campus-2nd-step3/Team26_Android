@@ -19,7 +19,7 @@ class SearchViewModel @Inject constructor(private val repository: EventAPIRetrof
     private val _eventList = MutableLiveData<ApiResponseBodyEventSliceResponse?>()
     val eventList: LiveData<ApiResponseBodyEventSliceResponse?> get() = _eventList
 
-    fun fetchEventList(
+    fun fetchEventListDetail(
         title: String,
         startLatitude: Double,
         startLongitude: Double,
@@ -35,21 +35,9 @@ class SearchViewModel @Inject constructor(private val repository: EventAPIRetrof
         context: Context
     ) {
         viewModelScope.launch {
-            /*
-            val result = repository.searchEvents(
-                query = query,
-                startLatitude = startLatitude,
-                startLongitude = startLongitude,
-                endLatitude = endLatitude,
-                endLongitude = endLongitude,
-                latitude = latitude,
-                longitude = longitude,
-                context = context
-            )
-            _eventList.value = result ?: emptyList()*/
             Log.d("SearchViewModel", "Starting search with title: $title") // 로그 추가
             try {
-                val result = repository.getEventList(
+                val result = repository.getEventListDetail(
                     title = title,
                     startLatitude = startLatitude,
                     startLongitude = startLongitude,
