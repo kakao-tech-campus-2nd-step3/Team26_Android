@@ -27,7 +27,7 @@ interface ReservationAPIRetrofitService {
     // 예매 생성
     @POST("/api/reservations/test")
     suspend fun createReservation(
-        @Body request: ReservationCreateRequestWrapper
+        @Body request: ReservationRequest
     ): Response<ApiResponseBodyReservationResponse>
 
     @GET("/api/reservations/{reservationId}")

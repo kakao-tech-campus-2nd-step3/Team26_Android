@@ -73,10 +73,15 @@ class ReservationViewModel @Inject constructor(
     }
 
     // 예매 생성
-    fun createReservation(request: ReservationCreateRequestWrapper) {
+    fun createReservation(request: ReservationRequest) {
         viewModelScope.launch {
             val response = repository.createReservation(request)
             _reservationResponse.value = response
+            Log.d("ReservationViewModel", "Request Body JSON: $request")
+            if (response == null) {
+                Log.e("ReservationViewModel", "Response is null")
+            }
+
         }
     }
 

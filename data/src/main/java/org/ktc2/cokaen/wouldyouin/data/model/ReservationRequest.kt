@@ -2,8 +2,13 @@ package org.ktc2.cokaen.wouldyouin.data.model
 import com.google.gson.annotations.SerializedName
 
 data class ReservationCreateRequestWrapper(
-    @SerializedName("reservationCreateRequest")
-    val reservationCreateRequest: ReservationRequest,
+    @SerializedName("reservationRequest")
+    val reservationRequest: ReservationRequest
+)
+
+data class MemberIdentifier(
+    val id: Long,
+    val type: String
 )
 
 data class ReservationRequest(

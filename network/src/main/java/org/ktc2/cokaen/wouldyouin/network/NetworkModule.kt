@@ -63,7 +63,7 @@ object NetworkModule {
         }
 
         return OkHttpClient.Builder()
-            //.addInterceptor(authInterceptor)  // 인증 인터셉터 추가
+            .addInterceptor(authInterceptor)  // 인증 인터셉터 추가
             .addInterceptor(loggingInterceptor)
             .addInterceptor { chain ->
                 val request = chain.request()

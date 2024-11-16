@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
+import org.ktc2.cokaen.wouldyouin.core.DateTimeUtils
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationCreateRequestWrapper
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationRequest
 import org.ktc2.cokaen.wouldyouin.feat_booking.databinding.ActivityBookingBinding
@@ -53,7 +54,7 @@ class BookingActivity : AppCompatActivity() {
                 binding.eventName.text = event.title
                 binding.eventOrganizerName.text = event.host.nickname
                 binding.eventLocation.text = event.location.detailAddress
-                binding.eventDate.text = event.startTime.toString()
+                binding.eventDate.text = DateTimeUtils.formatDateTimeString(event.startTime)
                 //binding.price.text = "₩${event.price}"
 
                 // 첫 가격 설정
@@ -78,21 +79,31 @@ class BookingActivity : AppCompatActivity() {
             eventId?.let { id ->
                 val quantity = binding.numberPicker.value
                 val reservationRequest = ReservationRequest(eventId = id, quantity = quantity)
-                val requestWrapper = ReservationCreateRequestWrapper(reservationCreateRequest = reservationRequest)
+                //val requestWrapper = ReservationCreateRequestWrapper(reservationRequest = reservationRequest)
 
-                reservationViewModel.createReservation(requestWrapper)
+                Log.d("BookingActivity", "RequestWrapper: $reservationRequest")
+
+                reservationViewModel.createReservation(reservationRequest)
 
                 reservationViewModel.reservationResponse.observe(this) { response ->
                     if (response?.success == true) {
+                        Log.d("BookingActivity", "Reservation created successfully: ${response.data}")
                         val reservationId = response.data?.id
-                        reservationId?.let {
-                            val intent = Intent(this, BookingDetailsActivity::class.java).apply {
-                                putExtra("reservationId", reservationId)
+                        if (reservationId != null) {
+                            reservationId?.let {
+                                Log.d("BookingActivity", "Navigating to BookingDetailsActivity with reservationId: $reservationId")
+                                val intent = Intent(this, BookingDetailsActivity::class.java).apply {
+                                    putExtra("reservationId", reservationId)
+                                }
+                                startActivity(intent)
                             }
-                            startActivity(intent)
+                        } else {
+                            Log.e("BookingActivity", "ReservationId is null")
                         }
                     } else {
                         Log.e("BookingActivity", "예매 생성 실패: ${response?.message}")
+                        Log.e("BookingActivity", "Response Code: ${response?.code}")
+                        Log.e("BookingActivity", "Response Body: ${response?.message}")
                     }
                 }
             }

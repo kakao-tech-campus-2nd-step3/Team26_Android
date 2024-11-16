@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import dagger.hilt.android.AndroidEntryPoint
+import org.ktc2.cokaen.wouldyouin.core.DateTimeUtils
 import org.ktc2.cokaen.wouldyouin.feat_booking.R
 import org.ktc2.cokaen.wouldyouin.feat_booking.databinding.ActivityBookingDetailsBinding
 import org.ktc2.cokaen.wouldyouin.feat_booking.viewModel.BookingDetailsViewModel
@@ -42,8 +43,8 @@ class BookingDetailsActivity : AppCompatActivity() {
                 binding.imageUrl = reservation.event.thumbnailUrl
                 binding.eventName.text = reservation.event.title
                 binding.eventLocation.text = reservation.event.location.detailAddress
-                binding.eventDate.text = reservation.event.startTime.toString()
-                binding.paymentDate.text = reservation.reservationDate.toString()
+                binding.eventDate.text = DateTimeUtils.formatDateTimeString(reservation.event.startTime)
+                binding.paymentDate.text = DateTimeUtils.formatDateTimeString(reservation.reservationDate)
                 binding.paymentAmount.text = "₩${reservation.price}"
                 binding.reservationNumber.text = reservation.id.toString()
                 binding.bookerName.text = reservation.member.nickname

@@ -42,7 +42,7 @@ data class ReservationResponse(
     val quantity: Int,
 
     @SerializedName("reservationDate")
-    val reservationDate: String
+    val reservationDate: List<String>
 )
 
 data class ReservationMemberResponse(
