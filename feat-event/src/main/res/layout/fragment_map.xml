@@ -51,7 +51,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="새벽 울림"
+                        android:text="공연 정보"
                         android:textColor="@android:color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -61,7 +61,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="그래, 나 음악에 미쳤다."
+                        android:text="로딩 중"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
 
@@ -70,7 +70,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="#음악가 #밴드"
+                        android:text="해시태그"
                         android:textColor="@android:color/black"
                         android:textSize="12sp" />
 
@@ -79,7 +79,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="용봉로 77길 공과대학 7호관 217호"
+                        android:text="장소"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="14sp" />
 
@@ -87,7 +87,7 @@
                         android:id="@+id/place_datetime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="8월 23일 18:00"
+                        android:text="시간"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp" />
                 </LinearLayout>

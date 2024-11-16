@@ -39,8 +39,10 @@ import com.google.gson.reflect.TypeToken
 import com.kakao.vectormap.label.Label
 import com.kakao.vectormap.label.LodLabel
 import com.kakao.vectormap.label.LodLabelLayer
+import org.ktc2.cokaen.wouldyouin.core.DateTimeUtils
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
 import kotlin.math.pow
+import kotlin.math.sqrt
 
 class MapFragment : Fragment() {
 
@@ -156,6 +158,28 @@ class MapFragment : Fragment() {
         }
     }
 
+    // **[추가: 거리 계산 함수]**
+    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val earthRadius = 6371.0 // km
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+        val a = Math.sin(dLat / 2).pow(2.0) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                Math.sin(dLon / 2).pow(2.0)
+        val c = 2 * Math.atan2(sqrt(a), sqrt(1 - a))
+        return earthRadius * c
+    }
+
+    // **[추가: 가장 가까운 이벤트 찾기 함수]**
+    private fun findClosestEvent(currentLatitude: Double, currentLongitude: Double): EventResponse? {
+        return eventList.minByOrNull { event ->
+            calculateDistance(
+                currentLatitude, currentLongitude,
+                event.location.latitude, event.location.longitude
+            )
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private fun getCurrentLocationAndStartMap() {
         Toast.makeText(requireContext(), "위치 정보를 불러오고 있습니다", Toast.LENGTH_SHORT).show()
@@ -166,6 +190,10 @@ class MapFragment : Fragment() {
                     val currentLatLng = LatLng.from(location.latitude, location.longitude)
                     updateMapWithCurrentLocation(location.latitude, location.longitude)
                     addCenterLabel(currentLatLng)
+
+                    // **[수정: 가장 가까운 이벤트로 카드뷰 초기화]**
+                    val closestEvent = findClosestEvent(location.latitude, location.longitude)
+                    closestEvent?.let { updateCardViewWithEvent(it) }
 
                     mapView.visibility = View.VISIBLE
                 }
@@ -230,21 +258,6 @@ class MapFragment : Fragment() {
             })
         }
     }
-    /*
-    private fun addMarkersToMap() {
-        kakaoMap?.let { map ->
-            val lodLabelLayer = map.labelManager?.lodLayer
-            locations.forEach { location ->
-                val markerBitmap = BitmapFactory.decodeResource(resources, R.drawable.marker)
-                val scaledBitmap = Bitmap.createScaledBitmap(markerBitmap, 50, 50, true)
-                val labelStyle = LabelStyle.from(scaledBitmap)
-                val labelStyles = LabelStyles.from(labelStyle)
-                val options = LabelOptions.from(LatLng.from(location.latitude, location.longitude))
-                    .setStyles(labelStyles)
-                lodLabelLayer?.addLodLabel(options)
-            }
-        }
-    }*/
 
     private fun updateMapWithCurrentLocation(latitude: Double, longitude: Double) {
         kakaoMap?.moveCamera(CameraUpdateFactory.newCenterPosition(LatLng.from(latitude, longitude), 15))
@@ -257,11 +270,11 @@ class MapFragment : Fragment() {
     private fun updateCardViewWithEvent(event: EventResponse) {
         selectedEvent = event //현재 선택된 이벤트 업데이트
         binding.placeName.text = event.title
-        binding.placeDescription.text = event.content
+        //binding.placeDescription.text = event.content
         //해쉬태그(안되면 생략..)
         binding.placeTags.text = event.host.hashtags.joinToString(" ")
         binding.placeAddress.text = event.location.detailAddress
-        binding.placeDatetime.text = event.startTime.toString()
+        binding.placeDatetime.text = event.startTime.let(DateTimeUtils::formatDateTimeString)
         binding.imageUrl = event.host.profileImageUrl
     }
 
@@ -280,81 +293,3 @@ class MapFragment : Fragment() {
     }
 
 }
-
-//기존 코드(혹시 몰라서 남겨 놓음)
-/*
-class MapFragment : Fragment() {
-
-    private lateinit var binding: FragmentMapBinding
-    private lateinit var mapView: MapView
-    private val locations = listOf(
-        Location(name = "행사 장소 1", latitude = 37.5665, longitude = 126.9780),
-        Location(name = "행사 장소 2", latitude = 37.5655, longitude = 126.9770),
-        Location(name = "행사 장소 3", latitude = 37.5645, longitude = 126.9760)
-    )
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_map, container, false)
-        binding.map = this
-
-        mapView = binding.mapView
-        mapView.start(object : MapLifeCycleCallback() {
-            override fun onMapDestroy() {
-                // 지도 API가 정상적으로 종료될 때 호출됨
-            }
-
-            override fun onMapError(error: Exception?) {
-                // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출됨
-            }
-        }, object : KakaoMapReadyCallback() {
-            override fun onMapReady(kakaoMap: KakaoMap) {
-                // 인증 후 API가 정상적으로 실행될 때 호출됨
-
-                val lodLabelLayer = kakaoMap.labelManager?.lodLayer
-
-                locations.forEach { location ->
-                    val markerBitmap = BitmapFactory.decodeResource(resources, R.drawable.marker)
-                    val scaledBitmap = Bitmap.createScaledBitmap(markerBitmap, 50, 50, true) // 50x50으로 조정
-
-                    val labelStyle = LabelStyle.from(scaledBitmap)
-                    val labelStyles = LabelStyles.from(labelStyle)
-
-                    val options = LabelOptions.from(LatLng.from(location.latitude, location.longitude))
-                        .setStyles(labelStyles)
-
-                    lodLabelLayer?.addLodLabel(options)
-                }
-
-                if (locations.isNotEmpty()) {
-                    val firstLocation = locations[0]
-                    kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(LatLng.from(firstLocation.latitude, firstLocation.longitude), 15))
-                }
-
-
-            }
-        })
-
-        binding.cardView.setOnClickListener {
-            val intent = Intent(requireContext(), EventDetailActivity::class.java)
-            //행사 Id 또는 정보 전달 시
-            //intent.putExtra("place_name", "새벽 울림")
-            startActivity(intent)
-        }
-
-        return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mapView.resume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mapView.pause()
-    }
-}
-*/
