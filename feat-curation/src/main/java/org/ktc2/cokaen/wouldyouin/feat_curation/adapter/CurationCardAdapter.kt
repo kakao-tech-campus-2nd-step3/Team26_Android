@@ -49,17 +49,12 @@ class CurationCardAdapter(
             binding.curation = curation
             binding.position = position
 
-            val firstImageUrl = curation.curationCards.firstOrNull()?.imageUrls?.get(0)
-            binding.imageUrl = firstImageUrl  // 이미지 URL을 binding에 설정
+            binding.imageUrl = curation.thumbnailUrl
 
 
-            val hashtags = curation.hashtags[0]
+            val hashtags = curation.hashtags.getOrNull(0)
             if (!hashtags.isNullOrEmpty()) {
-                binding.hashtag.text = "#${hashtags}"
-            } else {
-                binding.hashtag.text = ""
-                binding.hashtag.isVisible = false
-            }
+                binding.hashtag.text = "#${hashtags}"}
 
             binding.executePendingBindings()
         }

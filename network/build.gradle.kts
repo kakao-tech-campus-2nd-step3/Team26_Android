@@ -58,6 +58,8 @@ dependencies {
     implementation(project(":data"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.gson)
+
+    implementation(libs.androidx.security.crypto.ktx)
 }
 
 fun getApiKey(key: String): String = gradleLocalProperties(rootDir, providers).getProperty(key)

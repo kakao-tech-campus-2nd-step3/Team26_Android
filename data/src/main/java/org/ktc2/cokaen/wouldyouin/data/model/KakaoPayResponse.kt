@@ -37,5 +37,5 @@ data class KakaoPayResponse(
     val iosAppScheme: String,
 
     @SerializedName("created_at")
-    val createdAt: LocalDateTime
+    val createdAt: String
 )

@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.data.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import dagger.hilt.InstallIn
 import dagger.Module
@@ -30,5 +31,16 @@ object AppModule {
     @Provides
     fun provideCurationLocalRepository(dao: CurationDao): CurationLocalRepository {
         return CurationLocalRepository(dao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(
+        @ApplicationContext context: Context
+    ): SharedPreferences {
+        return context.getSharedPreferences(
+            "wouldyouin_prefs", // 앱의 프리퍼런스 이름
+            Context.MODE_PRIVATE
+        )
     }
 }

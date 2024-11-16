@@ -13,16 +13,14 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface AuthAPIRetrofitService {
-
     @POST("/api/auth/social/additional-info")
-    fun sendAdditionalInfo(
-        @Header("Authorization") token: String,
+    suspend fun sendAdditionalInfo(
         @Body body: MemberAdditionalInfoRequest
-    ): Call<ApiResponseBodyTokenResponse>
+    ): Response<ApiResponseBodyTokenResponse>
 
-    @GET("api/auth/social/redirect/{accountType}")
-    fun socialLoginRedirect(
+    @GET("/api/auth/social/redirect/{accountType}")
+    suspend fun socialLoginRedirect(
         @Path("accountType") accountType: String,
         @Query("code") code: String
-    ): Call<ApiResponseBodySocialTokenResponse>
+    ): Response<ApiResponseBodySocialTokenResponse>
 }

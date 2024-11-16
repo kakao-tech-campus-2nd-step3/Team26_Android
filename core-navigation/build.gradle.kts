@@ -33,4 +33,6 @@ dependencies {
     androidTestImplementation(libs.junit.v412)
     kapt(libs.google.dagger.hilt.compiler)
     implementation(libs.google.dagger.hilt.android)
+
+    implementation(libs.androidx.security.crypto.ktx)
 }

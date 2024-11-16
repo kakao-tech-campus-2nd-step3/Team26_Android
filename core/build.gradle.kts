@@ -26,6 +26,7 @@ android {
 dependencies {
     // DI
     implementation(libs.google.dagger.hilt.android)
+    implementation(libs.androidx.security.crypto.ktx)
     kapt(libs.google.dagger.hilt.compiler)
 
     // Coroutines

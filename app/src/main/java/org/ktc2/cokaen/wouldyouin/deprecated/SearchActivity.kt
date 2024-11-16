@@ -1,4 +1,4 @@
-//
+package org.ktc2.cokaen.wouldyouin.deprecated//
 //package org.ktc2.cokaen.wouldyouin
 //
 //import android.os.Bundle

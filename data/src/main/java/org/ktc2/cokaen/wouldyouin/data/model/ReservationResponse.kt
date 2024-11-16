@@ -42,7 +42,7 @@ data class ReservationResponse(
     val quantity: Int,
 
     @SerializedName("reservationDate")
-    val reservationDate: LocalDateTime
+    val reservationDate: String
 )
 
 data class ReservationMemberResponse(
@@ -67,7 +67,7 @@ data class ReservationEventResponse(
     val eventId: Long,
 
     @SerializedName("startTime")
-    val startTime: LocalDateTime,
+    val startTime: String,
 
     @SerializedName("title")
     val title: String,

@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 
 data class AdvertisementRequest(
     val title: String,
-    val startTime: LocalDateTime,
-    val endTime: LocalDateTime,
+    val startTime: String,
+    val endTime: String,
     val endTimeAfterStartTime: Boolean
 )

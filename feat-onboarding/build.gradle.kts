@@ -78,4 +78,6 @@ dependencies {
 
     //추가
     implementation("com.google.android.gms:play-services-location:21.1.0")
+
+    implementation(libs.androidx.security.crypto.ktx)
 }

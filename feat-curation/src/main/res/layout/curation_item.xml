@@ -24,27 +24,23 @@
             type="org.ktc2.cokaen.wouldyouin.feat_curation.adapter.CurationCardAdapter.OnItemClickListener" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="52dp"
+        android:layout_marginBottom="20dp"
         tools:context=".HomeCurationActivity">
 
-        <FrameLayout
+        <androidx.cardview.widget.CardView
             android:id="@+id/curationCard"
             android:layout_width="350dp"
             android:layout_height="491dp"
-            android:onClick="@{() -> clickListener.onItemClick(position)}"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            >
-            <androidx.cardview.widget.CardView
+            android:layout_gravity="center"
+            app:cardCornerRadius="16dp"
+            android:onClick="@{() -> clickListener.onItemClick(position)}">
+
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:cardCornerRadius="16dp">
+                android:layout_height="match_parent">
 
                 <ImageView
                     android:id="@+id/imageView"
@@ -57,68 +53,56 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#33000000" /> <!-- 추후 색상 변경 -->
-            </androidx.cardview.widget.CardView>
-        </FrameLayout>
+                    android:background="#33000000" />
 
-        <!-- Location TextView -->
-        <TextView
-            android:id="@+id/location"
-            android:layout_marginStart="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingHorizontal="26dp"
-            android:paddingVertical="6dp"
-            app:layout_constraintStart_toStartOf="@id/curationCard"
-            app:layout_constraintBottom_toTopOf="@id/title"
-            android:text="@{curation.area.name}"
-            tools:text="location"
-            android:background="@drawable/location_background"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:ellipsize="end"
-            android:maxLines="1" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="bottom"
+                    android:padding="16dp">
 
-        <!-- Hashtag TextView -->
-        <TextView
-            android:id="@+id/hashtag"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_width="match_parent"
-            android:paddingHorizontal="30dp"
-            android:paddingVertical="6dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@{hashtag.toString()}"
-            app:layout_constraintTop_toBottomOf="@id/title"
-            app:layout_constraintStart_toStartOf="@id/curationCard"
-            app:layout_constraintBottom_toBottomOf="@id/curationCard"
-            tools:text="#hashtag"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:ellipsize="end"
-            android:maxLines="1" />
+                    <TextView
+                        android:id="@+id/location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="26dp"
+                        android:paddingVertical="6dp"
+                        android:text="@{curation.area.name}"
+                        tools:text="location"
+                        android:background="@drawable/location_background"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:layout_marginBottom="8dp"/>
 
-        <!-- Title TextView -->
-        <TextView
-            android:id="@+id/title"
-            android:layout_marginStart="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="30dp"
-            android:paddingVertical="6dp"
-            android:layout_gravity="center"
-            android:text="@{curation.title}"
-            app:layout_constraintStart_toStartOf="@id/curationCard"
-            app:layout_constraintTop_toTopOf="@id/location"
-            tools:text="title here"
-            android:textColor="@android:color/white"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:ellipsize="end"
-            android:maxLines="1" />
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{curation.title}"
+                        tools:text="title here"
+                        android:textColor="@android:color/white"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:layout_marginBottom="8dp"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/hashtag"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{hashtag.toString()}"
+                        tools:text="#hashtag"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:ellipsize="end"
+                        android:maxLines="1"/>
 
+                </LinearLayout>
+            </FrameLayout>
+        </androidx.cardview.widget.CardView>
+    </FrameLayout>
 </layout>

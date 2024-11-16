@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.data.model
 
 import com.google.gson.annotations.SerializedName
+import java.io.StringReader
 import java.time.LocalDateTime
 
 data class ApiResponseBodyEventResponse(
@@ -17,8 +18,8 @@ data class EventResponse(
     val host: EventHostResponse,
     val area: Area,
     val location: Location,
-    val startTime: LocalDateTime,
-    val endTime: LocalDateTime,
+    val startTime: String,
+    val endTime: String,
     val price: Int,
     val totalSeat: Int,
     val leftSeat: Int,
