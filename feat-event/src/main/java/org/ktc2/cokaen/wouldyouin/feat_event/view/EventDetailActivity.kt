@@ -64,6 +64,7 @@ class EventDetailActivity : AppCompatActivity() {
                 eventLatitude = event.data?.location?.latitude
                 eventLongitude = event.data?.location?.longitude
 
+                //추가
                 // 지도 업데이트
                 if (eventLatitude != null && eventLongitude != null && mapView.visibility == View.VISIBLE) {
                     kakaoMap?.moveCamera(
@@ -115,6 +116,7 @@ class EventDetailActivity : AppCompatActivity() {
                 // 인증 후 API가 정상적으로 실행될 때 호출됨
                 Log.d("MapView", "Map is ready")
 
+                //추가
                 this@EventDetailActivity.kakaoMap = kakaoMap
 
                 // 지도 초기화 후 위치 설정
@@ -148,6 +150,7 @@ class EventDetailActivity : AppCompatActivity() {
         super.onResume()
         mapView.resume()
 
+        //추가
         // 지도 상태 갱신
         if (eventLatitude != null && eventLongitude != null && kakaoMap != null) {
             kakaoMap?.moveCamera(
