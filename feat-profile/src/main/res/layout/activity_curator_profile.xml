@@ -85,7 +85,7 @@
                     android:maxWidth="285dp"
                     app:layout_constraintTop_toBottomOf="@id/profile_image"
                     app:layout_constraintStart_toStartOf="parent"
-                    tools:listitem="@layout/hashtag_item"/>
+                    tools:listitem="@layout/host_hashtag_item"/>
 
                 <TextView
                     android:id="@+id/like"
@@ -175,7 +175,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        tools:listitem="@layout/post_item"/>
+                        tools:listitem="@layout/host_post_item"/>
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

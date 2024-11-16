@@ -6,12 +6,14 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationCreateRequestWrapper
 import org.ktc2.cokaen.wouldyouin.data.model.ReservationRequest
 import org.ktc2.cokaen.wouldyouin.feat_booking.databinding.ActivityBookingBinding
 import org.ktc2.cokaen.wouldyouin.feat_booking.viewModel.BookingEventViewModel
 import org.ktc2.cokaen.wouldyouin.feat_booking.viewModel.ReservationViewModel
 
+@AndroidEntryPoint
 class BookingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBookingBinding
@@ -30,13 +32,23 @@ class BookingActivity : AppCompatActivity() {
 
         // 데이터 받아오는 부분
         val eventId = intent.getStringExtra("eventId")?.toLongOrNull()
+        Log.d("BookingActivity", "Received eventId from intent: $eventId")
         if (eventId != null) {
+            Log.d("BookingActivity", "Calling fetchEventDetails with eventId: $eventId")
             bookingEventViewModel.fetchEventDetails(eventId, this)
+        } else {
+            Log.e("BookingActivity", "EventId is null or invalid")
         }
 
         // ViewModel의 eventDetails 관찰하여 UI 업데이트
         bookingEventViewModel.eventDetails.observe(this) { eventResponse ->
+            if (eventResponse == null) {
+                Log.e("BookingActivity", "ㅇㅇEvent response is null")
+            } else {
+                Log.d("BookingActivity", "ㅇㅇEvent fetched successfully: ${eventResponse.data}")
+            }
             eventResponse?.data?.let { event ->
+                Log.d("BookingActivity", "Event fetched successfully: $event")
                 binding.imageUrl = event.images[0]
                 binding.eventName.text = event.title
                 binding.eventOrganizerName.text = event.host.nickname
@@ -46,6 +58,8 @@ class BookingActivity : AppCompatActivity() {
 
                 // 첫 가격 설정
                 updateTotalPrice(1, event.price)
+            } ?: run {
+                Log.e("BookingActivity", "Event response data is null")
             }
         }
 
@@ -54,6 +68,7 @@ class BookingActivity : AppCompatActivity() {
         binding.numberPicker.wrapSelectorWheel = false
 
         binding.numberPicker.setOnValueChangedListener { _, _, newVal ->
+            Log.d("BookingActivity", "NumberPicker value changed: $newVal")
             bookingEventViewModel.eventDetails.value?.data?.price?.let { pricePerTicket ->
                 updateTotalPrice(newVal, pricePerTicket)
             }
@@ -86,6 +101,7 @@ class BookingActivity : AppCompatActivity() {
 
     private fun updateTotalPrice(quantity: Int, pricePerTicket: Int) {
         totalPrice = quantity * pricePerTicket
+        Log.d("BookingActivity", "Updating total price: $totalPrice")
         binding.price.text = "₩ $totalPrice"
     }
 }

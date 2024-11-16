@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.feat_profile.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,14 +27,19 @@ class HostProfileActivity : AppCompatActivity() {
 
         //이벤트 상세 페이지에(EventDetail)서 프로필 보기를 누른 후 userId 전달 받을 경우
         val hostId = intent.getStringExtra("hostId")?.toLongOrNull()
+        Log.d("HostProfileActivity", "Received hostId from intent: $hostId")
         if (hostId != null) {
+            Log.d("HostProfileActivity", "Calling with hostId: $hostId")
             profileViewModel.fetchMemberProfile(hostId, this)
             eventViewModel.fetchEventsByHost(hostId, context = this)
+        } else {
+            Log.e("HostProfileActivity", "HostId is null or invalid")
         }
 
         // ViewModel의 데이터를 관찰하여 UI 업데이트
         profileViewModel.memberProfile.observe(this) { memberResponse ->
             memberResponse?.data?.let { member ->
+                Log.d("HostProfileActivity", "Member data fetched: ${member.nickname}")
                 binding.nickname.text = member.nickname
                 binding.role.text = member.memberType.toString()
                 binding.likes.text = member.likes.toString()
@@ -52,6 +58,7 @@ class HostProfileActivity : AppCompatActivity() {
         //진행한 행사 리사이클러뷰
         eventViewModel.eventsByHost.observe(this) { response ->
             response?.data?.events?.let { events ->
+                Log.d("HostProfileActivity", "Events by host fetched: ${events.size}")
                 setupPostRecyclerView(events)
             }
         }

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
-import org.ktc2.cokaen.wouldyouin.feat_profile.databinding.PostItemBinding
+import org.ktc2.cokaen.wouldyouin.feat_profile.databinding.CuratorPostItemBinding
 
 class CurationAdapter(
     private val curations: List<CurationResponse>
@@ -17,7 +17,7 @@ class CurationAdapter(
         onItemClickListener = listener
     }
 
-    inner class PostViewHolder(private val binding: PostItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class PostViewHolder(private val binding: CuratorPostItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(curation: CurationResponse) {
             // Post title
             binding.postTitle = curation.title
@@ -26,7 +26,7 @@ class CurationAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        val binding = PostItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = CuratorPostItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PostViewHolder(binding)
     }
 

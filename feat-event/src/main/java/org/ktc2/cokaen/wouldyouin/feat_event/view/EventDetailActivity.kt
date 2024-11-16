@@ -2,6 +2,7 @@ package org.ktc2.cokaen.wouldyouin.feat_event.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -17,6 +18,7 @@ import org.ktc2.cokaen.wouldyouin.core_navigation.DeepLinkDestinations
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
+import org.ktc2.cokaen.wouldyouin.feat_booking.view.BookingActivity
 import org.ktc2.cokaen.wouldyouin.feat_event.R
 import org.ktc2.cokaen.wouldyouin.feat_event.databinding.ActivityEventDetailBinding
 import org.ktc2.cokaen.wouldyouin.feat_event.view.viewmodel.EventViewModel
@@ -122,6 +124,8 @@ class EventDetailActivity : AppCompatActivity() {
     }
 
     private fun startBookingActivity(eventId: Long) {
+        Log.d("EventDetailActivity", "Navigating to BookingActivity with eventId: $eventId")
+        /*
         navigationUtil.navigate(
             NavigationCommand(
                 destination = NavigationDestination.Activity(DeepLinkDestinations.PAYMENT_CHECK_ACTIVITY),
@@ -131,10 +135,16 @@ class EventDetailActivity : AppCompatActivity() {
                 ),
                 data = mapOf("eventId" to eventId.toString()) // 여기에 필요한 데이터(id) 넘겨주시면 됩니다!!
             )
-        )
+        )*/
+        val intent = Intent(this, BookingActivity::class.java).apply {
+            putExtra("eventId", eventId.toString()) // 데이터 추가
+        }
+        startActivity(intent)
     }
 
     private fun startMemberProfileActivity(hostId: Long) {
+        Log.d("EventDetailActivity", "Navigating to BookingActivity with hostId: $hostId")
+        /*
         navigationUtil.navigate(
             NavigationCommand(
                 destination = NavigationDestination.Activity(DeepLinkDestinations.HOST_PROFILE_ACTIVITY),
@@ -144,6 +154,15 @@ class EventDetailActivity : AppCompatActivity() {
                 ),
                 data = mapOf("hostId" to hostId.toString())
             )
-        )
+        )*/
+        val intent = Intent().apply {
+            action = Intent.ACTION_VIEW
+            setClassName(
+                this@EventDetailActivity,
+                "org.ktc2.cokaen.wouldyouin.feat_profile.view.HostProfileActivity"
+            )
+            putExtra("hostId", hostId.toString())
+        }
+        startActivity(intent)
     }
 }

@@ -107,10 +107,10 @@ class EventAPIRetrofitRepository @Inject constructor(
 
             val response = retrofitService.getEventDetails(eventId)
             if (response.isSuccessful) {
-                Log.d("EventAPIRetrofitRepository", "Event details fetched successfully for eventId: $eventId. Body: ${response.body()}")
+                Log.d("EventAPIRetrofitRepository", "ㅇㅇEvent details fetched successfully for eventId: $eventId. Body: ${response.body()}")
                 response.body()
             } else {
-                Log.e("EventAPIRetrofitRepository", "Failed to fetch event details. Code: ${response.code()}, Error: ${response.errorBody()?.string()}")
+                Log.e("EventAPIRetrofitRepository", "ㅇㅇFailed to fetch event details. Code: ${response.code()}, Error: ${response.errorBody()?.string()}")
                 ToastUtils.showShortToast(context, "행사 상세 조회에 실패했습니다.")
                 null
             }
