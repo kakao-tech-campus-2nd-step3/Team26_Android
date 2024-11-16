@@ -15,6 +15,7 @@ import com.example.feat_onboarding.view.OnboardingActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.BuildConfig.KAKAO_REDIRECT_URI
+import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.databinding.ActivityLoginBinding
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.NavigationEvent
 import org.ktc2.cokaen.wouldyouin.network.AuthPreferenceManager
@@ -30,6 +31,12 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+
+        intent.extras?.getString("token_expired")?.toBoolean()?.let { isExpired ->
+            if (isExpired) {
+                ToastUtils.showShortToast(this, "인증이 만료되어 재로그인이 필요합니다")
+            }
+        }
 
         setupWebView()
         observeUiState()

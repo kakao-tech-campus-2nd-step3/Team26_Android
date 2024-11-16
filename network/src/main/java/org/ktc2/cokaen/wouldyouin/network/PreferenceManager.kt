@@ -19,11 +19,16 @@ class AuthPreferenceManager @Inject constructor(
         private const val KEY_MEMBER_ID = "member_id"
         private const val KEY_MEMBER_TYPE = "member_type"
         private const val KEY_IS_WELCOME = "is_welcome"
+        private const val KEY_NICKNAME = "nickname"
     }
 
     var phone: String?
         get() = prefs.getString(KEY_PHONE, null)
         set(value) = prefs.edit { putString(KEY_PHONE, value) }
+
+    var nickname: String?
+        get() = prefs.getString(KEY_NICKNAME, null)
+        set(value) = prefs.edit { putString(KEY_NICKNAME, value) }
 
     var area: String?
         get() = prefs.getString(KEY_AREA, null)
@@ -83,6 +88,13 @@ class AuthPreferenceManager @Inject constructor(
     }
 
     fun clearAll() {
-        prefs.edit { clear() }
+        prefs.edit {
+            remove(KEY_PHONE)      // 전화번호 삭제
+            remove(KEY_AREA)       // 지역 정보 삭제
+            remove(KEY_GENDER)     // 성별 정보 삭제
+            remove(KEY_TOKEN)      // 토큰 삭제
+            remove(KEY_MEMBER_ID)  // 멤버 ID 삭제
+            remove(KEY_MEMBER_TYPE)// 멤버 타입 삭제
+        }
     }
 }

@@ -34,4 +34,8 @@
     <!-- Event -->
     <string name="event_details_deeplink_url">wouldyouin://event/details</string>
 
+
+    <!-- LOGIN -->
+    <string name="login_deeplink_utl">wouldyouin://login</string>
+
 </resources>

@@ -56,6 +56,7 @@ dependencies {
 
     implementation(project(":core"))
     implementation(project(":data"))
+    implementation(project(":core-navigation"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.gson)
 

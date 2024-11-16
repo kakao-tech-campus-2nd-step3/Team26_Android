@@ -127,7 +127,6 @@ class SelectAreaFragment : Fragment() {
     private fun setupNextButton() {
         binding.nextButton.setOnClickListener {
             viewModel.submitUserInfo()
-            finishOnboarding()
         }
     }
 
@@ -143,15 +142,6 @@ class SelectAreaFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun finishOnboarding() {
-        requireContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-            .edit()
-            .putBoolean("need_onboarding", false)
-            .apply()
-
-        startMainActivity()
     }
 
     private fun startMainActivity() {

@@ -31,4 +31,6 @@ object DeepLinkDestinations {
     val DETAIL_BOOKING_ACTIVITY = R.string.booking_details_deeplink_url
 
     val DETAIL_EVENT_ACTIVITY = R.string.event_details_deeplink_url
+
+    val LOGIN_ACTIVITY = R.string.login_deeplink_utl
 }
