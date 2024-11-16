@@ -79,7 +79,7 @@ class EventAPIRetrofitRepository @Inject constructor(
     ): ApiResponseBodyEventSliceResponse? {
         return try {
 
-            val response = retrofitService.getEventList(
+            val response = retrofitService.getEventListDetail(
                 startLatitude, startLongitude, endLatitude, endLongitude, latitude, longitude, title, category, area, page, size, lastId
             )
 
