@@ -28,6 +28,9 @@ android {
 
         buildConfigField("String", "KAKAO_CLIENT_ID", "\"${getApiKey("KAKAO_CLIENT_ID")}\"")
         buildConfigField("String", "KAKAO_REDIRECT_URI", "\"${getApiKey("KAKAO_REDIRECT_URI")}\"")
+
+        buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${getApiKey("GOOGLE_CLIENT_ID")}\"")
+        buildConfigField("String", "GOOGLE_REDIRECT_URI", "\"${getApiKey("GOOGLE_REDIRECT_URI")}\"")
     }
 
     buildTypes {

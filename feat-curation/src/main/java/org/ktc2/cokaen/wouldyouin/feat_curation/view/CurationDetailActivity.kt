@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import dagger.hilt.android.AndroidEntryPoint
+import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.core_navigation.ActivityNavigationOptions
 import org.ktc2.cokaen.wouldyouin.core_navigation.DeepLinkDestinations
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
@@ -22,6 +23,7 @@ import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.DetailCurationBlockAdapt
 import org.ktc2.cokaen.wouldyouin.feat_curation.adapter.DetailCurationEventAdapter
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.ActivityCurationDetailBinding
 import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.CurationDetailViewModel
+import org.ktc2.cokaen.wouldyouin.network.AuthPreferenceManager
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -29,6 +31,9 @@ class CurationDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCurationDetailBinding
     private val viewModel: CurationDetailViewModel by viewModels()
+
+    @Inject
+    lateinit var authPrefs: AuthPreferenceManager
 
     @Inject lateinit var navigationUtil: NavigationUtil
 
@@ -69,12 +74,18 @@ class CurationDetailActivity : AppCompatActivity() {
         binding.rvEvents.adapter = DetailCurationEventAdapter { event ->
             startEventDetailsActivity(event.eventId)
         }
+
         binding.curatorProfile.setOnClickListener {
-//   TODO         startCuratorActivity(viewModel.curation.value.curator.id)
+            val curatorId = viewModel.curation.value?.curator?.curatorId
+            if (curatorId != null) {
+                startCuratorActivity(curatorId)
+            } else {
+                ToastUtils.showShortToast(this, "큐레이터를 찾지 못했습니다")
+            }
         }
 
         viewModel.curation.observe(this) { curation ->
-//  TODO          checkEditable(viewModel.curation.value.curator.id)
+            viewModel.curation.value?.curator?.curatorId?.let { checkEditable(it) }
         }
     }
 
@@ -151,7 +162,9 @@ class CurationDetailActivity : AppCompatActivity() {
     }
 
     private fun checkEditable(curationId: Long) {
-        val isEditable = curationId == 1111L // TODO SharedPreference
+        // memberId가 null인 경우를 안전하게 처리
+        val memberId = authPrefs.memberId
+        val isEditable = memberId != null && curationId == memberId
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
 
@@ -159,7 +172,6 @@ class CurationDetailActivity : AppCompatActivity() {
             setSupportActionBar(toolbar)
             supportActionBar?.setDisplayShowTitleEnabled(false)
 
-            // 메뉴 아이템 활성화
             toolbar.inflateMenu(R.menu.curation_toolbar_menu)
             toolbar.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
@@ -168,17 +180,15 @@ class CurationDetailActivity : AppCompatActivity() {
                         true
                     }
                     R.id.action_edit -> {
-
                         startCreateCurationActivity(curationId)
-
                         true
                     }
                     else -> false
                 }
             }
         } else {
-            // 편집 불가능한 경우 메뉴 아이템 제거
             toolbar.menu.clear()
         }
     }
+
 }

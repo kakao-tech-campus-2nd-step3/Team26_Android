@@ -40,12 +40,12 @@
             android:gravity="center"/>
 
         <Button
-            android:id="@+id/local_login_button"
+            android:id="@+id/google_login_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#F0F0F0"
-            android:text="로컬 로그인"
-            android:textColor="@android:color/black"
+            android:backgroundTint="#F05155"
+            android:text="구글 로그인"
+            android:textColor="@android:color/white"
             android:padding="16dp"
             android:layout_marginTop="8dp"
             android:textStyle="bold"

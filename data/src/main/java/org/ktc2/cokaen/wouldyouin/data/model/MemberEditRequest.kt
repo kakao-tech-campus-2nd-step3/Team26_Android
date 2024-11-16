@@ -13,5 +13,5 @@ data class MemberEditRequest(
 )
 
 enum class AccountType {
-    WELCOME, NORMAL, CURATOR, HOST, ADMIN
+    local, kakao, google
 }

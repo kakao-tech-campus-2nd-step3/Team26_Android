@@ -1,5 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.feat_curation.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -37,10 +38,18 @@ class CurationCardAdapter(
 
     inner class CurationCardViewHolder(private val binding: CurationItemBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
-            itemView.setOnClickListener {
-                val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    itemClickListener.onItemClick(position)
+            binding.root.apply {
+                isClickable = true
+                isFocusable = true
+                setOnClickListener {
+                    Log.d("ViewHolder", "View clicked: ${this.id}")
+                    Log.d("ViewHolder", "Position: $absoluteAdapterPosition")
+                    Log.d("ViewHolder", "Is clickable: ${this.isClickable}")
+                    Log.d("ViewHolder", "Is enabled: ${this.isEnabled}")
+                    Log.d("ViewHolder", "Clicked at position: $absoluteAdapterPosition")
+                    if (absoluteAdapterPosition != RecyclerView.NO_POSITION) {
+                        itemClickListener.onItemClick(absoluteAdapterPosition)
+                    }
                 }
             }
         }
@@ -48,13 +57,17 @@ class CurationCardAdapter(
         fun bind(curation: CurationResponse, position: Int) {
             binding.curation = curation
             binding.position = position
-
             binding.imageUrl = curation.thumbnailUrl
 
+            binding.root.layoutParams = RecyclerView.LayoutParams(
+                RecyclerView.LayoutParams.MATCH_PARENT,
+                RecyclerView.LayoutParams.WRAP_CONTENT
+            )
 
             val hashtags = curation.hashtags.getOrNull(0)
             if (!hashtags.isNullOrEmpty()) {
-                binding.hashtag.text = "#${hashtags}"}
+                binding.hashtag.text = "#${hashtags}"
+            }
 
             binding.executePendingBindings()
         }

@@ -16,21 +16,20 @@
         android:layout_height="match_parent"
         tools:context=".HomeCurationFragment">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/curationCard"
+        <FrameLayout
+            android:id="@+id/topBox"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            tools:listitem="@layout/curation_item" />
+            android:layout_height="80dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:id="@+id/region_dropdown_button"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
             android:elevation="8dp"
             android:translationZ="8dp"
             app:boxBackgroundColor="@color/white"
@@ -50,16 +49,28 @@
 
         <ImageView
             android:id="@+id/createCurationButton"
-            android:layout_marginEnd="20dp"
             android:layout_width="38dp"
             android:layout_height="38dp"
+            android:layout_marginEnd="20dp"
             android:elevation="8dp"
             android:translationZ="8dp"
             android:src="@drawable/square_and_pencil"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/region_dropdown_button"
-            app:layout_constraintBottom_toBottomOf="@id/region_dropdown_button"
-            />
+            app:layout_constraintBottom_toBottomOf="@id/region_dropdown_button" />
+
+        <!-- RecyclerView를 TopBox 아래에 배치 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/curationCard"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/topBox"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:clipToPadding="false"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            tools:listitem="@layout/curation_item" />
 
         <LinearLayout
             android:id="@+id/emptyView"

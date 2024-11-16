@@ -1,14 +1,17 @@
 package com.example.feat_likes.view
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.example.feat_likes.adapter.LikedCuratorAdapter
 import com.example.feat_likes.viewModel.CuratorLikesViewModel
 import com.example.feat_likes.viewModel.LikesViewModel
@@ -50,6 +53,27 @@ class CuratorLikesFragment : Fragment() {
         val adapter = LikedCuratorAdapter()
 
         binding.likedMembersList.adapter = adapter
+        binding.likedMembersList.apply {
+            // 아이템 데코레이션 추가로 일정한 간격 유지
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    // 원하는 간격을 dp 단위로 설정
+                    val spacing = TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        8f, // 8dp
+                        resources.displayMetrics
+                    ).toInt()
+
+                    outRect.top = spacing
+                    outRect.bottom = spacing
+                }
+            })
+        }
 
         adapter.onItemClick = { member ->
             startMemberProfileActivity(member.memberId)
@@ -57,7 +81,7 @@ class CuratorLikesFragment : Fragment() {
         }
 
         // 클릭 이벤트 처리
-        adapter.onItemClick = { member ->
+        adapter.onHeartClick = { member ->
             lifecycleScope.launch {
                 val success = viewModel.postLike(member.memberId)
                 if (success) {
