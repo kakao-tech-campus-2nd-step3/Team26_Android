@@ -18,8 +18,8 @@ data class CurationResponse(
     val area: Area,
     val hashtags: List<String>,
     val eventsInfo: List<CurationEventResponse>,
-    val modifiedDate: LocalDateTime,
-    val createdTime: LocalDateTime,
+    val modifiedDate: List<String>,
+    val createdTime: List<String>,
     val thumbnailUrl: String
 )
 
@@ -45,7 +45,7 @@ data class CurationEventResponse(
     val eventId: Long,
     val title: String,
     val location: Location,
-    val startTime: LocalDateTime,
+    val startTime: List<String>,
     val thumbnailImageUrl: String,
     val hostProfileImageUrl: String,
     val hostNickname: String

@@ -16,6 +16,7 @@ import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
 import org.ktc2.cokaen.wouldyouin.feat_profile.R
 import org.ktc2.cokaen.wouldyouin.feat_profile.databinding.FragmentAccountBinding
+import org.ktc2.cokaen.wouldyouin.network.AuthPreferenceManager
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -23,6 +24,9 @@ class AccountFragment : Fragment() {
     @Inject
     lateinit var navigationUtil: NavigationUtil
     private lateinit var binding: FragmentAccountBinding
+
+    @Inject
+    lateinit var authPrefs: AuthPreferenceManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,16 +40,20 @@ class AccountFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            binding.myReview.setOnClickListener {
+            myReview.setOnClickListener {
                 startActivityTo(DeepLinkDestinations.MY_EVENT_REVIEW_ACTIVITY)
             }
 
-            binding.payHistory.setOnClickListener {
+            payHistory.setOnClickListener {
                 startActivityTo(DeepLinkDestinations.BOOKING_LIST_ACTIVITY)
             }
 
             ask.setOnClickListener {
                 openWebPage("https://www.google.com")
+            }
+
+            logout.setOnClickListener{
+                logout()
             }
         }
     }
@@ -66,5 +74,18 @@ class AccountFragment : Fragment() {
         val webpage: Uri = Uri.parse(url)
         val intent = Intent(Intent.ACTION_VIEW, webpage)
         startActivity(intent)
+    }
+
+    private fun logout() {
+        authPrefs.clearAll()  // 모든 사용자 정보 삭제
+        navigationUtil.navigate(
+            NavigationCommand(
+                destination = NavigationDestination.Activity(DeepLinkDestinations.MAIN_ACTIVITY),
+                activityOptions = ActivityNavigationOptions(
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                ),
+            )
+        )
+        requireActivity().finish()
     }
 }

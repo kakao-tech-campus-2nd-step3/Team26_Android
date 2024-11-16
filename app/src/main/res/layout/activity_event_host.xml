@@ -7,7 +7,7 @@
 
         <variable
             name="eventhost"
-            type="org.ktc2.cokaen.wouldyouin.EventHostActivity" />
+            type="org.ktc2.cokaen.wouldyouin.deprecated.EventHostActivity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -140,7 +140,7 @@ class EventDetailActivity : AppCompatActivity() {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK,
                     clearTop = true
                 ),
-                data = mapOf("hostId" to hostId.toString()) // 여기에 필요한 데이터(id) 넘겨주시면 됩니다!!
+                data = mapOf("hostId" to hostId.toString())
             )
         )
     }

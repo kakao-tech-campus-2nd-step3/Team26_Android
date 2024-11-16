@@ -1,11 +1,9 @@
-package org.ktc2.cokaen.wouldyouin
+package org.ktc2.cokaen.wouldyouin.deprecated
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.DataBindingUtil
+import org.ktc2.cokaen.wouldyouin.R
 import org.ktc2.cokaen.wouldyouin.databinding.ActivityStatisticsBinding
 
 class StatisticsActivity : AppCompatActivity() {

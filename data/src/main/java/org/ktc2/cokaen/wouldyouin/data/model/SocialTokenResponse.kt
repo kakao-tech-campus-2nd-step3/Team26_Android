@@ -2,21 +2,23 @@ package org.ktc2.cokaen.wouldyouin.data.model
 
 import com.google.gson.annotations.SerializedName
 
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
+
+// Data Classes for Response
 data class ApiResponseBodySocialTokenResponse(
-    @SerializedName("success")
     val success: Boolean,
-
-    @SerializedName("data")
-    val data: SocialTokenResponse,
-
-    @SerializedName("code")
+    val data: SocialTokenResponse?,
     val code: String,
-
-    @SerializedName("message")
     val message: String
 )
 
 data class SocialTokenResponse(
     val isWelcomeMember: Boolean,
-    val token: String
+    val token: String,
+    val memberId: Long,
+    val memberType: String // welcome, normal, curator, host, admin
 )
+

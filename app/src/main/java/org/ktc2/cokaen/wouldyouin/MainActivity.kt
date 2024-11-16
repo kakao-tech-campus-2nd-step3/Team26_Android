@@ -24,6 +24,7 @@ import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommandBuilder
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
 import org.ktc2.cokaen.wouldyouin.databinding.ActivityMainBinding
+import org.ktc2.cokaen.wouldyouin.network.AuthPreferenceManager
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -32,42 +33,59 @@ class MainActivity : AppCompatActivity() {
     lateinit var navigationUtil: NavigationUtil
     private lateinit var binding: ActivityMainBinding
 
+    @Inject
+    lateinit var authPrefs: AuthPreferenceManager
+
+    private fun checkAuth(): Boolean {
+        return !authPrefs.token.isNullOrEmpty()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (checkNeedOnboarding()) {
+
+        // 토큰 여부
+        if (!authPrefs.isAuthenticated()) {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+            return
+        }
+
+        // welcome 여부
+        if (authPrefs.isNeedOnboarding()) {
             startActivity(Intent(this, OnboardingActivity::class.java))
             finish()
-        } else {
-            binding = ActivityMainBinding.inflate(layoutInflater)
-            setContentView(binding.root)
-            supportActionBar?.hide()
+            return
+        }
 
-            checkLocationPermission(this)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        supportActionBar?.hide()
 
-            // 위치 권한이 있는 경우 LocationUpdateService 실행
-            if (hasLocationPermission() && !isServiceRunning(LocationUpdateService::class.java)) {
-                startLocationService()
+        checkLocationPermission(this)
+
+        // 위치 권한이 있는 경우 LocationUpdateService 실행
+        if (hasLocationPermission() && !isServiceRunning(LocationUpdateService::class.java)) {
+            startLocationService()
+        }
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        (navigationUtil as NavigationHandler).setNavController(navController)
+
+        binding.bottomNavigationView.setupWithNavController(navController)
+
+        binding.bottomNavigationView.selectedItemId = R.id.nav_home
+
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_search -> navigateToFragment(DeepLinkDestinations.SEARCH_DEEPLINK)
+                R.id.nav_book -> navigateToFragment(DeepLinkDestinations.BOOKING_DEEPLINK)
+                R.id.nav_home -> navigateToFragment(DeepLinkDestinations.HOME_CURATION_DEEPLINK)
+                R.id.nav_like -> navigateToFragment(DeepLinkDestinations.LIKES_DEEPLINK)
+                R.id.nav_profile -> navigateToFragment(DeepLinkDestinations.PROFILE_DEEPLINK)
+                else -> false
             }
-
-            val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-            val navController = navHostFragment.navController
-            (navigationUtil as NavigationHandler).setNavController(navController)
-
-            binding.bottomNavigationView.setupWithNavController(navController)
-
-            binding.bottomNavigationView.selectedItemId = R.id.nav_home
-
-            binding.bottomNavigationView.setOnItemSelectedListener { item ->
-                when (item.itemId) {
-                    R.id.nav_search -> navigateToFragment(DeepLinkDestinations.SEARCH_DEEPLINK)
-                    R.id.nav_book -> navigateToFragment(DeepLinkDestinations.BOOKING_DEEPLINK)
-                    R.id.nav_home -> navigateToFragment(DeepLinkDestinations.HOME_CURATION_DEEPLINK)
-                    R.id.nav_like -> navigateToFragment(DeepLinkDestinations.LIKES_DEEPLINK)
-                    R.id.nav_profile -> navigateToFragment(DeepLinkDestinations.PROFILE_DEEPLINK)
-                    else -> false
-                }
-                true
-            }
+            true
         }
     }
 

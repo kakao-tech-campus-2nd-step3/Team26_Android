@@ -1,21 +1,27 @@
 package org.ktc2.cokaen.wouldyouin.network.repository
 
 import android.util.Log
-import org.ktc2.cokaen.wouldyouin.data.model.LikeSliceResponse
-import org.ktc2.cokaen.wouldyouin.data.model.LikeToggleResponse
-import org.ktc2.cokaen.wouldyouin.network.service.LikesAPIRetrofitService
+import org.ktc2.cokaen.wouldyouin.data.model.MemberAdditionalInfoRequest
+import org.ktc2.cokaen.wouldyouin.data.model.ReservationResponse
+import org.ktc2.cokaen.wouldyouin.data.model.SocialTokenResponse
+import org.ktc2.cokaen.wouldyouin.data.model.TokenResponse
+import org.ktc2.cokaen.wouldyouin.network.service.AuthAPIRetrofitService
 import retrofit2.HttpException
 import java.io.IOException
+
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class LikesAPIRetrofitRepository @Inject constructor(
-    private val retrofitService: LikesAPIRetrofitService
+class AuthAPIRepository @Inject constructor(
+    private val retrofitService: AuthAPIRetrofitService
 ) {
-    suspend fun postLike(targetMemberId: Long): LikeToggleResponse {
+    suspend fun socialLoginRedirect(
+        accountType: String,
+        code: String
+    ): SocialTokenResponse {
         try {
-            val response = retrofitService.postLike(targetMemberId)
+            val response = retrofitService.socialLoginRedirect(accountType, code)
             return when {
                 response.isSuccessful -> {
                     response.body()?.let { body ->
@@ -23,20 +29,18 @@ class LikesAPIRetrofitRepository @Inject constructor(
                             body.data
                         } else {
                             throw ServerCommonAPIRetrofitRepository.CustomException(
-                                body.message ?: "취소/추가 변경에 실패했습니다"
+                                body.message ?: "리다이렉트에 실패했습니다"
                             )
                         }
-                    }
-                        ?: throw ServerCommonAPIRetrofitRepository.CustomException("서버로부터 유효한 응답을 받지 못했습니다")
+                    } ?: throw ServerCommonAPIRetrofitRepository.CustomException("서버로부터 유효한 응답을 받지 못했습니다")
                 }
-
                 else -> {
                     val errorBody = response.errorBody()?.string()
                     throw ServerCommonAPIRetrofitRepository.CustomException("서버 응답 오류: ${response.code()}")
                 }
             }
         } catch (e: Exception) {
-            Log.e("PostLike", "Post failed", e)
+            Log.e("SocialRedirect", "Fetch failed", e)
             throw when (e) {
                 is IOException -> ServerCommonAPIRetrofitRepository.CustomException("네트워크 연결을 확인해주세요")
                 is HttpException -> ServerCommonAPIRetrofitRepository.CustomException("서버 통신 오류: ${e.code()}")
@@ -45,14 +49,11 @@ class LikesAPIRetrofitRepository @Inject constructor(
         }
     }
 
-    suspend fun getLikes(
-        type: String,
-        page: Int = 0,
-        size: Int = 10,
-        lastId: Long = Long.MAX_VALUE
-    ): LikeSliceResponse {
+    suspend fun sendAdditionalInfo(
+        request: MemberAdditionalInfoRequest
+    ): TokenResponse {
         try {
-            val response = retrofitService.getLikes(type, page, size, lastId)
+            val response = retrofitService.sendAdditionalInfo(request)
             return when {
                 response.isSuccessful -> {
                     response.body()?.let { body ->
@@ -60,20 +61,18 @@ class LikesAPIRetrofitRepository @Inject constructor(
                             body.data
                         } else {
                             throw ServerCommonAPIRetrofitRepository.CustomException(
-                                body.message ?: "큐레이션 목록 조회에 실패했습니다"
+                                body.message ?: "리다이렉트에 실패했습니다"
                             )
                         }
-                    }
-                        ?: throw ServerCommonAPIRetrofitRepository.CustomException("서버로부터 유효한 응답을 받지 못했습니다")
+                    } ?: throw ServerCommonAPIRetrofitRepository.CustomException("서버로부터 유효한 응답을 받지 못했습니다")
                 }
-
                 else -> {
                     val errorBody = response.errorBody()?.string()
                     throw ServerCommonAPIRetrofitRepository.CustomException("서버 응답 오류: ${response.code()}")
                 }
             }
         } catch (e: Exception) {
-            Log.e("GetLikeList", "Create failed", e)
+            Log.e("Additional info", "Fetch failed", e)
             throw when (e) {
                 is IOException -> ServerCommonAPIRetrofitRepository.CustomException("네트워크 연결을 확인해주세요")
                 is HttpException -> ServerCommonAPIRetrofitRepository.CustomException("서버 통신 오류: ${e.code()}")

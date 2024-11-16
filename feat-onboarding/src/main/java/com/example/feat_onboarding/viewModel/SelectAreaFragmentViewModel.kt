@@ -13,13 +13,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import org.ktc2.cokaen.wouldyouin.data.model.MemberAdditionalInfoRequest
+import org.ktc2.cokaen.wouldyouin.network.AuthPreferenceManager
+import org.ktc2.cokaen.wouldyouin.network.repository.AuthAPIRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class SelectAreaViewModel @Inject constructor(
-    application: Application
+    private val authRepository: AuthAPIRepository,
+    private val authPrefs: AuthPreferenceManager
 ) : ViewModel() {
-    private val context = application.applicationContext
 
     private val _selectedGender = MutableStateFlow<String?>(null)
     val selectedGender: StateFlow<String?> = _selectedGender.asStateFlow()
@@ -31,37 +36,97 @@ class SelectAreaViewModel @Inject constructor(
         !gender.isNullOrEmpty() && !region.isNullOrEmpty()
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
-    fun updateGender(gender: String) {
-        _selectedGender.value = gender
+    private val _uiState = MutableStateFlow(OnboardingUiState())
+    val uiState = _uiState.asStateFlow()
+
+    data class OnboardingUiState(
+        val isLoading: Boolean = false,
+        val error: String? = null,
+        val isNextButtonEnabled: Boolean = false,
+        val navigateToMain: Boolean = false
+    )
+
+    private var phoneNumber: String? = null
+    private var region: String? = null
+    private var gender: String? = null
+
+    fun updatePhoneNumber(number: String) {
+        phoneNumber = number
+        updateNextButtonState()
+        // SharedPreferences에 저장
+        authPrefs.phone = number
     }
 
-    fun updateRegion(region: String) {
-        _selectedRegion.value = region
+    fun updateRegion(selectedRegion: String) {
+        region = selectedRegion
+        updateNextButtonState()
+        // SharedPreferences에 저장
+        authPrefs.area = selectedRegion
+    }
+
+    fun updateGender(selectedGender: String) {
+        gender = selectedGender
+        updateNextButtonState()
+        // SharedPreferences에 저장
+        authPrefs.gender = selectedGender
+    }
+
+    private fun updateNextButtonState() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                isNextButtonEnabled = !phoneNumber.isNullOrEmpty() &&
+                        !region.isNullOrEmpty() &&
+                        !gender.isNullOrEmpty()
+            )
+        }
     }
 
     fun submitUserInfo() {
-        // 선택된 값 출력 (디버깅용)
-        Log.d("Selected", selectedGender.value.toString())
-        Log.d("Selected", selectedRegion.value.toString())
+        if (phoneNumber.isNullOrEmpty() || region.isNullOrEmpty() || gender.isNullOrEmpty()) {
+            _uiState.update { it.copy(error = "모든 정보를 입력해주세요") }
+            return
+        }
 
-        // Context가 null이 아닐 경우에만 SharedPreferences 접근
-        val context = context ?: return // context가 null인 경우 반환하여 처리
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
 
-        // SharedPreferences 객체 얻기 (Context.MODE_PRIVATE 모드를 사용하여 내부 저장소에 저장)
-        val sharedPreferences = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
+            try {
+                val request = MemberAdditionalInfoRequest(
+                    phone = phoneNumber!!,
+                    area = region!!,
+                    gender = gender!!
+                )
 
-        // LiveData에서 값을 가져와 SharedPreferences에 저장
-        selectedGender.value?.let { editor.putString("selectedGender", it) }
-        selectedRegion.value?.let { editor.putString("selectedRegion", it) }
+                val response = authRepository.sendAdditionalInfo(request)
 
-        // 변경 사항 저장
-        editor.apply()
+                // 토큰 응답 저장
+                authPrefs.saveTokenResponse(response)
 
-        // 저장 후 확인 로그
-        Log.d("SharedPreferences", "Gender: ${selectedGender.value}, Region: ${selectedRegion.value} saved.")
+                // memberType이 welcome이 아닐 때만 메인으로 네비게이션
+                if (response.memberType.toString() != "welcome") {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            navigateToMain = true
+                        )
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = "추가 정보 등록이 필요합니다"
+                        )
+                    }
+                }
+
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = e.message ?: "추가 정보 등록에 실패했습니다"
+                    )
+                }
+            }
+        }
     }
-
-
-
 }

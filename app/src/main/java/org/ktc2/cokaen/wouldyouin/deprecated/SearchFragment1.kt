@@ -1,4 +1,4 @@
-package org.ktc2.cokaen.wouldyouin
+package org.ktc2.cokaen.wouldyouin.deprecated
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
+import org.ktc2.cokaen.wouldyouin.R
 import org.ktc2.cokaen.wouldyouin.databinding.FragmentSearch1Binding
 
 class SearchFragment1 : Fragment() {

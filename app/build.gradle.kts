@@ -86,6 +86,7 @@ dependencies {
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.room.ktx)
     implementation(libs.room.runtime)
+    implementation(project(":data"))
     kapt(libs.room.compiler)
 
     // Testing dependencies

@@ -7,7 +7,7 @@ data class MemberAdditionalInfoRequest(
     val phone: String,
 
     @SerializedName("area")
-    val area: Area, // Enum을 통해 지역 값을 제한할 수 있습니다.
+    val area: String,
 
     @SerializedName("gender")
     val gender: String

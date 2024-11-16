@@ -25,7 +25,7 @@ data class ImageResponse(
     var url: String,
 
     @SerializedName("createdDate")
-    val createdDate: LocalDateTime,
+    val createdDate: String,
 
     @SerializedName("size")
     val size: Long,

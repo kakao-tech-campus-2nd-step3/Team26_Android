@@ -41,17 +41,29 @@ object NetworkModule {
             .build()
     }
 
+
     @Provides
     @Singleton
-    @Named("Server")
-    fun provideServerRetrofit(): Retrofit {
-        val loggingInterceptor = HttpLoggingInterceptor { message ->
-            Log.d("OkHttp", message)
-        }.apply {
+    @Named("mainClient")
+    fun provideMainOkHttpClient(
+        authInterceptor: AuthInterceptor
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(
+        authInterceptor: ServerAuthInterceptor  // Hilt가 주입
+    ): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
-        val client = OkHttpClient.Builder()
+        return OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)  // 인증 인터셉터 추가
             .addInterceptor(loggingInterceptor)
             .addInterceptor { chain ->
                 val request = chain.request()
@@ -69,9 +81,14 @@ object NetworkModule {
                 response
             }
             .build()
+    }
 
+    @Provides
+    @Singleton
+    @Named("Server")
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .client(client)
+            .client(okHttpClient)
             .baseUrl("https://wouldyouin.store")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -112,6 +129,7 @@ object NetworkModule {
     fun provideReservationAPIRetrofitService(@Named("Server") retrofit: Retrofit): ReservationAPIRetrofitService {
         return retrofit.create(ReservationAPIRetrofitService::class.java)
     }
+
     @Provides
     @Singleton
     fun provideLikesAPIRetrofitService(@Named("Server") retrofit: Retrofit): LikesAPIRetrofitService {

@@ -56,8 +56,11 @@ dependencies {
 
     implementation(project(":core"))
     implementation(project(":data"))
+    implementation(project(":core-navigation"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.gson)
+
+    implementation(libs.androidx.security.crypto.ktx)
 }
 
 fun getApiKey(key: String): String = gradleLocalProperties(rootDir, providers).getProperty(key)

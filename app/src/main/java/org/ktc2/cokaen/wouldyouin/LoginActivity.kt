@@ -6,37 +6,53 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import com.example.feat_onboarding.view.OnboardingActivity
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.ktc2.cokaen.wouldyouin.BuildConfig.KAKAO_REDIRECT_URI
+import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.databinding.ActivityLoginBinding
-import org.ktc2.cokaen.wouldyouin.network.repository.AuthRepository
+import org.ktc2.cokaen.wouldyouin.feat_curation.viewModel.NavigationEvent
+import org.ktc2.cokaen.wouldyouin.network.AuthPreferenceManager
+import org.ktc2.cokaen.wouldyouin.network.repository.AuthAPIRepository
+import org.ktc2.cokaen.wouldyouin.viewModel.LoginViewModel
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityLoginBinding
-    private val authRepository = AuthRepository()
+    private val viewModel: LoginViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
-        binding.login = this
 
-        // Kakao 로그인 버튼 클릭 시 WebView를 전체 화면으로 표시
+        intent.extras?.getString("token_expired")?.toBoolean()?.let { isExpired ->
+            if (isExpired) {
+                ToastUtils.showShortToast(this, "인증이 만료되어 재로그인이 필요합니다")
+            }
+        }
+
+        setupWebView()
+        observeUiState()
+    }
+
+    private fun setupWebView() {
         binding.kakaoLoginButton.setOnClickListener {
             binding.webview.apply {
                 webViewClient = object : WebViewClient() {
                     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                        // 리다이렉트 URI 확인하여 인증 코드 처리
                         if (url.startsWith(KAKAO_REDIRECT_URI)) {
                             val uri = Uri.parse(url)
                             val code = uri.getQueryParameter("code")
                             if (code != null) {
                                 binding.webview.visibility = View.GONE
-                                fetchToken(code)
+                                viewModel.fetchToken(code)
                             }
                             return true
                         }
@@ -44,52 +60,42 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
                 settings.javaScriptEnabled = true
-                binding.profileImage.visibility = View.GONE
-                binding.kakaoLoginButton.visibility = View.GONE
-                binding.localLoginButton.visibility = View.GONE
-                visibility = View.VISIBLE
+                binding.apply {
+                    profileImage.visibility = View.GONE
+                    kakaoLoginButton.visibility = View.GONE
+                    localLoginButton.visibility = View.GONE
+                    webview.visibility = View.VISIBLE
+                }
                 loadUrl("https://kauth.kakao.com/oauth/authorize?client_id=${BuildConfig.KAKAO_CLIENT_ID}&redirect_uri=${BuildConfig.KAKAO_REDIRECT_URI}&response_type=code")
             }
         }
     }
 
-    // 인증 코드로 토큰을 가져오고 화면을 전환하는 메서드
-    private fun fetchToken(code: String) {
-        authRepository.fetchToken(
-            accountType = "kakao",
-            code = code,
-            onSuccess = { token, isWelcomeMember ->
-                if (isWelcomeMember) {
-                    navigateToOnboarding(token)
-                } else {
-                    navigateToMain(token)
+    private fun observeUiState() {
+        lifecycleScope.launch {
+            viewModel.uiState.collect { state ->
+                // 에러 처리
+                state.error?.let { error ->
+                    Toast.makeText(this@LoginActivity, error, Toast.LENGTH_LONG).show()
                 }
-            },
-            onFailure = { throwable ->
-                throwable.printStackTrace()
-                // 실패 시 사용자에게 알림을 표시하거나 처리
+
+                // 네비게이션 처리
+                state.navigation?.let { navigation ->
+                    when (navigation) {
+                        is LoginViewModel.Navigation.ToOnboarding -> {
+                            startActivity(Intent(this@LoginActivity, OnboardingActivity::class.java))
+                            finish()
+                        }
+                        is LoginViewModel.Navigation.ToMain -> {
+                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                            finish()
+                        }
+                    }
+                }
             }
-        )
-    }
-
-    // OnboardingActivity로 이동
-    private fun navigateToOnboarding(token: String) {
-        val intent = Intent(this, OnboardingActivity::class.java).apply {
-            putExtra("token", token)
         }
-        startActivity(intent)
-        finish()
-    }
-
-    private fun navigateToMain(token: String) {
-        val intent = Intent(this, MainActivity::class.java).apply {
-            putExtra("token", token)
-        }
-        startActivity(intent)
-        finish()
     }
 }
-
 /*
     // Kakao 로그인 버튼 클릭 시 WebView를 전체 화면으로 표시하는 메서드
     private fun showWebView() {

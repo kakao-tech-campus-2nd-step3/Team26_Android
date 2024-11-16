@@ -18,5 +18,12 @@ data class ApiResponseBodyTokenResponse(
 
 data class TokenResponse(
     @SerializedName("token")
-    val token: String
+    val token: String,
+
+    @SerializedName("memberId")
+    val memberId : Long,
+
+    @SerializedName("memberType")
+    val memberType : MemberType
+
 )
