@@ -13,7 +13,7 @@ class PostAdapter(
         fun bind(event: EventResponse) {
             // Post title
             binding.postTitle = event.title
-            binding.postImageUrl = event.images[0]
+            binding.postImageUrl = event.thumbnailUrl
         }
     }
 
