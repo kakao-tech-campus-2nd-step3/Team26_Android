@@ -59,9 +59,11 @@ class CategoryFragment : Fragment() {
 
         val latitude = sharedPreferences.getString("centerLat", "0.0")!!.toDouble()
         val longitude = sharedPreferences.getString("centerLng", "0.0")!!.toDouble()
-        val startLatitude = sharedPreferences.getString("topLeftLat", "0.0")!!.toDouble()
+        //val startLatitude = sharedPreferences.getString("topLeftLat", "0.0")!!.toDouble()
+        val startLatitude = sharedPreferences.getString("bottomRightLat", "0.0")!!.toDouble()
         val startLongitude = sharedPreferences.getString("topLeftLng", "0.0")!!.toDouble()
-        val endLatitude = sharedPreferences.getString("bottomRightLat", "0.0")!!.toDouble()
+        //val endLatitude = sharedPreferences.getString("bottomRightLat", "0.0")!!.toDouble()
+        val endLatitude = sharedPreferences.getString("topLeftLat", "0.0")!!.toDouble()
         val endLongitude = sharedPreferences.getString("bottomRightLng", "0.0")!!.toDouble()
 
         Log.d("LocationData", "Center Latitude: $latitude, Center Longitude: $longitude")
@@ -70,10 +72,10 @@ class CategoryFragment : Fragment() {
 
         // 이벤트 목록 가져오기 (GET 방식)
         eventViewModel.fetchEventListDetail(
-            startLatitude = startLatitude,
-            startLongitude = startLongitude,
-            endLatitude = endLatitude,
-            endLongitude = endLongitude,
+            //startLatitude = startLatitude,
+            //startLongitude = startLongitude,
+            //endLatitude = endLatitude,
+            //endLongitude = endLongitude,
             latitude = latitude,
             longitude = longitude,
             category = category,

@@ -21,10 +21,10 @@ class SearchViewModel @Inject constructor(private val repository: EventAPIRetrof
 
     fun fetchEventListDetail(
         title: String,
-        startLatitude: Double,
-        startLongitude: Double,
-        endLatitude: Double,
-        endLongitude: Double,
+        startLatitude: Double? = null,
+        startLongitude: Double? = null,
+        endLatitude: Double? = null,
+        endLongitude: Double? = null,
         latitude: Double,
         longitude: Double,
         category: String? = null,
@@ -54,6 +54,8 @@ class SearchViewModel @Inject constructor(private val repository: EventAPIRetrof
                 )
                 Log.d("SearchViewModel", "Search result: $result") // 검색 결과 로그 추가
                 _eventList.value = result
+                //_eventList.postValue(result)
+                Log.d("SearchViewModel", "Fetched event list: ${_eventList.value}")
             } catch (e: Exception) {
                 Log.e("SearchViewModel", "Search failed: ${e.message}", e) // 오류 발생 시 로그 추가
             }

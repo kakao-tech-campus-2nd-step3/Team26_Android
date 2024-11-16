@@ -2,7 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/search_nav_graph">
+    android:id="@+id/search_nav_graph"
+    app:startDestination="@id/searchFragment">
 
     <fragment
         android:id="@+id/searchFragment"
@@ -27,7 +28,12 @@
         android:id="@+id/searchResultFragment"
         android:name="org.ktc2.cokaen.wouldyouin.feat_event.view.SearchResultFragment"
         android:label="SearchResultFragment"
-        tools:layout="@layout/fragment_search_result"/>
+        tools:layout="@layout/fragment_search_result">
+
+        <action
+            android:id="@+id/action_searchResultFragment_to_searchFragment"
+            app:destination="@id/searchFragment"/>
+    </fragment>
 
     <fragment
         android:id="@+id/categoryFragment"

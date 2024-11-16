@@ -78,10 +78,10 @@ class EventViewModel @Inject constructor(
     }
 
     fun fetchEventListDetail(
-        startLatitude: Double,
-        startLongitude: Double,
-        endLatitude: Double,
-        endLongitude: Double,
+        startLatitude: Double? = null,
+        startLongitude: Double? = null,
+        endLatitude: Double? = null,
+        endLongitude: Double? = null,
         latitude: Double,
         longitude: Double,
         title: String? = null,

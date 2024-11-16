@@ -29,10 +29,10 @@ interface EventAPIRetrofitService {
 
     @GET("/api/events/filter")
     suspend fun getEventListDetail(
-        @Query("startLatitude") startLatitude: Double,
-        @Query("startLongitude") startLongitude: Double,
-        @Query("endLatitude") endLatitude: Double,
-        @Query("endLongitude") endLongitude: Double,
+        @Query("startLatitude") startLatitude: Double? = null,
+        @Query("startLongitude") startLongitude: Double? = null,
+        @Query("endLatitude") endLatitude: Double? = null,
+        @Query("endLongitude") endLongitude: Double? = null,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
         @Query("title") title: String? = null,

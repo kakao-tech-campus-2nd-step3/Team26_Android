@@ -50,3 +50,24 @@ fun circleImageUrl(imageView: ImageView, path: String?, placeHolder: Drawable?) 
         .error(ph)
         .into(imageView)
 }
+
+@BindingAdapter(
+    value = ["adImageUrl", "imagePlaceHolder"],
+    requireAll = false
+)
+fun setAdImageUrl(imageView: ImageView, path: String?, placeHolder: Drawable?) {
+    val ph = placeHolder ?: ContextCompat.getDrawable(imageView.context, R.drawable.default_image)
+
+    // path가 null이거나 빈 문자열이면 플레이스홀더 표시
+    if (path.isNullOrEmpty()) {
+        imageView.setImageDrawable(ph)
+        return
+    }
+
+
+    Glide.with(imageView.context)
+        .load("https://wouldyouin.store/api/images/${path}")
+        .placeholder(ph)
+        .error(ph)
+        .into(imageView)
+}
