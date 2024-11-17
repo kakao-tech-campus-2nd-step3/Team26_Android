@@ -25,7 +25,7 @@ class ServerAuthInterceptor @Inject constructor(
         val token = authPrefs.token
         val authenticatedRequest = if (!token.isNullOrEmpty()) {
             request.newBuilder()
-                .addHeader("Authorization", "eyJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJJZCI6MiwibWVtYmVyVHlwZSI6ImN1cmF0b3IiLCJpYXQiOjE3MzE4Mjk0OTMsImV4cCI6MTgxODIyOTQ5M30.pZ9OZEsAgJGc1zlx6CDn18_djavCsp4VTawJiLla6q0")
+                .addHeader("Authorization", "Bearer $token")
                 .build()
         } else {
             request
