@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.ktc2.cokaen.wouldyouin.core.DateTimeUtils
 import org.ktc2.cokaen.wouldyouin.data.model.CurationCardResponse
 import org.ktc2.cokaen.wouldyouin.data.model.CurationEventResponse
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.ItemCurationEventBinding
@@ -35,16 +36,18 @@ class DetailCurationEventAdapter(
     }
 
     inner class CurationEventViewHolder(private val binding: ItemCurationEventBinding) : RecyclerView.ViewHolder(binding.root) {
-
         fun bind(event: CurationEventResponse) {
+            binding.apply {
+                eventResponse = event  // 데이터 바인딩 변수에 이벤트 객체 전체를 할당
+
+                // 날짜 형식 변환이 필요한 경우
+                val formattedDate = DateTimeUtils.formatDateTimeString(event.startTime)
+                eventDate.text = formattedDate
+
+                executePendingBindings()  // 바인딩 즉시 적용
+            }
+
             binding.root.setOnClickListener { onEventClick(event) }
-
-            binding.eventDate.text = event.startTime.toString()
-            binding.imageUrl = event.thumbnailImageUrl
-            binding.eventTitle.text = event.title
-            binding.eventLocation.text = event.location.detailAddress
-            binding.eventHost.text = event.hostNickname
-
         }
     }
 }

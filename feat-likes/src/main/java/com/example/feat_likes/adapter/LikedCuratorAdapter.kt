@@ -3,6 +3,7 @@ package com.example.feat_likes.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.feat_likes.viewModel.CuratorLikesViewModel
@@ -34,17 +35,30 @@ class LikedCuratorAdapter :
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(member: LikeResponse) {
-            binding.organizerName.text = member.nickname
-            val hashtagAdapter = HashtagAdapter(member.hashtags)
-            binding.hashtag.adapter = hashtagAdapter
+            binding.apply {
+                organizerName.text = member.nickname
+                organizerInfo.text = member.intro
+                imageUrl = member.profileImageUrl
+                hashtag.adapter = HashtagAdapter(member.hashtags)
 
-            binding.heartButton.setOnClickListener {
-                onItemClick?.invoke(member)
-            }
+                hashtag.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
 
-            binding.memberProfile.setOnClickListener {
-                onItemClick?.invoke(member)
+                // 하트 버튼 클릭
+                heartButton.setOnClickListener {
+                    onHeartClick?.invoke(member)  // onHeartClick 사용
+                }
+
+                // 프로필 클릭
+                memberProfile.setOnClickListener {
+                    onItemClick?.invoke(member)
+                }
+
+                // root 클릭도 추가하면 좋을 수 있음
+                root.setOnClickListener {
+                    onItemClick?.invoke(member)
+                }
             }
+            binding.executePendingBindings()
         }
     }
 }

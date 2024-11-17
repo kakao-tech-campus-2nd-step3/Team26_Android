@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.ktc2.cokaen.wouldyouin.data.model.MemberType
 import org.ktc2.cokaen.wouldyouin.network.repository.LikesAPIRetrofitRepository
 import javax.inject.Inject
 
@@ -20,7 +21,7 @@ class LikesViewModel @Inject constructor(
     private val _isLiked = MutableStateFlow(false)
     val isLiked = _isLiked.asStateFlow()
 
-    fun checkIfLiked(memberId: Long) {
+    fun checkIfLiked(memberId: Long, memberType: MemberType) {
         viewModelScope.launch {
             try {
                 var currentPage = 0
@@ -28,7 +29,7 @@ class LikesViewModel @Inject constructor(
                 var found = false
 
                 while (!found) {
-                    val response = likesRepository.getLikes("CURATOR", currentPage, 50, lastId)
+                    val response = likesRepository.getLikes(memberType.name, currentPage, 50, lastId)
                     if (response.likes.isEmpty()) break
 
                     found = response.likes.any { it.memberId == memberId }
@@ -51,7 +52,7 @@ class LikesViewModel @Inject constructor(
     fun toggleLike(curatorId: Long) {
         viewModelScope.launch {
             try {
-                val response = likesRepository.postLike(curatorId)
+                val response = likesRepository.postLike(curatorId, MemberType.curator)
                 _isLiked.value = response.liked
             } catch (e: Exception) {
                 Log.e("LikesViewModel", "Failed to toggle like", e)

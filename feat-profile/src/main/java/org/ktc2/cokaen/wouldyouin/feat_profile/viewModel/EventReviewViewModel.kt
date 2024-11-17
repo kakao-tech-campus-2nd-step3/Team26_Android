@@ -48,15 +48,17 @@ class EventReviewViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = repository.getPendingReviewList(page, size, lastId)
-                if (response.reviewEvents.isNotEmpty()) {
-                    val newList = _pendingReviews.value.orEmpty() +
-                            response.reviewEvents.distinctBy { it.eventId }
+                val reviewEvents = response.reviewEvents ?: emptyList()  // null이 아닌 빈 리스트로 처리
+                if (reviewEvents.isNotEmpty()) {
+                    val newList = _pendingReviews.value.orEmpty() + reviewEvents.distinctBy { it.eventId }
                     _pendingReviews.value = newList
-                    lastId = response.reviewEvents.last().eventId
+                    lastId = reviewEvents.last().eventId
                     currentPage++
+                    Log.d("EventReviewViewModel", "Loaded reviews: ${response.reviewEvents}")
                 } else {
                     isLastPage = true
                 }
+
             } catch (e: Exception) {
                 ToastUtils.showShortToast(context, "후기 작성 대기중인 행사 목록을 불러오는 데 실패했습니다. 다시 시도해 주세요.")
                 Log.e("EventReviewViewModel", "Error loading review list", e)

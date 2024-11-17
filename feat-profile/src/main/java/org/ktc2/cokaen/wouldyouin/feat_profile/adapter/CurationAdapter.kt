@@ -1,5 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.feat_profile.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -19,9 +20,14 @@ class CurationAdapter(
 
     inner class PostViewHolder(private val binding: CuratorPostItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(curation: CurationResponse) {
-            // Post title
             binding.postTitle = curation.title
             binding.postImageUrl = curation.thumbnailUrl
+            Log.d("ThumbnailUrl", "${curation.thumbnailUrl}")
+
+            binding.root.setOnClickListener {
+                onItemClickListener?.invoke(curation)
+            }
+
         }
     }
 

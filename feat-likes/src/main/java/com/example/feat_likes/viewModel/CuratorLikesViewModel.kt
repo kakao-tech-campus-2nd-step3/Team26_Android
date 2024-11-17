@@ -71,9 +71,9 @@ class CuratorLikesViewModel @Inject constructor(
         }
     }
 
-    suspend fun postLike(targetMemberId: Long): Boolean {
+    suspend fun postLike(targetMemberId: Long, type: MemberType): Boolean {
         return try {
-            val result = likesRepository.postLike(targetMemberId)
+            val result = likesRepository.postLike(targetMemberId, type)
             _likeState.value = result
             true // 요청 성공 시 true 반환
         } catch (e: Exception) {

@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.feat_likes.adapter.LikedCuratorAdapter
 import com.example.feat_likes.viewModel.CuratorLikesViewModel
@@ -24,6 +25,7 @@ import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
 import org.ktc2.cokaen.wouldyouin.data.model.LikeResponse
+import org.ktc2.cokaen.wouldyouin.data.model.MemberType
 import org.ktc2.cokaen.wouldyouin.feat_likes.databinding.CuratorLikesBinding
 import javax.inject.Inject
 
@@ -55,6 +57,8 @@ class CuratorLikesFragment : Fragment() {
         binding.likedMembersList.adapter = adapter
         binding.likedMembersList.apply {
             // 아이템 데코레이션 추가로 일정한 간격 유지
+            layoutManager = LinearLayoutManager(requireContext())
+
             addItemDecoration(object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(
                     outRect: Rect,
@@ -83,7 +87,7 @@ class CuratorLikesFragment : Fragment() {
         // 클릭 이벤트 처리
         adapter.onHeartClick = { member ->
             lifecycleScope.launch {
-                val success = viewModel.postLike(member.memberId)
+                val success = viewModel.postLike(member.memberId, MemberType.curator)
                 if (success) {
                     ToastUtils.showShortToast(requireContext(), "${member.nickname} 좋아요가 취소되었습니다.")
 

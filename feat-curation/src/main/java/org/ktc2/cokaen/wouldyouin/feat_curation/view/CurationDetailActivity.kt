@@ -2,6 +2,7 @@ package org.ktc2.cokaen.wouldyouin.feat_curation.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import org.ktc2.cokaen.wouldyouin.core.ToastUtils
 import org.ktc2.cokaen.wouldyouin.core_navigation.ActivityNavigationOptions
@@ -71,8 +73,14 @@ class CurationDetailActivity : AppCompatActivity() {
     private fun setupUI() {
         binding.rvCurationBlocks.adapter = DetailCurationBlockAdapter()
         binding.rvHashtags.adapter = CurationHashtagAdapter()
+        binding.rvEvents.layoutManager = LinearLayoutManager(this)
+
         binding.rvEvents.adapter = DetailCurationEventAdapter { event ->
             startEventDetailsActivity(event.eventId)
+        }
+
+        binding.rvHashtags.layoutManager = LinearLayoutManager(this).apply {
+            orientation = LinearLayoutManager.HORIZONTAL
         }
 
         binding.curatorProfile.setOnClickListener {
@@ -86,6 +94,9 @@ class CurationDetailActivity : AppCompatActivity() {
 
         viewModel.curation.observe(this) { curation ->
             viewModel.curation.value?.curator?.curatorId?.let { checkEditable(it) }
+            if (curation != null) {
+                binding.tvIntro.text = curation.curator.intro
+            }
         }
     }
 
@@ -95,6 +106,9 @@ class CurationDetailActivity : AppCompatActivity() {
         }
 
         viewModel.curationBlocks.observe(this) { blocks ->
+            blocks.forEach { block ->
+                Log.d("CurationDetail", "Block title: ${block.subtitle}, body: ${block.content}")
+            }
             (binding.rvCurationBlocks.adapter as DetailCurationBlockAdapter).submitList(blocks)
         }
 
@@ -136,33 +150,30 @@ class CurationDetailActivity : AppCompatActivity() {
     }
 
     private fun startCuratorActivity(curatorId: Long) {
-        navigationUtil.navigate(
-            NavigationCommand(
-                destination = NavigationDestination.Activity(DeepLinkDestinations.DETAIL_EVENT_ACTIVITY),
-                activityOptions = ActivityNavigationOptions(
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK,
-                    clearTop = true
-                ),
-                data = mapOf("curatorId" to curatorId.toString())
+        val command = NavigationCommand(
+            destination = NavigationDestination.Activity(DeepLinkDestinations.CURATOR_PROFILE_ACTIVITY),
+            data = mapOf("curatorId" to curatorId.toString()),
+            activityOptions = ActivityNavigationOptions(
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
             )
         )
+        navigationUtil.navigate(command)
+
     }
 
     private fun startCreateCurationActivity(curationId: Long) {
-        navigationUtil.navigate(
-            NavigationCommand(
-                destination = NavigationDestination.Activity(DeepLinkDestinations.CREATE_CURATION_DEEPLINK),
-                activityOptions = ActivityNavigationOptions(
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK,
-                    clearTop = true
-                ),
-                data = mapOf("curationId" to curationId.toString())
+        val command = NavigationCommand(
+            destination = NavigationDestination.Activity(DeepLinkDestinations.CREATE_CURATION_DEEPLINK),
+            data = mapOf("curationId" to curationId.toString()),
+            activityOptions = ActivityNavigationOptions(
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             )
         )
+        navigationUtil.navigate(command)
+
     }
 
     private fun checkEditable(curationId: Long) {
-        // memberId가 null인 경우를 안전하게 처리
         val memberId = authPrefs.memberId
         val isEditable = memberId != null && curationId == memberId
 

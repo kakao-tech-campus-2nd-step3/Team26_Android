@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.feat_likes.adapter.LikedHostAdapter
 import com.example.feat_likes.viewModel.HostLikesViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,6 +20,7 @@ import org.ktc2.cokaen.wouldyouin.core_navigation.DeepLinkDestinations
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationCommand
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
+import org.ktc2.cokaen.wouldyouin.data.model.MemberType
 import org.ktc2.cokaen.wouldyouin.feat_likes.databinding.HostLikesBinding
 import javax.inject.Inject
 
@@ -48,6 +50,7 @@ class HostLikesFragment : Fragment() {
     private fun setupRecyclerView() {
         val adapter = LikedHostAdapter()
 
+        binding.likedMembersList.layoutManager = LinearLayoutManager(requireContext())
         binding.likedMembersList.adapter = adapter
 
         adapter.onItemClick = { member ->
@@ -57,7 +60,7 @@ class HostLikesFragment : Fragment() {
         // 클릭 이벤트 처리
         adapter.onItemClick = { member ->
             lifecycleScope.launch {
-                val success = viewModel.postLike(member.memberId)
+                val success = viewModel.postLike(member.memberId, MemberType.host)
                 if (success) {
                     ToastUtils.showShortToast(requireContext(), "${member.nickname} 좋아요가 취소되었습니다.")
 

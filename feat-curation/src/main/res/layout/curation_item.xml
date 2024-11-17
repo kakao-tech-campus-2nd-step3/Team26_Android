@@ -96,7 +96,6 @@
                         android:id="@+id/hashtag"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{hashtag.toString()}"
                         tools:text="#hashtag"
                         android:textColor="@android:color/white"
                         android:textSize="18sp"

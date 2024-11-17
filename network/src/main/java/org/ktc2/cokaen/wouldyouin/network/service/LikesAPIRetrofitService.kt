@@ -12,6 +12,7 @@ interface LikesAPIRetrofitService {
     @POST("/api/likes/{targetMemberId}")
     suspend fun postLike(
         @Path("targetMemberId") targetMemberId: Long,
+        @Query("type") type: String
     ): Response<ApiResponseBodyToggleResponse>
 
     @GET("/api/likes")

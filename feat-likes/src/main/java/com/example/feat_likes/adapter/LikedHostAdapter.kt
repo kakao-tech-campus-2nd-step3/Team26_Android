@@ -32,13 +32,26 @@ class LikedHostAdapter :
         private val binding: LikedOrganizerItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(member: LikeResponse) {
-            binding.organizerName.text = member.nickname
-            val hashtagAdapter = HashtagAdapter(member.hashtags)
-            binding.hashtag.adapter = hashtagAdapter
+        var onHeartClick: ((LikeResponse) -> Unit)? = null
+        var onItemClick: ((LikeResponse) -> Unit)? = null
 
-            binding.heartButton.setOnClickListener {
-                onItemClick?.invoke(member)
+
+        fun bind(member: LikeResponse) {
+            binding.apply {
+                organizerName.text = member.nickname
+                hashtag.adapter = HashtagAdapter(member.hashtags)
+
+                heartButton.setOnClickListener {
+                    onHeartClick?.invoke(member)
+                }
+
+                memberProfile.setOnClickListener {
+                    onItemClick?.invoke(member)
+                }
+
+                root.setOnClickListener {
+                    onItemClick?.invoke(member)
+                }
             }
         }
     }

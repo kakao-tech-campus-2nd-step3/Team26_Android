@@ -24,6 +24,7 @@ import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationDestination
 import org.ktc2.cokaen.wouldyouin.core_navigation.NavigationUtil
 import org.ktc2.cokaen.wouldyouin.data.model.CurationResponse
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
+import org.ktc2.cokaen.wouldyouin.data.model.MemberType
 import org.ktc2.cokaen.wouldyouin.feat_profile.R
 import org.ktc2.cokaen.wouldyouin.feat_profile.adapter.CurationAdapter
 import org.ktc2.cokaen.wouldyouin.feat_profile.adapter.HashtagAdapter
@@ -71,11 +72,12 @@ class CuratorProfileActivity : AppCompatActivity() {
                 binding.role.text = member.memberType.toString()
                 binding.likes.text = member.likes.toString()
                 binding.intro.text = member.intro
-                binding.phone.text = member.phoneNumber
+                binding.emali.text = member.email
 
                 //프로필 이미지
                 binding.imageUrl = member.profileUrl
-                //관객 리뷰(리사이클러뷰)
+
+                setupHashtagRecyclerView(member.hashtag)
             }
         }
 
@@ -154,20 +156,18 @@ class CuratorProfileActivity : AppCompatActivity() {
     }
 
     private fun startActivityTo(curationId: Long) {
-        navigationUtil.navigate(
-            NavigationCommand(
-                destination = NavigationDestination.Activity(DeepLinkDestinations.DETAIL_CURATION_DEEPLINK),
-                activityOptions = ActivityNavigationOptions(
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK,
-                    clearTop = true
-                ),
-                data = mapOf("curationId" to curationId.toString())
+        val command = NavigationCommand(
+            destination = NavigationDestination.Activity(DeepLinkDestinations.DETAIL_CURATION_DEEPLINK),
+            data = mapOf("curationId" to curationId.toString()),
+            activityOptions = ActivityNavigationOptions(
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
             )
         )
+        navigationUtil.navigate(command)
     }
 
     private fun setupLikeButton(curatorId: Long) {
-        likesViewModel.checkIfLiked(curatorId)
+        likesViewModel.checkIfLiked(curatorId, MemberType.curator)
 
         lifecycleScope.launch {
             likesViewModel.isLiked.collect { isLiked ->

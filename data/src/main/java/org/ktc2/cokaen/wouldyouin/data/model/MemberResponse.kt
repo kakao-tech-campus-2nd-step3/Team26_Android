@@ -15,6 +15,7 @@ data class MemberResponse(
     val phoneNumber: String,
     val profileUrl: String,
     val memberType: String,
+    val email: String,
     val area: String,
     val gender: String,
     val intro: String,

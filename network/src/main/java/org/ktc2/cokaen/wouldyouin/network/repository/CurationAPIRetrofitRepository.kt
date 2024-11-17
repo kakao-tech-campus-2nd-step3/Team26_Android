@@ -153,7 +153,7 @@ open class CurationAPIRetrofitRepository @Inject constructor(
         }
     }
 
-    suspend fun  getCurationsByCurator(
+    suspend fun getCurationsByCurator(
         curationId: Long,
         page: Int = 0,
         size: Int = 10,
@@ -165,6 +165,7 @@ open class CurationAPIRetrofitRepository @Inject constructor(
                 response.isSuccessful -> {
                     response.body()?.let { body ->
                         if (body.success) {
+                            Log.d("CuratorCurations", "${body.data}")
                             body.data
                         } else {
                             throw ServerCommonAPIRetrofitRepository.CustomException(

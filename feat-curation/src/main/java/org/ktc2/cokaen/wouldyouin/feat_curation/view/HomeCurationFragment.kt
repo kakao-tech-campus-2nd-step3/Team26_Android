@@ -76,7 +76,7 @@ class HomeCurationFragment : Fragment() {
 
         // RecyclerView에 Adapter 설정
         binding.curationCard.apply {
-            layoutManager = LinearLayoutManager(context)  // 이게 없어서 발생한 오류
+            layoutManager = LinearLayoutManager(context)
             adapter = this@HomeCurationFragment.adapter
             setHasFixedSize(true)
             isNestedScrollingEnabled = true

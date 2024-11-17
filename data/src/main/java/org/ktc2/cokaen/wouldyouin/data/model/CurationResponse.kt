@@ -1,7 +1,5 @@
 package org.ktc2.cokaen.wouldyouin.data.model
 
-import java.time.LocalDateTime
-
 data class ApiResponseBodyCurationResponse(
     val success: Boolean,
     val data: CurationResponse?,
@@ -36,9 +34,9 @@ data class CurationCuratorResponse(
 )
 
 data class CurationCardResponse(
-    val title: String,
+    val subtitle: String,
     val imageUrls: List<String>,
-    val body: String
+    val content: String
 )
 
 data class CurationEventResponse(

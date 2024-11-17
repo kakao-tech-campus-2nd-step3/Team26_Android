@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.ktc2.cokaen.wouldyouin.core.DateTimeUtils
 import org.ktc2.cokaen.wouldyouin.data.model.EventResponse
 import org.ktc2.cokaen.wouldyouin.feat_curation.databinding.SearchItemBinding
 
@@ -31,9 +32,10 @@ class EventSearchAdapter(
         fun bind(event: EventResponse) {
             binding.apply {
                 eventTitle.text = event.title
-                eventDate.text = event.startTime.toString()
+                val eventTime = DateTimeUtils.formatDateTimeString(event.startTime)
+                eventDate.text = eventTime
                 eventDescription.text = event.content
-                imageUrl = event.images[0]
+                imageUrl = event.thumbnailUrl
             }
 
             itemView.setOnClickListener {

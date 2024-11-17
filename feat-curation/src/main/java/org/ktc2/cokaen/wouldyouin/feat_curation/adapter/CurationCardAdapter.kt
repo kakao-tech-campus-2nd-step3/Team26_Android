@@ -64,9 +64,17 @@ class CurationCardAdapter(
                 RecyclerView.LayoutParams.WRAP_CONTENT
             )
 
+            // 디버깅을 위한 로그 추가
+            Log.d("Hashtag", "Hashtags: ${curation.hashtags}")
+            Log.d("Hashtag", "First hashtag: ${curation.hashtags.getOrNull(0)}")
+
             val hashtags = curation.hashtags.getOrNull(0)
             if (!hashtags.isNullOrEmpty()) {
+                // 해시태그 설정 전 현재 텍스트 확인
+                Log.d("Hashtag", "Current text: ${binding.hashtag.text}")
                 binding.hashtag.text = "#${hashtags}"
+                // 해시태그 설정 후 텍스트 확인
+                Log.d("Hashtag", "Set text to: ${binding.hashtag.text}")
             }
 
             binding.executePendingBindings()

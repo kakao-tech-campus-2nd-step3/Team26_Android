@@ -36,13 +36,13 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/heart_button"
             app:layout_constraintBottom_toBottomOf="parent"
-            imageUrl="@{imageUrl}" />
+            circleImageUrl="@{imageUrl}" />
 
         <TextView
             android:id="@+id/organizer_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             app:layout_constraintTop_toTopOf="@id/profile_image"

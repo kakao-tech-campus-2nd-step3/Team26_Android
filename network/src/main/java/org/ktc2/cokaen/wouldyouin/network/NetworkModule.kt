@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import org.ktc2.cokaen.wouldyouin.network.service.AdAPIRetrofitService
 import org.ktc2.cokaen.wouldyouin.network.service.CurationAPIRetrofitService
@@ -63,23 +64,42 @@ object NetworkModule {
         }
 
         return OkHttpClient.Builder()
-            //.addInterceptor(authInterceptor)  // 인증 인터셉터 추가
+            .addInterceptor(authInterceptor)  // 인증 인터셉터 추가
             .addInterceptor(loggingInterceptor)
             .addInterceptor { chain ->
                 val request = chain.request()
+
+                // 요청 로그
                 Log.d("OkHttp", "Request URL: ${request.url}")
                 Log.d("OkHttp", "Request Method: ${request.method}")
                 Log.d("OkHttp", "Request Headers: ${request.headers}")
-                Log.d("OkHttp", "Request Body: ${request.body}")
-                Log.d("OkHttp", "Request Body: ${request}")
+                request.body?.let {
+                    val buffer = okio.Buffer()
+                    it.writeTo(buffer)
+                    Log.d("OkHttp", "Request Body: ${buffer.readUtf8()}")
+                }
 
+                // 응답 처리
                 val response = chain.proceed(request)
+
+                // 응답 Body 읽기
+                val responseBodyString = response.body?.string() ?: "No Response Body"
+
+                // 응답 로그
                 Log.d("OkHttp", "Response Code: ${response.code}")
                 Log.d("OkHttp", "Response Message: ${response.message}")
                 Log.d("OkHttp", "Response Headers: ${response.headers}")
+                Log.d("OkHttp", "Response Body: $responseBodyString")  // 응답 본문 로그 출력
 
-                response
+                // 응답 본문을 다시 복원
+                val contentType = response.body?.contentType()
+                val restoredBody = responseBodyString.toResponseBody(contentType)
+
+                // 복원된 응답 본문을 사용하여 응답을 반환
+                return@addInterceptor response.newBuilder().body(restoredBody).build()  // 복원된 응답을 반환
             }
+
+
             .build()
     }
 

@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:text="@{block.title}"
+            android:text="@{block.subtitle}"
             android:textSize="22sp"
             android:textStyle="bold"
             tools:text="Block Title" />
@@ -41,8 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginHorizontal="20dp"
-            android:text="@{block.body}"
-            android:textSize="20sp"
+            android:text="@{block.content}"
+            android:textSize="18sp"
             tools:text="Block Content" />
 
     </LinearLayout>

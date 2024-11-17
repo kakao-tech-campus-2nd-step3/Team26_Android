@@ -3,6 +3,7 @@ package org.ktc2.cokaen.wouldyouin.network.repository
 import android.util.Log
 import org.ktc2.cokaen.wouldyouin.data.model.LikeSliceResponse
 import org.ktc2.cokaen.wouldyouin.data.model.LikeToggleResponse
+import org.ktc2.cokaen.wouldyouin.data.model.MemberType
 import org.ktc2.cokaen.wouldyouin.network.service.LikesAPIRetrofitService
 import retrofit2.HttpException
 import java.io.IOException
@@ -13,9 +14,9 @@ import javax.inject.Singleton
 class LikesAPIRetrofitRepository @Inject constructor(
     private val retrofitService: LikesAPIRetrofitService
 ) {
-    suspend fun postLike(targetMemberId: Long): LikeToggleResponse {
+    suspend fun postLike(targetMemberId: Long, type: MemberType): LikeToggleResponse {
         try {
-            val response = retrofitService.postLike(targetMemberId)
+            val response = retrofitService.postLike(targetMemberId, type.name)
             return when {
                 response.isSuccessful -> {
                     response.body()?.let { body ->
@@ -32,6 +33,7 @@ class LikesAPIRetrofitRepository @Inject constructor(
 
                 else -> {
                     val errorBody = response.errorBody()?.string()
+                    Log.d("message", response.message())
                     throw ServerCommonAPIRetrofitRepository.CustomException("서버 응답 오류: ${response.code()}")
                 }
             }
